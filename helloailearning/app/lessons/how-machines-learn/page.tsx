@@ -9,7 +9,8 @@ export default function HowMachinesLearn() {
     <LessonLayout>
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
         <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Ai_literacy_for_kids-3mWyqGGbOHl4FnDlNORcqnEKc8uKnM.png"
+          // src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Ai_literacy_for_kids-3mWyqGGbOHl4FnDlNORcqnEKc8uKnM.png"
+          src="/helloailearning/app/lessons/how-machines-learn/imgs/zhorai.png"
           alt="Zhorai"
           width={300}
           height={300}

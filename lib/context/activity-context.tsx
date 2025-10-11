@@ -1,0 +1,331 @@
+/**
+ * Activity Context for managing global state across the ecosystem learning activity
+ * Provides state management for all 8 steps of the activity
+ */
+
+'use client';
+
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import {
+  ActivityState,
+  ActivityStep,
+  EcosystemType,
+  AnimalType,
+  Sentence,
+  MindmapData,
+  PredictionResult,
+} from '@/types/activity';
+
+interface ActivityContextType {
+  // State
+  state: ActivityState;
+  
+  // Navigation
+  goToStep: (step: ActivityStep) => void;
+  nextStep: () => void;
+  previousStep: () => void;
+  canGoNext: () => boolean;
+  canGoPrevious: () => boolean;
+  
+  // Ecosystem selection (Step 1)
+  selectEcosystem: (ecosystem: EcosystemType) => void;
+  
+  // Animal selection (Step 4)
+  selectAnimal: (animal: AnimalType) => void;
+  
+  // Check for understanding (Step 3)
+  setCheckAnswers: (answers: string[]) => void;
+  
+  // Sentence management (Steps 5-6)
+  addSentence: (text: string) => void;
+  editSentence: (id: string, text: string) => void;
+  deleteSentence: (id: string) => void;
+  getSentenceCount: () => number;
+  
+  // Mindmap (Step 7)
+  setMindmapData: (data: MindmapData) => void;
+  
+  // Prediction (Step 8)
+  setPredictionResult: (result: PredictionResult) => void;
+  
+  // Activity completion
+  completeActivity: () => void;
+  resetActivity: () => void;
+}
+
+const ActivityContext = createContext<ActivityContextType | undefined>(undefined);
+
+const stepSequence: ActivityStep[] = [
+  'introduction',
+  'ecosystem-selection',
+  'knowledge-visualization',
+  'understanding-check',
+  'animal-selection',
+  'sentence-input',
+  'sentence-list',
+  'mindmap-display',
+  'prediction',
+  'completion',
+];
+
+interface ActivityProviderProps {
+  children: ReactNode;
+  initialStep?: ActivityStep;
+}
+
+export function ActivityProvider({ children, initialStep = 'introduction' }: ActivityProviderProps) {
+  const [state, setState] = useState<ActivityState>({
+    currentStep: initialStep,
+    stepIndex: stepSequence.indexOf(initialStep),
+    selectedEcosystem: null,
+    selectedAnimal: null,
+    userSentences: [],
+    checkAnswers: [],
+    mindmapData: null,
+    predictionResult: null,
+    isComplete: false,
+    startTime: Date.now(),
+  });
+
+  // Navigation functions
+  const goToStep = useCallback((step: ActivityStep) => {
+    const stepIndex = stepSequence.indexOf(step);
+    if (stepIndex !== -1) {
+      setState(prev => ({
+        ...prev,
+        currentStep: step,
+        stepIndex,
+      }));
+    }
+  }, []);
+
+  const nextStep = useCallback(() => {
+    setState(prev => {
+      const nextIndex = prev.stepIndex + 1;
+      if (nextIndex < stepSequence.length) {
+        return {
+          ...prev,
+          currentStep: stepSequence[nextIndex],
+          stepIndex: nextIndex,
+        };
+      }
+      return prev;
+    });
+  }, []);
+
+  const previousStep = useCallback(() => {
+    setState(prev => {
+      const prevIndex = prev.stepIndex - 1;
+      if (prevIndex >= 0) {
+        return {
+          ...prev,
+          currentStep: stepSequence[prevIndex],
+          stepIndex: prevIndex,
+        };
+      }
+      return prev;
+    });
+  }, []);
+
+  const canGoNext = useCallback((): boolean => {
+    const { currentStep, selectedEcosystem, selectedAnimal, userSentences, checkAnswers } = state;
+
+    switch (currentStep) {
+      case 'introduction':
+        return true;
+      case 'ecosystem-selection':
+        return selectedEcosystem !== null;
+      case 'knowledge-visualization':
+        return true;
+      case 'understanding-check':
+        // Assuming 2 correct answers required
+        return checkAnswers.length === 2;
+      case 'animal-selection':
+        return selectedAnimal !== null;
+      case 'sentence-input':
+        return userSentences.length >= 3;
+      case 'sentence-list':
+        return userSentences.length >= 3;
+      case 'mindmap-display':
+        return true;
+      case 'prediction':
+        return true;
+      case 'completion':
+        return false;
+      default:
+        return false;
+    }
+  }, [state]);
+
+  const canGoPrevious = useCallback((): boolean => {
+    return state.stepIndex > 0 && state.currentStep !== 'completion';
+  }, [state.stepIndex, state.currentStep]);
+
+  // Ecosystem selection
+  const selectEcosystem = useCallback((ecosystem: EcosystemType) => {
+    setState(prev => ({
+      ...prev,
+      selectedEcosystem: ecosystem,
+    }));
+  }, []);
+
+  // Animal selection
+  const selectAnimal = useCallback((animal: AnimalType) => {
+    setState(prev => ({
+      ...prev,
+      selectedAnimal: animal,
+    }));
+  }, []);
+
+  // Check answers
+  const setCheckAnswers = useCallback((answers: string[]) => {
+    setState(prev => ({
+      ...prev,
+      checkAnswers: answers,
+    }));
+  }, []);
+
+  // Sentence management
+  const addSentence = useCallback((text: string) => {
+    const newSentence: Sentence = {
+      id: `sentence-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      text,
+      timestamp: Date.now(),
+      animalId: state.selectedAnimal!,
+    };
+
+    setState(prev => ({
+      ...prev,
+      userSentences: [...prev.userSentences, newSentence],
+    }));
+  }, [state.selectedAnimal]);
+
+  const editSentence = useCallback((id: string, text: string) => {
+    setState(prev => ({
+      ...prev,
+      userSentences: prev.userSentences.map(sentence =>
+        sentence.id === id ? { ...sentence, text, timestamp: Date.now() } : sentence
+      ),
+    }));
+  }, []);
+
+  const deleteSentence = useCallback((id: string) => {
+    setState(prev => ({
+      ...prev,
+      userSentences: prev.userSentences.filter(sentence => sentence.id !== id),
+    }));
+  }, []);
+
+  const getSentenceCount = useCallback((): number => {
+    return state.userSentences.length;
+  }, [state.userSentences.length]);
+
+  // Mindmap
+  const setMindmapData = useCallback((data: MindmapData) => {
+    setState(prev => ({
+      ...prev,
+      mindmapData: data,
+    }));
+  }, []);
+
+  // Prediction
+  const setPredictionResult = useCallback((result: PredictionResult) => {
+    setState(prev => ({
+      ...prev,
+      predictionResult: result,
+    }));
+  }, []);
+
+  // Activity completion
+  const completeActivity = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      isComplete: true,
+      endTime: Date.now(),
+    }));
+  }, []);
+
+  const resetActivity = useCallback(() => {
+    setState({
+      currentStep: 'introduction',
+      stepIndex: 0,
+      selectedEcosystem: null,
+      selectedAnimal: null,
+      userSentences: [],
+      checkAnswers: [],
+      mindmapData: null,
+      predictionResult: null,
+      isComplete: false,
+      startTime: Date.now(),
+    });
+  }, []);
+
+  const value: ActivityContextType = {
+    state,
+    goToStep,
+    nextStep,
+    previousStep,
+    canGoNext,
+    canGoPrevious,
+    selectEcosystem,
+    selectAnimal,
+    setCheckAnswers,
+    addSentence,
+    editSentence,
+    deleteSentence,
+    getSentenceCount,
+    setMindmapData,
+    setPredictionResult,
+    completeActivity,
+    resetActivity,
+  };
+
+  return <ActivityContext.Provider value={value}>{children}</ActivityContext.Provider>;
+}
+
+/**
+ * Hook to use the activity context
+ * Must be used within an ActivityProvider
+ */
+export function useActivity(): ActivityContextType {
+  const context = useContext(ActivityContext);
+  if (context === undefined) {
+    throw new Error('useActivity must be used within an ActivityProvider');
+  }
+  return context;
+}
+
+/**
+ * Hook to get only the activity state (for read-only access)
+ */
+export function useActivityState(): ActivityState {
+  const { state } = useActivity();
+  return state;
+}
+
+/**
+ * Hook to get current step information
+ */
+export function useCurrentStep() {
+  const { state } = useActivity();
+  return {
+    currentStep: state.currentStep,
+    stepIndex: state.stepIndex,
+    totalSteps: stepSequence.length,
+    progress: ((state.stepIndex + 1) / stepSequence.length) * 100,
+  };
+}
+
+/**
+ * Hook to get selected data
+ */
+export function useSelectedData() {
+  const { state } = useActivity();
+  return {
+    ecosystem: state.selectedEcosystem,
+    animal: state.selectedAnimal,
+    sentences: state.userSentences,
+    checkAnswers: state.checkAnswers,
+  };
+}
+

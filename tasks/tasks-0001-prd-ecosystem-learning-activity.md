@@ -66,7 +66,7 @@ The existing `LessonLayout` component provides step navigation functionality tha
 
 ## Tasks
 
-- [ ] 1.0 Set up project infrastructure and data models
+- [x] 1.0 Set up project infrastructure and data models
   - [x] 1.1 Create `types/activity.ts` with TypeScript interfaces for Activity, Step, Ecosystem, Animal, Sentence, MindmapNode, PredictionResult
   - [x] 1.2 Create `lib/data/ecosystem-knowledge.ts` with pre-populated knowledge base containing facts for all 5 ecosystems (Desert, Ocean, Rainforest, Grassland, Tundra) with associated sentences and color-coded concepts
   - [x] 1.3 Create `lib/data/animal-data.ts` with animal options (Bees, Dolphins, Monkeys, Zebras) and their habitat characteristics

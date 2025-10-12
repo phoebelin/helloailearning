@@ -48,6 +48,9 @@ interface ActivityContextType {
   // Prediction (Step 8)
   setPredictionResult: (result: PredictionResult) => void;
   
+  // Speech tracking
+  markKnowledgeVisualizationSpoken: () => void;
+  
   // Activity completion
   completeActivity: () => void;
   resetActivity: () => void;
@@ -85,6 +88,7 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
     predictionResult: null,
     isComplete: false,
     startTime: Date.now(),
+    hasKnowledgeVisualizationSpoken: false,
   });
 
   // Navigation functions
@@ -236,6 +240,14 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
     }));
   }, []);
 
+  // Speech tracking
+  const markKnowledgeVisualizationSpoken = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      hasKnowledgeVisualizationSpoken: true,
+    }));
+  }, []);
+
   // Activity completion
   const completeActivity = useCallback(() => {
     setState(prev => ({
@@ -257,6 +269,7 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
       predictionResult: null,
       isComplete: false,
       startTime: Date.now(),
+      hasKnowledgeVisualizationSpoken: false,
     });
   }, []);
 
@@ -276,6 +289,7 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
     getSentenceCount,
     setMindmapData,
     setPredictionResult,
+    markKnowledgeVisualizationSpoken,
     completeActivity,
     resetActivity,
   };

@@ -102,6 +102,7 @@ export interface ActivityState {
   isComplete: boolean;
   startTime: number;
   endTime?: number;
+  hasKnowledgeVisualizationSpoken?: boolean;
 }
 
 // Step component props

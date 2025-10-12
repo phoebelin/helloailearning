@@ -76,3 +76,17 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Audio recorder waveform animation */
+@keyframes wave {
+  0%, 100% {
+    height: 8px;
+  }
+  50% {
+    height: 32px;
+  }
+}
+
+.animate-wave {
+  animation: wave 1s ease-in-out infinite;
+}

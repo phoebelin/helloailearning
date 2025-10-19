@@ -19,10 +19,12 @@ type AnimalType = 'bees' | 'dolphins' | 'monkeys' | 'zebras';
 
 function DebugInfo({ 
   currentStep, 
+  maxStepReached,
   selectedEcosystem, 
   selectedAnimal 
 }: { 
   currentStep: number; 
+  maxStepReached: number;
   selectedEcosystem: EcosystemType | null; 
   selectedAnimal: AnimalType | null;
 }) {
@@ -38,7 +40,8 @@ function DebugInfo({
         <summary className="font-medium cursor-pointer text-sm">Debug Info</summary>
         <div className="mt-2 text-xs space-y-1">
           <p><strong>Current Step:</strong> {currentStep + 1}</p>
-          <p><strong>Steps Revealed:</strong> {currentStep + 1} of 5</p>
+          <p><strong>Max Step Reached:</strong> {maxStepReached + 1}</p>
+          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 5</p>
           <p><strong>Ecosystem:</strong> {selectedEcosystem || 'None'}</p>
           <p><strong>Animal:</strong> {selectedAnimal || 'None'}</p>
           {mounted && (
@@ -57,6 +60,7 @@ function DebugInfo({
 
 export default function TestActivityStepsPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [maxStepReached, setMaxStepReached] = useState(0);
   const [selectedEcosystem, setSelectedEcosystem] = useState<EcosystemType | null>(null);
   const [selectedAnimal, setSelectedAnimal] = useState<AnimalType | null>(null);
 
@@ -83,7 +87,9 @@ export default function TestActivityStepsPage() {
 
   const handleNext = (stepIndex: number) => {
     if (stepIndex < 4) {
-      setCurrentStep(stepIndex + 1);
+      const nextStep = stepIndex + 1;
+      setCurrentStep(nextStep);
+      setMaxStepReached(prev => Math.max(prev, nextStep));
     }
   };
 
@@ -128,7 +134,7 @@ export default function TestActivityStepsPage() {
 
         {/* Step 1: Ecosystem Selection */}
         {currentStep >= 1 && (
-          <div ref={step1Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <EcosystemSelectionStep
               onNext={() => handleNext(1)}
               onEcosystemSelected={(ecosystem) => setSelectedEcosystem(ecosystem)}
@@ -138,7 +144,7 @@ export default function TestActivityStepsPage() {
         )}
 
         {/* Step 2: Knowledge Visualization */}
-        {currentStep >= 2 && selectedEcosystem && (
+        {maxStepReached >= 2 && selectedEcosystem && (
           <div ref={step2Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <KnowledgeVisualizationStep
               ecosystem={selectedEcosystem}
@@ -149,7 +155,7 @@ export default function TestActivityStepsPage() {
         )}
 
         {/* Step 3: Understanding Check */}
-        {currentStep >= 3 && selectedEcosystem && (
+        {maxStepReached >= 3 && selectedEcosystem && (
           <div ref={step3Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <UnderstandingCheckStep
               ecosystem={selectedEcosystem}
@@ -159,7 +165,7 @@ export default function TestActivityStepsPage() {
         )}
 
         {/* Step 4: Animal Selection */}
-        {currentStep >= 4 && (
+        {maxStepReached >= 4 && (
           <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <AnimalSelectionStep
               onNext={() => {
@@ -175,7 +181,8 @@ export default function TestActivityStepsPage() {
 
         {/* Debug Info */}
         <DebugInfo 
-          currentStep={currentStep}
+          currentStep={currentStep} 
+          maxStepReached={maxStepReached}
           selectedEcosystem={selectedEcosystem}
           selectedAnimal={selectedAnimal}
         />

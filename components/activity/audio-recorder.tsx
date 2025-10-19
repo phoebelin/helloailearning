@@ -175,7 +175,7 @@ export function AudioRecorder({
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>
-      {/* Microphone Button */}
+      {/* Microphone Button and Waveform */}
       <div className="flex items-center gap-3">
         <Button
           type="button"
@@ -201,27 +201,25 @@ export function AudioRecorder({
           <span>{isListening ? recordingText : buttonText}</span>
         </Button>
 
-        {/* Visual indicator when listening */}
+        {/* Small waveform indicator when listening */}
+        {isListening && (
+          <div className="flex items-center gap-1 h-6 bg-muted/30 rounded px-2">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'w-0.5 bg-primary rounded-full transition-all duration-150',
+                  'animate-wave'
+                )}
+                style={{
+                  height: '4px',
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Waveform-style visual indicator */}
-      {isListening && (
-        <div className="flex items-center justify-center gap-1 h-12 bg-muted/50 rounded-lg px-4">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className={cn(
-                'w-1 bg-primary rounded-full transition-all duration-150',
-                'animate-wave'
-              )}
-              style={{
-                height: '8px',
-                animationDelay: `${i * 0.1}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Error Display */}
       {error && (

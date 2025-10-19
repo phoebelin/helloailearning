@@ -88,9 +88,9 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
 - `hooks/__tests__/use-text-to-speech.test.ts` - Unit tests for text-to-speech hook (CREATED)
 - `jest.config.js` - Jest configuration for Next.js (CREATED)
 - `jest.setup.js` - Jest setup file with global mocks (CREATED)
-- `components/activity/__tests__/ecosystem-selection-step.test.tsx`
-- `components/activity/__tests__/understanding-check-step.test.tsx`
-- `components/activity/__tests__/animal-selection-step.test.tsx`
+- `components/activity/__tests__/ecosystem-selection-step.test.tsx` - Component tests for Step 1 (CREATED)
+- `components/activity/__tests__/understanding-check-step.test.tsx` - Component tests for Step 3 (CREATED)
+- `components/activity/__tests__/animal-selection-step.test.tsx` - Component tests for Step 4 (CREATED)
 - `components/activity/__tests__/audio-recorder.test.tsx`
 - `lib/ml/__tests__/concept-extractor.test.ts`
 - `lib/ml/__tests__/ecosystem-predictor.test.ts`
@@ -128,7 +128,7 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
   - [x] 3.3 Create `components/activity/knowledge-visualization-step.tsx` - **Figma: Desktop-8** - Zhorai's message "I've heard so much about deserts before! Here's a visualization of my brain:", interactive mindmap with blue circles (lots of) and orange circles (little of), hover instruction text, tooltips showing source sentences (purple text), Zhorai character visible, "Continue" (black) and "Try another ecosystem" (outlined) buttons
   - [x] 3.4 Create `components/activity/understanding-check-step.tsx` - **Figma: Desktop-9** - Condensed mindmap view at top with key nodes (plants/orange, sand/blue), question "Take a look at each circle", main question box "What do you notice about the words and colors of each circle?", multi-select checkboxes (both correct: "Zhorai pulled out key words" and "Zhorai used blue for 'lots of' and orange for 'little of'"), selected boxes with purple/blue background (#F4F0FF) and purple border (#967FD8), "Submit" button (black), feedback logic
   - [x] 3.5 Create `components/activity/animal-selection-step.tsx` - **Figma: Desktop-11** - Context text "Zhorai knows a lot about ecosystems, but hasn't met any animals before! Can you teach it about some animals?", question box "Choose an animal to teach Zhorai about!", radio buttons for Bees/Dolphins/Monkeys/Zebras, selected option with purple background (#F4F0FF) and checkmark, Zhorai character in selection area, dynamic speech bubble "Can you teach me about [animal]?" (purple text), "Continue" button (black)
-  - [ ] 3.6 Write component tests for steps 1-4: test ecosystem selection flow, understanding check validation, and animal selection
+  - [x] 3.6 Write component tests for steps 1-4: test ecosystem selection flow, understanding check validation, and animal selection
   - [ ] 3.7 Create temporary test page to manually verify steps 1-4 navigation and functionality
 
 - [ ] 4.0 Build teaching phase components (Steps 5-6: Sentence collection)

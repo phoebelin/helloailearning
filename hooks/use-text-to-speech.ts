@@ -71,7 +71,10 @@ export function useTextToSpeech(
 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [isSupported, setIsSupported] = useState(false);
+  const [isSupported, setIsSupported] = useState(() => {
+    // Initialize with actual browser support check
+    return typeof window !== 'undefined' && 'speechSynthesis' in window;
+  });
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(voice);
   const [queueLength, setQueueLength] = useState(0);
@@ -79,6 +82,7 @@ export function useTextToSpeech(
   const queueRef = useRef<SpeechQueueItem[]>([]);
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const isProcessingRef = useRef(false);
+  const voiceInitializedRef = useRef(false);
 
   // Check browser compatibility and load voices
   useEffect(() => {
@@ -90,10 +94,11 @@ export function useTextToSpeech(
         const availableVoices = window.speechSynthesis.getVoices();
         setVoices(availableVoices);
 
-        // Auto-select a child-friendly voice if none selected
-        if (!selectedVoice && availableVoices.length > 0) {
+        // Auto-select a child-friendly voice ONLY ONCE if none selected
+        if (!voiceInitializedRef.current && !selectedVoice && availableVoices.length > 0) {
           const childFriendlyVoice = findChildFriendlyVoice(availableVoices, lang);
           setSelectedVoice(childFriendlyVoice);
+          voiceInitializedRef.current = true;
         }
       };
 
@@ -111,7 +116,7 @@ export function useTextToSpeech(
     } else {
       setIsSupported(false);
     }
-  }, [lang, selectedVoice]);
+  }, [lang]);
 
   // Process speech queue
   const processQueue = useCallback(() => {

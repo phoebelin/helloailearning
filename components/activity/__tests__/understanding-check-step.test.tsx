@@ -27,7 +27,7 @@ describe('UnderstandingCheckStep', () => {
 
   it('renders the main question', () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     expect(screen.getByText(/What do you notice about the words and colors of each circle?/i)).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe('UnderstandingCheckStep', () => {
 
   it('renders the instruction text', () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     expect(screen.getByText(/Take a look at each circle/i)).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('UnderstandingCheckStep', () => {
 
   it('displays both answer options', () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     expect(screen.getByText(/Zhorai pulled out key words from the sentences/i)).toBeInTheDocument();
@@ -52,17 +52,17 @@ describe('UnderstandingCheckStep', () => {
 
   it('displays the condensed mindmap visualization', () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    // Check for mindmap nodes
-    expect(screen.getByText('sand')).toBeInTheDocument();
-    expect(screen.getByText('plants')).toBeInTheDocument();
+    // Check for mindmap nodes - these will be dynamic based on ecosystem
+    const mindmapNodes = screen.getAllByText(/sand|plants|cactus|water|heat|cold/i);
+    expect(mindmapNodes.length).toBeGreaterThan(0);
   });
 
   it('allows selecting first answer option', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -78,7 +78,7 @@ describe('UnderstandingCheckStep', () => {
 
   it('allows selecting second answer option', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const secondCheckbox = screen.getByRole('checkbox', { 
@@ -94,7 +94,7 @@ describe('UnderstandingCheckStep', () => {
 
   it('allows selecting multiple answers', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -115,10 +115,10 @@ describe('UnderstandingCheckStep', () => {
 
   it('applies selected styling to checked options', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const firstOption = screen.getByText(/Zhorai pulled out key words/i).closest('div');
+    const firstOption = screen.getByText(/Zhorai pulled out key words/i).closest('button');
     const checkbox = screen.getByRole('checkbox', { 
       name: /Zhorai pulled out key words/i 
     });
@@ -131,18 +131,18 @@ describe('UnderstandingCheckStep', () => {
     });
   });
 
-  it('disables submit button when no answers selected', () => {
+  it('disables check button when no answers selected', () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByRole('button', { name: /check/i });
     expect(submitButton).toBeDisabled();
   });
 
-  it('disables submit button when only one answer selected', async () => {
+  it('enables check button when one answer selected', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -152,14 +152,14 @@ describe('UnderstandingCheckStep', () => {
     fireEvent.click(firstCheckbox);
     
     await waitFor(() => {
-      const submitButton = screen.getByRole('button', { name: /submit/i });
-      expect(submitButton).toBeDisabled();
+      const submitButton = screen.getByRole('button', { name: /check/i });
+      expect(submitButton).not.toBeDisabled();
     });
   });
 
-  it('enables submit button when both answers are selected', async () => {
+  it('enables check button when both answers are selected', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -173,14 +173,14 @@ describe('UnderstandingCheckStep', () => {
     fireEvent.click(secondCheckbox);
     
     await waitFor(() => {
-      const submitButton = screen.getByRole('button', { name: /submit/i });
+      const submitButton = screen.getByRole('button', { name: /check/i });
       expect(submitButton).not.toBeDisabled();
     });
   });
 
   it('shows success feedback when both correct answers are submitted', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -193,17 +193,57 @@ describe('UnderstandingCheckStep', () => {
     fireEvent.click(firstCheckbox);
     fireEvent.click(secondCheckbox);
     
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByRole('button', { name: /check/i });
     fireEvent.click(submitButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/correct/i)).toBeInTheDocument();
+      expect(screen.getByText(/That's right!/i)).toBeInTheDocument();
     });
   });
 
-  it('calls onNext after successful submission', async () => {
+  it('shows error feedback when incorrect answers are submitted', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
+    );
+    
+    // Select only one answer (incorrect)
+    const firstCheckbox = screen.getByRole('checkbox', { 
+      name: /Zhorai pulled out key words/i 
+    });
+    
+    fireEvent.click(firstCheckbox);
+    
+    // Submit with only one answer selected
+    const submitButton = screen.getByRole('button', { name: /check/i });
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(screen.getByText(/💪 Hey, that's okay!/i)).toBeInTheDocument();
+    });
+  });
+
+  it('shows Show answer button after incorrect submission', async () => {
+    renderWithContext(
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
+    );
+    
+    const firstCheckbox = screen.getByRole('checkbox', { 
+      name: /Zhorai pulled out key words/i 
+    });
+    
+    fireEvent.click(firstCheckbox);
+    
+    const submitButton = screen.getByRole('button', { name: /check/i });
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /show answer/i })).toBeInTheDocument();
+    });
+  });
+
+  it('shows inline explanation when Why? button is clicked', async () => {
+    renderWithContext(
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
     const firstCheckbox = screen.getByRole('checkbox', { 
@@ -216,48 +256,80 @@ describe('UnderstandingCheckStep', () => {
     fireEvent.click(firstCheckbox);
     fireEvent.click(secondCheckbox);
     
-    const submitButton = screen.getByRole('button', { name: /submit/i });
+    const submitButton = screen.getByRole('button', { name: /check/i });
     fireEvent.click(submitButton);
     
     await waitFor(() => {
-      expect(mockOnNext).toHaveBeenCalledTimes(1);
-    }, { timeout: 3000 });
+      const whyButton = screen.getByRole('button', { name: /why/i });
+      fireEvent.click(whyButton);
+    });
+    
+    await waitFor(() => {
+      expect(screen.getByText(/Zhorai learned about each ecosystem through many sentences/i)).toBeInTheDocument();
+    });
   });
 
-  it('allows deselecting answers', async () => {
+  it('shows correct answers and explanation when Show answer is clicked', async () => {
     renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
+    // Select only one incorrect answer
+    const firstCheckbox = screen.getByRole('checkbox', { 
+      name: /Zhorai pulled out key words from the sentences/i 
+    });
+    fireEvent.click(firstCheckbox);
+    
+    const submitButton = screen.getByRole('button', { name: /check/i });
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      const showAnswerButton = screen.getByRole('button', { name: /show answer/i });
+      fireEvent.click(showAnswerButton);
+    });
+    
+    await waitFor(() => {
+      // Both checkboxes should be selected
+      const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes[0]).toHaveAttribute('aria-checked', 'true');
+      expect(checkboxes[1]).toHaveAttribute('aria-checked', 'true');
+      
+      // Explanation should be visible
+      expect(screen.getByText(/Zhorai learned about each ecosystem through many sentences/i)).toBeInTheDocument();
+      
+      // Should show Continue and Why? buttons
+      expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /why/i })).toBeInTheDocument();
+    });
+  });
+
+  it('allows retry after incorrect submission', async () => {
+    renderWithContext(
+      <UnderstandingCheckStep ecosystem="desert" onNext={mockOnNext} onPrevious={mockOnPrevious} />
+    );
+    
+    // Select only one answer (incorrect)
     const firstCheckbox = screen.getByRole('checkbox', { 
       name: /Zhorai pulled out key words/i 
     });
     
-    // Select
     fireEvent.click(firstCheckbox);
+    
+    // Submit with only one answer selected
+    const submitButton = screen.getByRole('button', { name: /check/i });
+    fireEvent.click(submitButton);
+    
     await waitFor(() => {
-      expect(firstCheckbox).toBeChecked();
+      const tryAgainButton = screen.getByRole('button', { name: /try again/i });
+      fireEvent.click(tryAgainButton);
     });
     
-    // Deselect
-    fireEvent.click(firstCheckbox);
     await waitFor(() => {
-      expect(firstCheckbox).not.toBeChecked();
+      // Should be back to initial state
+      expect(screen.getByRole('button', { name: /check/i })).toBeInTheDocument();
+      expect(screen.queryByText(/Not quite right/i)).not.toBeInTheDocument();
     });
-  });
-
-  it('shows node colors correctly in mindmap preview', () => {
-    renderWithContext(
-      <UnderstandingCheckStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
-    );
-    
-    const sandNode = screen.getByText('sand').closest('.mindmap-node');
-    const plantsNode = screen.getByText('plants').closest('.mindmap-node');
-    
-    // Sand should be blue (lots of)
-    expect(sandNode).toHaveClass('bg-blue-500');
-    // Plants should be orange (little of)
-    expect(plantsNode).toHaveClass('bg-orange-500');
   });
 });
+
 

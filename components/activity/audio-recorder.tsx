@@ -294,7 +294,8 @@ export function AudioRecorderCompact({
       const fullTranscript = transcript + (interimTranscript ? ' ' + interimTranscript : '');
       onTranscriptChange(fullTranscript, interimTranscript === '');
     }
-  }, [transcript, interimTranscript, onTranscriptChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcript, interimTranscript]); // onTranscriptChange excluded to prevent infinite loop
 
   const handleToggleRecording = () => {
     if (isListening) {

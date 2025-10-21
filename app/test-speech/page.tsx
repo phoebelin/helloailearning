@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AudioRecorder, AudioRecorderCompact } from '@/components/activity/audio-recorder';
 import { 
   MicrophonePermissionDialog, 
@@ -34,6 +34,12 @@ export default function TestSpeechPage() {
   const [fallbackText, setFallbackText] = useState('');
   const [ttsText, setTtsText] = useState('Hello! I am Zhorai, your AI learning companion.');
   const [testResults, setTestResults] = useState<string[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Prevent hydration issues by only rendering on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { 
     permissionState, 
@@ -85,6 +91,20 @@ export default function TestSpeechPage() {
     const summary = getSpeechSummary(testText, 0.85, 3000);
     addTestResult(`Summary: ${summary.wordCount} words, ${summary.speechRate} WPM`);
   };
+
+  // Show loading state during hydration
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold">Speech Features Test Page</h1>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -284,6 +304,123 @@ export default function TestSpeechPage() {
                       onClick={() => speak('This is a test', { pitch: 1.5 })}
                     >
                       High Pitch
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        // Test direct API like knowledge-visualization-step
+                        const message = "I've heard so much about deserts before! Here's a visualization of my brain:";
+                        
+                        const testDirectSpeech = () => {
+                          const voices = window.speechSynthesis.getVoices();
+                          addTestResult(`Direct API: ${voices.length} voices available`);
+                          
+                          const utterance = new SpeechSynthesisUtterance(message);
+                          utterance.rate = 0.9;
+                          utterance.pitch = 1.1;
+                          utterance.volume = 1.0;
+                          
+                          if (voices.length > 0) {
+                            const englishVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+                            utterance.voice = englishVoice;
+                            addTestResult(`Using voice: ${englishVoice.name}`);
+                          }
+                          
+                          utterance.onstart = () => addTestResult('Direct API: Speech started!');
+                          utterance.onend = () => addTestResult('Direct API: Speech ended');
+                          utterance.onerror = (e) => addTestResult(`Direct API: Error - ${e.error}`);
+                          
+                          window.speechSynthesis.speak(utterance);
+                          addTestResult('Direct API: speak() called');
+                        };
+                        
+                        if (window.speechSynthesis.getVoices().length > 0) {
+                          testDirectSpeech();
+                        } else {
+                          addTestResult('Waiting for voices to load...');
+                          window.speechSynthesis.onvoiceschanged = () => {
+                            addTestResult('Voices loaded!');
+                            testDirectSpeech();
+                          };
+                        }
+                      }}
+                    >
+                      Test Direct API (like KV step)
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        // Test basic audio context to check if audio is working at all
+                        addTestResult('Testing audio context...');
+                        try {
+                          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                          addTestResult(`Audio context state: ${audioContext.state}`);
+                          
+                          if (audioContext.state === 'suspended') {
+                            addTestResult('Audio context suspended - user interaction required');
+                            audioContext.resume().then(() => {
+                              addTestResult('Audio context resumed!');
+                            });
+                          }
+                        } catch (e) {
+                          addTestResult(`Audio context error: ${e}`);
+                        }
+                        
+                        // Test if speech synthesis is actually playing
+                        addTestResult(`Speech synthesis speaking: ${window.speechSynthesis.speaking}`);
+                        addTestResult(`Speech synthesis pending: ${window.speechSynthesis.pending}`);
+                        addTestResult(`Speech synthesis paused: ${window.speechSynthesis.paused}`);
+                      }}
+                    >
+                      Test Audio Context
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        // Force speech to work by canceling everything first
+                        addTestResult('Force speech test...');
+                        window.speechSynthesis.cancel();
+                        
+                        setTimeout(() => {
+                          const utterance = new SpeechSynthesisUtterance('Hello world test');
+                          utterance.rate = 0.8;
+                          utterance.pitch = 1.0;
+                          utterance.volume = 1.0;
+                          
+                          utterance.onstart = () => addTestResult('FORCE: Speech started!');
+                          utterance.onend = () => addTestResult('FORCE: Speech ended');
+                          utterance.onerror = (e) => addTestResult(`FORCE: Error - ${e.error}`);
+                          
+                          addTestResult('FORCE: Calling speak()...');
+                          window.speechSynthesis.speak(utterance);
+                          
+                          // Check status after a delay
+                          setTimeout(() => {
+                            addTestResult(`FORCE: After 1s - speaking: ${window.speechSynthesis.speaking}`);
+                            addTestResult(`FORCE: After 1s - pending: ${window.speechSynthesis.pending}`);
+                          }, 1000);
+                        }, 100);
+                      }}
+                    >
+                      Force Speech Test
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        // Test with the useTextToSpeech hook to see if it works
+                        addTestResult('Testing with useTextToSpeech hook...');
+                        speak('This is a test with the hook', {
+                          onStart: () => addTestResult('HOOK: Speech started!'),
+                          onEnd: () => addTestResult('HOOK: Speech ended'),
+                          onError: (error) => addTestResult(`HOOK: Error - ${error}`)
+                        });
+                      }}
+                    >
+                      Test with Hook
                     </Button>
                   </div>
                 </div>

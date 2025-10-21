@@ -145,7 +145,7 @@ export default function TestActivityStepsPage() {
 
         {/* Step 2: Knowledge Visualization */}
         {maxStepReached >= 2 && selectedEcosystem && (
-          <div ref={step2Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <div ref={step2Ref} data-step="knowledge-visualization" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <KnowledgeVisualizationStep
               ecosystem={selectedEcosystem}
               onNext={() => handleNext(2)}

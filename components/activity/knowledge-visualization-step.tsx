@@ -6,13 +6,13 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { StepComponentProps, EcosystemType, MindmapNode, NodeColor } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
-import { useTextToSpeech } from '@/hooks/use-text-to-speech';
 import { useActivity } from '@/lib/context/activity-context';
+import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
 import { cn } from '@/lib/utils';
 
 export interface KnowledgeVisualizationStepProps extends StepComponentProps {
@@ -217,10 +217,17 @@ export function KnowledgeVisualizationStep({
   
   const [isThinking, setIsThinking] = useState(false);
   const [showMindmap, setShowMindmap] = useState(false);
+  
+  // Track if speech has been attempted for current ecosystem
+  const speechAttemptedRef = useRef<string | null>(null);
+  
+  // Store current hook values in refs to avoid stale closures
+  const hookValuesRef = useRef({ speak: null, isSupported: false, isGoogleCloudAvailable: false, isGoogleCloudChecked: false });
 
-  const { speak, isSupported } = useTextToSpeech({
+  const { speak, isSupported, isGoogleCloudAvailable, isGoogleCloudChecked } = useEnhancedTextToSpeech({
     rate: 0.9, // Slightly slower for child comprehension
     pitch: 1.1, // Slightly higher pitch for friendly tone
+    useGoogleCloud: true, // Prefer Google Cloud TTS for better Chrome compatibility
   });
 
   // Get ecosystem display name
@@ -235,26 +242,50 @@ export function KnowledgeVisualizationStep({
   const ecosystemName = ecosystemNames[ecosystem];
   const ecosystemNameSingular = ecosystem === 'desert' ? 'desert' : ecosystemName.slice(0, -1);
 
+  // Update ref values whenever hook values change
+  useEffect(() => {
+    hookValuesRef.current = { speak, isSupported, isGoogleCloudAvailable, isGoogleCloudChecked };
+  }, [speak, isSupported, isGoogleCloudAvailable, isGoogleCloudChecked]);
+
   // Speak the message when the component first loads or when ecosystem changes
   useEffect(() => {
     // Reset mindmap visibility when ecosystem changes
     setShowMindmap(false);
     setIsThinking(false);
+    
+    // Reset speech attempted ref when ecosystem changes
+    speechAttemptedRef.current = null;
 
     const message = `I've heard so much about ${ecosystemName} before! Here's a visualization of my brain:`;
     
     console.log('Knowledge Visualization: Starting speech...', { 
       isSupported, 
+      isGoogleCloudAvailable,
+      ttsMethod: isGoogleCloudAvailable ? 'Google Cloud TTS' : 'Web Speech API',
       message, 
       ecosystem,
       speechSynthesis: typeof window !== 'undefined' ? window.speechSynthesis : null 
     });
     
-    // Small delay to ensure smooth transition
-    const timer = setTimeout(() => {
-      if (isSupported) {
-        console.log('Knowledge Visualization: Calling speak()...');
-        speak(message, {
+        // Wait for Google Cloud TTS availability check to complete
+        const timer = setTimeout(() => {
+          // Check if speech has already been attempted for this ecosystem
+          if (speechAttemptedRef.current === ecosystem) {
+            console.log(`Knowledge Visualization: Speech already attempted for ${ecosystem}, skipping.`);
+            return;
+          }
+          
+          // Get fresh values from refs (avoid stale closures)
+          const { speak: currentSpeak, isSupported: currentSupported, isGoogleCloudAvailable: currentGoogleCloudAvailable, isGoogleCloudChecked: currentGoogleCloudChecked } = hookValuesRef.current;
+          
+          if (currentSupported && currentGoogleCloudChecked) {
+            // Mark speech as attempted for this ecosystem
+            speechAttemptedRef.current = ecosystem;
+            
+            // ADD DEBUG LOG TO CHECK AVAILABILITY AT SPEAK TIME
+            console.log('Knowledge Visualization: Before calling speak() - isGoogleCloudAvailable:', currentGoogleCloudAvailable);
+            console.log('Knowledge Visualization: Calling speak()...');
+            currentSpeak(message, {
           onStart: () => {
             // Mark as spoken when speech actually starts
             console.log('Knowledge Visualization: Speech started');
@@ -273,6 +304,8 @@ export function KnowledgeVisualizationStep({
           },
           onError: (error) => {
             console.error('Knowledge Visualization: Speech error:', error);
+            // Mark speech as attempted for this ecosystem (even though it failed)
+            speechAttemptedRef.current = ecosystem;
             // Show mindmap anyway if speech fails
             setIsThinking(true);
             setTimeout(() => {
@@ -284,6 +317,8 @@ export function KnowledgeVisualizationStep({
       } else {
         console.warn('Knowledge Visualization: Speech not supported! Browser may not support Web Speech API');
         console.log('Knowledge Visualization: Going straight to mindmap without speech');
+        // Mark speech as attempted for this ecosystem
+        speechAttemptedRef.current = ecosystem;
         // If speech not supported, go straight to thinking then mindmap
         // Mark as spoken immediately since no speech will happen
         markKnowledgeVisualizationSpoken();
@@ -293,23 +328,23 @@ export function KnowledgeVisualizationStep({
           setShowMindmap(true);
         }, 2000);
       }
-    }, 500);
+        }, 1000); // Increased delay to allow Google Cloud TTS availability check to complete
 
     return () => {
       console.log('Knowledge Visualization: Cleanup', { ecosystem });
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ecosystem, ecosystemName]);
+  }, [ecosystem, ecosystemName]); // Only depend on ecosystem changes
 
   return (
     <div className="flex flex-col gap-6 py-20 px-4 max-w-[682px] mx-auto">
       {/* Main content area */}
       <div className="flex flex-col gap-6 w-full relative">
-        {/* Message */}
-        <p className="text-base font-normal leading-[32px] text-black w-full">
-          I've heard so much about {ecosystemName} before! Here's a visualization of my brain:
-        </p>
+            {/* Message */}
+            <p className="text-base font-normal leading-[32px] text-black w-full">
+              I've heard so much about {ecosystemName} before! Here's a visualization of my brain:
+            </p>
         
         {/* Mindmap Container - fixed width and height to match mindmap */}
         <div className="relative flex flex-col items-center gap-6 border border-black rounded-xl p-6 w-[700px] h-[580px] mx-auto">

@@ -22,13 +22,15 @@ export interface UnderstandingCheckStepProps extends StepComponentProps {
 function getNodeColorClass(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-[#2E3F9D]';
+      return 'bg-blue-500 border-blue-600 text-white';
     case 'orange':
-      return 'bg-[#FD583C]';
+      return 'bg-orange-500 border-orange-600 text-white';
     case 'purple':
-      return 'bg-[#967FD8]';
+      return 'bg-purple-500 border-purple-600 text-white';
+    case 'neutral':
+      return 'bg-gray-400 border-gray-500 text-white';
     default:
-      return 'bg-gray-400';
+      return 'bg-gray-400 border-gray-500 text-white';
   }
 }
 
@@ -145,10 +147,11 @@ export function UnderstandingCheckStep({
             {positiveNode && (
               <div className="flex flex-col items-center">
                 <div className={cn(
-                  'w-[103px] h-[59px] rounded-full flex items-center justify-center',
+                  'w-20 h-20 rounded-full border-2 flex items-center justify-center',
+                  'font-medium shadow-sm',
                   getNodeColorClass(positiveNode.color)
                 )}>
-                  <span className="text-base font-semibold text-white text-center px-2">
+                  <span className="text-sm text-white text-center px-1 leading-tight">
                     {positiveNode.label}
                   </span>
                 </div>
@@ -157,10 +160,11 @@ export function UnderstandingCheckStep({
             {negativeNode && (
               <div className="flex flex-col items-center">
                 <div className={cn(
-                  'w-[103px] h-[59px] rounded-full flex items-center justify-center',
+                  'w-20 h-20 rounded-full border-2 flex items-center justify-center',
+                  'font-medium shadow-sm',
                   getNodeColorClass(negativeNode.color)
                 )}>
-                  <span className="text-base font-semibold text-white text-center px-2">
+                  <span className="text-sm text-white text-center px-1 leading-tight">
                     {negativeNode.label}
                   </span>
                 </div>

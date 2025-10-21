@@ -171,7 +171,11 @@ export function useTextToSpeech(
 
     utterance.onerror = (event) => {
       const errorMessage = `Speech synthesis error: ${event.error}`;
-      console.error(errorMessage, event);
+      
+      // Only log non-canceled errors to avoid console spam
+      if (event.error !== 'canceled') {
+        console.error(errorMessage, event);
+      }
       
       setIsSpeaking(false);
       setIsPaused(false);

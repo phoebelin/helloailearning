@@ -65,11 +65,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const beesOption = screen.getByLabelText('Bees');
+    const beesOption = screen.getByRole('checkbox', { name: /bees/i });
     fireEvent.click(beesOption);
     
     await waitFor(() => {
-      expect(beesOption).toBeChecked();
+      expect(beesOption).toHaveAttribute('aria-checked', 'true');
     });
   });
 
@@ -78,11 +78,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const dolphinsOption = screen.getByLabelText('Dolphins');
+    const dolphinsOption = screen.getByRole('checkbox', { name: /dolphins/i });
     fireEvent.click(dolphinsOption);
     
     await waitFor(() => {
-      expect(dolphinsOption).toBeChecked();
+      expect(dolphinsOption).toHaveAttribute('aria-checked', 'true');
     });
   });
 
@@ -91,11 +91,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const monkeysOption = screen.getByLabelText('Monkeys');
+    const monkeysOption = screen.getByRole('checkbox', { name: /monkeys/i });
     fireEvent.click(monkeysOption);
     
     await waitFor(() => {
-      expect(monkeysOption).toBeChecked();
+      expect(monkeysOption).toHaveAttribute('aria-checked', 'true');
     });
   });
 
@@ -104,11 +104,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const zebrasOption = screen.getByLabelText('Zebras');
+    const zebrasOption = screen.getByRole('checkbox', { name: /zebras/i });
     fireEvent.click(zebrasOption);
     
     await waitFor(() => {
-      expect(zebrasOption).toBeChecked();
+      expect(zebrasOption).toHaveAttribute('aria-checked', 'true');
     });
   });
 
@@ -117,20 +117,20 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const beesOption = screen.getByLabelText('Bees');
-    const dolphinsOption = screen.getByLabelText('Dolphins');
+    const beesOption = screen.getByRole('checkbox', { name: /bees/i });
+    const dolphinsOption = screen.getByRole('checkbox', { name: /dolphins/i });
     
     // Select bees
     fireEvent.click(beesOption);
     await waitFor(() => {
-      expect(beesOption).toBeChecked();
+      expect(beesOption).toHaveAttribute('aria-checked', 'true');
     });
     
     // Select dolphins - should deselect bees
     fireEvent.click(dolphinsOption);
     await waitFor(() => {
-      expect(dolphinsOption).toBeChecked();
-      expect(beesOption).not.toBeChecked();
+      expect(dolphinsOption).toHaveAttribute('aria-checked', 'true');
+      expect(beesOption).toHaveAttribute('aria-checked', 'false');
     });
   });
 
@@ -139,14 +139,13 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const beesOption = screen.getByLabelText('Bees');
-    const beesContainer = beesOption.closest('.animal-option');
+    const beesOption = screen.getByRole('checkbox', { name: /bees/i });
     
     fireEvent.click(beesOption);
     
     await waitFor(() => {
-      expect(beesContainer).toHaveClass('bg-[#F4F0FF]');
-      expect(beesContainer).toHaveClass('border-[#967FD8]');
+      expect(beesOption).toHaveClass('bg-[#F4F0FF]');
+      expect(beesOption).toHaveClass('border-[#967FD8]');
     });
   });
 
@@ -155,11 +154,13 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const monkeysOption = screen.getByLabelText('Monkeys');
+    const monkeysOption = screen.getByRole('checkbox', { name: /monkeys/i });
     fireEvent.click(monkeysOption);
     
     await waitFor(() => {
-      expect(screen.getByTestId('checkmark-icon')).toBeInTheDocument();
+      // Check for the SVG checkmark icon
+      const checkmarkIcon = monkeysOption.querySelector('svg');
+      expect(checkmarkIcon).toBeInTheDocument();
     });
   });
 
@@ -168,11 +169,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const beesOption = screen.getByLabelText('Bees');
+    const beesOption = screen.getByRole('checkbox', { name: /bees/i });
     fireEvent.click(beesOption);
     
     await waitFor(() => {
-      expect(screen.getByText(/Can you teach me about bees?/i)).toBeInTheDocument();
+      expect(screen.getByText(/Yay! Can you teach me about bees?/i)).toBeInTheDocument();
     });
   });
 
@@ -181,11 +182,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const dolphinsOption = screen.getByLabelText('Dolphins');
+    const dolphinsOption = screen.getByRole('checkbox', { name: /dolphins/i });
     fireEvent.click(dolphinsOption);
     
     await waitFor(() => {
-      expect(screen.getByText(/Can you teach me about dolphins?/i)).toBeInTheDocument();
+      expect(screen.getByText(/Yay! Can you teach me about dolphins?/i)).toBeInTheDocument();
     });
   });
 
@@ -194,11 +195,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const monkeysOption = screen.getByLabelText('Monkeys');
+    const monkeysOption = screen.getByRole('checkbox', { name: /monkeys/i });
     fireEvent.click(monkeysOption);
     
     await waitFor(() => {
-      expect(screen.getByText(/Can you teach me about monkeys?/i)).toBeInTheDocument();
+      expect(screen.getByText(/Yay! Can you teach me about monkeys?/i)).toBeInTheDocument();
     });
   });
 
@@ -207,11 +208,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const zebrasOption = screen.getByLabelText('Zebras');
+    const zebrasOption = screen.getByRole('checkbox', { name: /zebras/i });
     fireEvent.click(zebrasOption);
     
     await waitFor(() => {
-      expect(screen.getByText(/Can you teach me about zebras?/i)).toBeInTheDocument();
+      expect(screen.getByText(/Yay! Can you teach me about zebras?/i)).toBeInTheDocument();
     });
   });
 
@@ -220,11 +221,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const beesOption = screen.getByLabelText('Bees');
+    const beesOption = screen.getByRole('checkbox', { name: /bees/i });
     fireEvent.click(beesOption);
     
     await waitFor(() => {
-      const speechBubble = screen.getByText(/Can you teach me about bees?/i);
+      const speechBubble = screen.getByText(/Yay! Can you teach me about bees?/i);
       expect(speechBubble).toHaveClass('text-[#967FD8]');
     });
   });
@@ -243,11 +244,12 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const dolphinsOption = screen.getByLabelText('Dolphins');
+    const dolphinsOption = screen.getByRole('checkbox', { name: /dolphins/i });
     fireEvent.click(dolphinsOption);
     
     await waitFor(() => {
       const continueButton = screen.getByRole('button', { name: /continue/i });
+      expect(continueButton).toBeInTheDocument();
       expect(continueButton).not.toBeDisabled();
     });
   });
@@ -257,7 +259,7 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const zebrasOption = screen.getByLabelText('Zebras');
+    const zebrasOption = screen.getByRole('checkbox', { name: /zebras/i });
     fireEvent.click(zebrasOption);
     
     await waitFor(() => {
@@ -273,11 +275,11 @@ describe('AnimalSelectionStep', () => {
       <AnimalSelectionStep onNext={mockOnNext} onPrevious={mockOnPrevious} />
     );
     
-    const monkeysOption = screen.getByLabelText('Monkeys');
+    const monkeysOption = screen.getByRole('checkbox', { name: /monkeys/i });
     fireEvent.click(monkeysOption);
     
     await waitFor(() => {
-      expect(monkeysOption).toBeChecked();
+      expect(monkeysOption).toHaveAttribute('aria-checked', 'true');
     });
     
     // Rerender component - selection should persist
@@ -288,7 +290,7 @@ describe('AnimalSelectionStep', () => {
     );
     
     // Note: In real context, selection would persist. This tests component behavior.
-    expect(screen.getByLabelText('Monkeys')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: /monkeys/i })).toBeInTheDocument();
   });
 });
 

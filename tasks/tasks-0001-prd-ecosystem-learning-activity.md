@@ -65,8 +65,8 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
 - `components/activity/knowledge-visualization-step.tsx` - Step 2 (Figma: Desktop-8): Zhorai's pre-existing knowledge mindmap (CREATED)
 - `components/activity/understanding-check-step.tsx` - Step 3 (Figma: Desktop-9): Comprehension check with checkboxes (CREATED)
 - `components/activity/animal-selection-step.tsx` - Step 4 (Figma: Desktop-11): Choose animal to teach (Bees/Dolphins/Monkeys/Zebras) (CREATED)
-- `components/activity/sentence-input-step.tsx` - Step 5 (Figma: Desktop-12): Add sentences about animal via speech
-- `components/activity/sentence-list-step.tsx` - Step 6 (Figma: Desktop-13): View/edit/delete sentences with cards
+- `components/activity/sentence-input-step.tsx` - Step 5 (Figma: Desktop-12): Add sentences about animal via speech (CREATED)
+- `components/activity/sentence-list-step.tsx` - Step 6 (Figma: Desktop-13): View/edit/delete sentences with cards (CREATED)
 - `components/activity/mindmap-display-step.tsx` - Step 7 (Figma: Desktop-14): User-taught concepts in mindmap
 - `components/activity/prediction-step.tsx` - Step 8 (Figma: Desktop-15): ML ecosystem prediction with bar chart
 - `components/activity/zhorai-character.tsx` - Animated Zhorai character component
@@ -135,14 +135,14 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
   - [x] 3.6 Write component tests for steps 1-4: test ecosystem selection flow, understanding check validation, and animal selection
   - [ ] 3.7 Create temporary test page to manually verify steps 1-4 navigation and functionality
 
-- [ ] 4.0 Build teaching phase components (Steps 5-6: Sentence collection)
-  - [ ] 4.1 Create `components/activity/sentence-input-step.tsx` - **Figma: Desktop-12** - Heading "Tell Zhorai three things about [animal]", section title "What Zhorai learned from you about [animal]:", "Press and speak to add" button (black) with add circle icon, "See Zhorai's brain" button (outlined, disabled until 3 sentences), microphone listening state with pulsing animation, sentence validation (requires subject+predicate, relates to animal), minimum 3 sentences required
-  - [ ] 4.2 Create `components/activity/sentence-list-step.tsx` - **Figma: Desktop-13** - Heading "Tell Zhorai three things about [animal]", section title "What Zhorai learned from you about [animal]:", sentence cards in rounded rectangles (first card has purple background #F4F0FF), hover state shows Edit and Delete icons, mouse pointer indicates interactivity, "Press and speak to add" button to add more, "See Zhorai's brain" button (enabled with 3+ sentences), edit modal for re-recording or typing correction, delete confirmation
-  - [ ] 4.3 Implement sentence storage in activity state with add, edit, delete, and retrieve functions
-  - [ ] 4.4 Add sentence validation on submission (check quality, relevance to animal, duplicate detection)
-  - [ ] 4.5 Create empty state UI for when no sentences have been added yet
-  - [ ] 4.6 Write component tests for sentence input and list steps: test add/edit/delete functionality, validation logic
-  - [ ] 4.7 Create temporary test page to verify sentence collection flow works end-to-end
+- [x] 4.0 Build teaching phase components (Steps 5-6: Sentence collection)
+  - [x] 4.1 Create `components/activity/sentence-input-step.tsx` - **Figma: Desktop-12** - Heading "Tell Zhorai three things about [animal]", section title "What Zhorai learned from you about [animal]:", "Press and speak to add" button (black) with add circle icon, "See Zhorai's brain" button (outlined, disabled until 3 sentences), microphone listening state with pulsing animation, sentence validation (requires subject+predicate, relates to animal), minimum 3 sentences required
+  - [x] 4.2 Create `components/activity/sentence-list-step.tsx` - **Figma: Desktop-13** - Heading "Tell Zhorai three things about [animal]", section title "What Zhorai learned from you about [animal]:", sentence cards in rounded rectangles (first card has purple background #F4F0FF), hover state shows Edit and Delete icons, mouse pointer indicates interactivity, "Press and speak to add" button to add more, "See Zhorai's brain" button (enabled with 3+ sentences), edit modal for re-recording or typing correction, delete confirmation
+  - [x] 4.3 Implement sentence storage in activity state with add, edit, delete, and retrieve functions
+  - [x] 4.4 Add sentence validation on submission (check quality, relevance to animal, duplicate detection)
+  - [x] 4.5 Create empty state UI for when no sentences have been added yet
+  - [x] 4.6 Write component tests for sentence input and list steps: test add/edit/delete functionality, validation logic
+  - [x] 4.7 Create temporary test page to verify sentence collection flow works end-to-end
 
 - [ ] 5.0 Implement ML models and visualizations (Steps 7-8)
   - [ ] 5.1 Create `lib/ml/concept-extractor.ts` - ML logic to extract key nouns, verbs, and relationships from user sentences (use simple keyword extraction, regex patterns, or lightweight NLP library), extract concepts like "nectar", "queen", "eggs", "hives", "trees" from sentences about animals

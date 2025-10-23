@@ -88,6 +88,7 @@ export function EcosystemSelectionStep({
             }}
             onStop={() => setIsRecording(false)}
             variant="default"
+            buttonClassName="px-6 py-3 h-12 rounded-xl"
           />
           
           {/* Selection feedback - positioned close to button */}

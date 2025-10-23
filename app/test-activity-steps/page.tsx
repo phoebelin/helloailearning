@@ -12,6 +12,7 @@ import { EcosystemSelectionStep } from '@/components/activity/ecosystem-selectio
 import { KnowledgeVisualizationStep } from '@/components/activity/knowledge-visualization-step';
 import { UnderstandingCheckStep } from '@/components/activity/understanding-check-step';
 import { AnimalSelectionStep } from '@/components/activity/animal-selection-step';
+import { SentenceInputStep } from '@/components/activity/sentence-input-step';
 import { ActivityProvider } from '@/lib/context/activity-context';
 import { EcosystemType } from '@/types/activity';
 
@@ -21,12 +22,14 @@ function DebugInfo({
   currentStep, 
   maxStepReached,
   selectedEcosystem, 
-  selectedAnimal 
+  selectedAnimal,
+  sentences
 }: { 
   currentStep: number; 
   maxStepReached: number;
   selectedEcosystem: EcosystemType | null; 
   selectedAnimal: AnimalType | null;
+  sentences: string[];
 }) {
   const [mounted, setMounted] = React.useState(false);
 
@@ -41,9 +44,10 @@ function DebugInfo({
         <div className="mt-2 text-xs space-y-1">
           <p><strong>Current Step:</strong> {currentStep + 1}</p>
           <p><strong>Max Step Reached:</strong> {maxStepReached + 1}</p>
-          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 5</p>
+          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 6</p>
           <p><strong>Ecosystem:</strong> {selectedEcosystem || 'None'}</p>
           <p><strong>Animal:</strong> {selectedAnimal || 'None'}</p>
+          <p><strong>Sentences:</strong> {sentences?.length || 0}</p>
           {mounted && (
             <>
               <p className="mt-2"><strong>Browser Support:</strong></p>
@@ -63,6 +67,7 @@ export default function TestActivityStepsPage() {
   const [maxStepReached, setMaxStepReached] = useState(0);
   const [selectedEcosystem, setSelectedEcosystem] = useState<EcosystemType | null>(null);
   const [selectedAnimal, setSelectedAnimal] = useState<AnimalType | null>(null);
+  const [sentences, setSentences] = useState<string[]>([]);
 
   // Refs for each step to enable auto-scrolling
   const step0Ref = useRef<HTMLDivElement>(null);
@@ -70,8 +75,9 @@ export default function TestActivityStepsPage() {
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
   const step4Ref = useRef<HTMLDivElement>(null);
+  const step5Ref = useRef<HTMLDivElement>(null);
 
-  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref];
+  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref, step5Ref];
 
   // Auto-scroll to the current step when it changes
   useEffect(() => {
@@ -86,7 +92,7 @@ export default function TestActivityStepsPage() {
   }, [currentStep]);
 
   const handleNext = (stepIndex: number) => {
-    if (stepIndex < 4) {
+    if (stepIndex < 5) {
       const nextStep = stepIndex + 1;
       setCurrentStep(nextStep);
       setMaxStepReached(prev => Math.max(prev, nextStep));
@@ -104,7 +110,7 @@ export default function TestActivityStepsPage() {
               
               {/* Progress indicators */}
               <div className="flex gap-2">
-                {[0, 1, 2, 3, 4].map((step) => (
+                {[0, 1, 2, 3, 4, 5].map((step) => (
                   <div
                     key={step}
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
@@ -168,12 +174,24 @@ export default function TestActivityStepsPage() {
         {maxStepReached >= 4 && (
           <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
             <AnimalSelectionStep
+              onNext={() => handleNext(4)}
+              onAnimalSelected={(animal) => setSelectedAnimal(animal)}
+              selectedAnimal={selectedAnimal}
+            />
+          </div>
+        )}
+
+        {/* Step 5: Sentence Input */}
+        {maxStepReached >= 5 && selectedAnimal && (
+          <div ref={step5Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+            <SentenceInputStep
+              animal={selectedAnimal}
+              sentences={sentences}
+              onSentencesUpdate={setSentences}
               onNext={() => {
                 // Loop back or show completion
                 alert('Activity complete! In production, this would continue to the next steps.');
               }}
-              onAnimalSelected={(animal) => setSelectedAnimal(animal)}
-              selectedAnimal={selectedAnimal}
             />
           </div>
         )}
@@ -185,6 +203,7 @@ export default function TestActivityStepsPage() {
           maxStepReached={maxStepReached}
           selectedEcosystem={selectedEcosystem}
           selectedAnimal={selectedAnimal}
+          sentences={sentences}
         />
       </div>
     </ActivityProvider>

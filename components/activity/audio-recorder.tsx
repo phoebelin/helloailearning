@@ -40,8 +40,12 @@ export interface AudioRecorderProps {
   size?: 'default' | 'sm' | 'lg';
   /** Additional className for container */
   className?: string;
+  /** Additional className for button */
+  buttonClassName?: string;
   /** Whether to auto-stop after receiving final result */
   autoStop?: boolean;
+  /** Whether the button is disabled */
+  disabled?: boolean;
 }
 
 /**
@@ -75,7 +79,9 @@ export function AudioRecorder({
   variant = 'default',
   size = 'default',
   className,
+  buttonClassName,
   autoStop = false,
+  disabled = false,
 }: AudioRecorderProps) {
   const {
     isListening,
@@ -182,7 +188,7 @@ export function AudioRecorder({
           variant={variant}
           size={size}
           onClick={handleToggleRecording}
-          className="relative transition-all duration-200"
+          className={cn("relative transition-all duration-200", buttonClassName)}
           aria-label={isListening ? 'Stop recording' : 'Start recording'}
         >
           {/* Pulsing ring animation when listening */}
@@ -328,6 +334,7 @@ export function AudioRecorderCompact({
         variant={props.variant ?? 'outline'}
         size="icon"
         onClick={handleToggleRecording}
+        disabled={disabled}
         className={cn(
           'relative',
           error && 'border-destructive'

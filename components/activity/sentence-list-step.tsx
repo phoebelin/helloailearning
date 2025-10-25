@@ -52,7 +52,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
 
     const validation = validateSentence(editText, animal);
     if (!validation.isValid) {
-      setValidationError(validation.error || 'Please provide a valid sentence about the animal.');
+      setValidationError(validation.errors[0] || 'Please provide a valid sentence about the animal.');
       return;
     }
 
@@ -175,7 +175,7 @@ export function SentenceListStep({
       const validation = validateSentence(currentTranscript, animal);
       
       if (!validation.isValid) {
-        setValidationError(validation.error || 'Please provide a valid sentence about the animal.');
+        setValidationError(validation.errors[0] || 'Please provide a valid sentence about the animal.');
         return;
       }
 
@@ -291,6 +291,7 @@ export function SentenceListStep({
               ))
             )}
           </div>
+          
         </div>
 
         {/* Current transcript display */}

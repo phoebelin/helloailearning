@@ -14,7 +14,8 @@ import { UnderstandingCheckStep } from '@/components/activity/understanding-chec
 import { AnimalSelectionStep } from '@/components/activity/animal-selection-step';
 import { SentenceInputStep } from '@/components/activity/sentence-input-step';
 import { ActivityProvider } from '@/lib/context/activity-context';
-import { EcosystemType } from '@/types/activity';
+import { EcosystemType, Sentence } from '@/types/activity';
+import { exposeDebugFunctions, testConceptExtraction, testSentimentExamples, testMindmapGeneration } from '@/lib/utils/debug-sentences';
 
 type AnimalType = 'bees' | 'dolphins' | 'monkeys' | 'zebras';
 
@@ -29,12 +30,14 @@ function DebugInfo({
   maxStepReached: number;
   selectedEcosystem: EcosystemType | null; 
   selectedAnimal: AnimalType | null;
-  sentences: string[];
+  sentences: Sentence[];
 }) {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
+    // Expose debug functions to window for console access
+    exposeDebugFunctions();
   }, []);
 
   return (
@@ -48,6 +51,105 @@ function DebugInfo({
           <p><strong>Ecosystem:</strong> {selectedEcosystem || 'None'}</p>
           <p><strong>Animal:</strong> {selectedAnimal || 'None'}</p>
           <p><strong>Sentences:</strong> {sentences?.length || 0}</p>
+          {sentences.length > 0 && (
+            <div className="mt-2">
+              <p><strong>Sentence Details:</strong></p>
+              <ul className="ml-2 text-xs max-h-32 overflow-y-auto">
+                {sentences.map((sentence, index) => (
+                  <li key={sentence.id} className="mb-1">
+                    {index + 1}. {sentence.sentence}
+                    {sentence.concepts.length > 0 && (
+                      <span className="text-gray-500">
+                        {' '}({sentence.concepts.length} concepts)
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              
+              {/* Detailed Concepts Display */}
+              <div className="mt-3">
+                <p><strong>Detailed Concepts:</strong></p>
+                <div className="ml-2 text-xs max-h-40 overflow-y-auto space-y-2">
+                  {sentences.map((sentence, index) => (
+                    <div key={sentence.id} className="border-l-2 border-gray-200 pl-2">
+                      <p className="font-medium text-gray-700">Sentence {index + 1}:</p>
+                      <p className="text-gray-600 mb-1">&quot;{sentence.sentence}&quot;</p>
+                      <p className="text-gray-500 mb-1">ID: {sentence.id}</p>
+                      <p className="text-gray-500 mb-1">Animal: {sentence.animalId}</p>
+                      <p className="text-gray-500 mb-1">Timestamp: {new Date(sentence.timestamp).toLocaleString()}</p>
+                      {sentence.concepts.length > 0 ? (
+                        <div>
+                          <p className="text-gray-500 mb-1">Concepts ({sentence.concepts.length}):</p>
+                          <ul className="ml-2 space-y-1">
+                            {sentence.concepts.map((concept, conceptIndex) => (
+                              <li key={conceptIndex} className="text-gray-600">
+                                • <span className="font-medium">{concept.word}</span> 
+                                <span className="text-gray-400">({concept.type}, {concept.abundance}, {concept.color})</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <p className="text-gray-400 italic">No concepts extracted</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Console Log Button */}
+              <div className="mt-3 flex gap-2 flex-wrap">
+                <button
+                  onClick={() => {
+                    console.log('=== CURRENT STORED SENTENCES AND CONCEPTS ===');
+                    console.log('Total sentences:', sentences.length);
+                    sentences.forEach((sentence, index) => {
+                      console.log(`\nSentence ${index + 1}:`, {
+                        id: sentence.id,
+                        sentence: sentence.sentence,
+                        animalId: sentence.animalId,
+                        timestamp: new Date(sentence.timestamp).toLocaleString(),
+                        concepts: sentence.concepts,
+                        conceptCount: sentence.concepts.length
+                      });
+                    });
+                    console.log('=== END SENTENCES DATA ===');
+                  }}
+                  className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                >
+                  Log to Console
+                </button>
+                
+                <button
+                  onClick={() => {
+                    testConceptExtraction("Bees live in trees and make honey", "bees");
+                  }}
+                  className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-colors"
+                >
+                  Test Extraction
+                </button>
+                
+                <button
+                  onClick={() => {
+                    testSentimentExamples();
+                  }}
+                  className="px-3 py-1 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 transition-colors"
+                >
+                  Test Sentiment
+                </button>
+                
+                <button
+                  onClick={() => {
+                    testMindmapGeneration();
+                  }}
+                  className="px-3 py-1 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600 transition-colors"
+                >
+                  Test Mindmap
+                </button>
+              </div>
+            </div>
+          )}
           {mounted && (
             <>
               <p className="mt-2"><strong>Browser Support:</strong></p>
@@ -67,7 +169,7 @@ export default function TestActivityStepsPage() {
   const [maxStepReached, setMaxStepReached] = useState(0);
   const [selectedEcosystem, setSelectedEcosystem] = useState<EcosystemType | null>(null);
   const [selectedAnimal, setSelectedAnimal] = useState<AnimalType | null>(null);
-  const [sentences, setSentences] = useState<string[]>([]);
+  const [sentences, setSentences] = useState<Sentence[]>([]);
 
   // Refs for each step to enable auto-scrolling
   const step0Ref = useRef<HTMLDivElement>(null);
@@ -89,7 +191,7 @@ export default function TestActivityStepsPage() {
         });
       }, 100); // Small delay to let the step render
     }
-  }, [currentStep]);
+  }, [currentStep, stepRefs]);
 
   const handleNext = (stepIndex: number) => {
     if (stepIndex < 5) {
@@ -189,8 +291,7 @@ export default function TestActivityStepsPage() {
               sentences={sentences}
               onSentencesUpdate={setSentences}
               onNext={() => {
-                // Loop back or show completion
-                alert('Activity complete! In production, this would continue to the next steps.');
+                alert('Activity complete! In production, this would continue to the prediction step.');
               }}
             />
           </div>

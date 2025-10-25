@@ -6,20 +6,24 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { StepComponentProps, AnimalType } from '@/types/activity';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { StepComponentProps, AnimalType, MindmapNode, NodeColor, Sentence, ConceptData } from '@/types/activity';
 import { Button } from '@/components/ui/button';
 import { AudioRecorder } from './audio-recorder';
+import { MindmapVisualization, MindmapVisualizationMobile } from './mindmap-visualization';
 import { cn } from '@/lib/utils';
 import { validateSentence } from '@/lib/utils/validation';
+import { extractConceptsFromSentenceEcosystemFormat } from '@/lib/ml/concept-extractor';
+import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
+import Image from 'next/image';
 
 export interface SentenceInputStepProps extends StepComponentProps {
   /** Selected animal to teach about */
   animal: AnimalType;
   /** Current sentences about the animal */
-  sentences: string[];
+  sentences: Sentence[];
   /** Callback when sentences are updated */
-  onSentencesUpdate: (sentences: string[]) => void;
+  onSentencesUpdate: (sentences: Sentence[]) => void;
 }
 
 const animalNames: Record<AnimalType, string> = {
@@ -55,7 +59,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
     }
     const validation = validateSentence(editedSentence, animal);
     if (!validation.isValid) {
-      setEditError(validation.error || 'Please provide a valid sentence about the animal.');
+      setEditError(validation.errors[0] || 'Please provide a valid sentence about the animal.');
       return;
     }
     onSave(editedSentence.trim());
@@ -117,16 +121,164 @@ export function SentenceInputStep({
   sentences,
   onSentencesUpdate,
   onNext,
-  onPrevious,
 }: SentenceInputStepProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMindmap, setShowMindmap] = useState(false);
+  const [hasHoveredNodes, setHasHoveredNodes] = useState(false);
+  const [showContinueButton, setShowContinueButton] = useState(false);
 
   const animalName = animalNames[animal];
   const canProceed = sentences.length >= 3;
+
+  // TTS hook for Zhorai's speech - matching animal-selection-step implementation
+  const { speak, isSpeaking } = useEnhancedTextToSpeech({
+    rate: 0.9, // Slightly slower for child comprehension
+    pitch: 1.1, // Slightly higher pitch for friendly tone
+    useGoogleCloud: true, // Prefer Google Cloud TTS for better Chrome compatibility
+  });
+
+  // Auto-hide mindmap when there are fewer than 3 sentences
+  useEffect(() => {
+    if (sentences.length < 3) {
+      setShowMindmap(false);
+      setHasHoveredNodes(false); // Reset hover state when mindmap is hidden
+      setShowContinueButton(false); // Reset continue button state
+    }
+  }, [sentences.length]);
+
+  // Auto-scroll to mindmap when it's shown
+  useEffect(() => {
+    if (showMindmap) {
+      // Add a small delay to ensure the mindmap is rendered
+      setTimeout(() => {
+        const mindmapElement = document.querySelector('[data-mindmap-section]');
+        if (mindmapElement) {
+          mindmapElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }
+      }, 100);
+    }
+  }, [showMindmap]);
+
+
+  // Handle node hover events
+  const handleNodeHover = useCallback((node: any) => {
+    if (node && !hasHoveredNodes) {
+      setHasHoveredNodes(true);
+      
+      // Add delay before showing continue button after hovering
+      setTimeout(() => {
+        setShowContinueButton(true);
+      }, 2000); // 2 second delay
+    }
+  }, [hasHoveredNodes]);
+
+  // Generate mindmap data from sentences using sentiment-based concept extraction
+  const mindmapData = useMemo(() => {
+    if (sentences.length === 0) return null;
+
+    try {
+      // Extract concepts from all sentences using sentiment-based extraction
+      const allConcepts: ConceptData[] = [];
+      const conceptCounts: Record<string, { count: number; sentences: string[] }> = {};
+      
+      sentences.forEach(sentenceObj => {
+        // Use the sentiment-based concept extraction
+        const concepts = extractConceptsFromSentenceEcosystemFormat(sentenceObj.sentence, animal);
+        
+        concepts.forEach(concept => {
+          const key = concept.word.toLowerCase();
+          if (!conceptCounts[key]) {
+            conceptCounts[key] = { count: 0, sentences: [] };
+          }
+          conceptCounts[key].count++;
+          if (!conceptCounts[key].sentences.includes(sentenceObj.sentence)) {
+            conceptCounts[key].sentences.push(sentenceObj.sentence);
+          }
+        });
+        
+        allConcepts.push(...concepts);
+      });
+
+      // Create nodes from extracted concepts
+      const nodes: MindmapNode[] = [];
+      let nodeId = 0;
+      
+      // Add center node (animal) - this should be prominent and purple
+           nodes.push({
+             id: `center-${animal}`,
+             label: animalName,
+             type: 'concept',
+             color: 'purple', // Only the center node (animal name) is purple
+             size: 120, // Much larger center node
+             sourceSentences: sentences.map(s => s.sentence),
+             connections: [],
+           });
+
+      // Add concept nodes based on sentiment-based extraction
+      Object.entries(conceptCounts)
+        .filter(([word, data]) => data.count >= 1 && word !== animalName.toLowerCase())
+        .sort(([,a], [,b]) => b.count - a.count)
+        .slice(0, 8) // Limit to 8 nodes
+        .forEach(([word, data]) => {
+          // Find the concept data to get sentiment-based abundance and color
+          const conceptData = allConcepts.find(c => c.word.toLowerCase() === word);
+          const abundance = conceptData?.abundance || 'high';
+          // Child nodes only get blue or orange - no purple
+          // Blue for positive/neutral relationships, orange only for negative
+          const color = abundance === 'low' ? 'orange' : 'blue';
+          
+          // Size based on frequency but color based on sentiment
+          const size = Math.min(120, Math.max(100, data.count * 15));
+          
+          nodes.push({
+            id: `node-${nodeId++}`,
+            label: word,
+            type: 'concept',
+            color: color,
+            size: size,
+            sourceSentences: data.sentences,
+            connections: [`center-${animal}`],
+          });
+        });
+
+      // Create edges (connections from center to other nodes)
+      const edges = nodes
+        .filter(node => node.id !== `center-${animal}`)
+        .map(node => ({
+          id: `edge-${node.id}`,
+          source: `center-${animal}`,
+          target: node.id,
+        }));
+
+
+      return {
+        nodes,
+        edges,
+      };
+    } catch (error) {
+      console.error('Error generating mindmap:', error);
+      return null;
+    }
+  }, [sentences, animal, animalName]);
+
+  // Check if mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleTranscriptChange = async (transcript: string) => {
     setCurrentTranscript(transcript);
@@ -148,13 +300,13 @@ export function SentenceInputStep({
       const validation = validateSentence(currentTranscript, animal);
       
       if (!validation.isValid) {
-        setValidationError(validation.error || 'Please provide a valid sentence about the animal.');
+        setValidationError(validation.errors[0] || 'Please provide a valid sentence about the animal.');
         return;
       }
 
       // Check for duplicates
       const isDuplicate = sentences.some(sentence => 
-        sentence.toLowerCase().trim() === currentTranscript.toLowerCase().trim()
+        sentence.sentence.toLowerCase().trim() === currentTranscript.toLowerCase().trim()
       );
       
       if (isDuplicate) {
@@ -162,8 +314,20 @@ export function SentenceInputStep({
         return;
       }
 
+      // Extract concepts from the sentence
+      const concepts = extractConceptsFromSentenceEcosystemFormat(currentTranscript.trim(), animal);
+
+      // Create new sentence object
+      const newSentence: Sentence = {
+        id: `sentence-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        sentence: currentTranscript.trim(),
+        timestamp: Date.now(),
+        animalId: animal,
+        concepts,
+      };
+
       // Add the sentence to the list
-      const newSentences = [...sentences, currentTranscript.trim()];
+      const newSentences = [...sentences, newSentence];
       onSentencesUpdate(newSentences);
       
       // Clear the current transcript
@@ -175,8 +339,18 @@ export function SentenceInputStep({
 
 
   const handleEditSentence = (index: number, newSentence: string) => {
+    const sentence = sentences[index];
+    const concepts = extractConceptsFromSentenceEcosystemFormat(newSentence, animal);
+    
+    const updatedSentence: Sentence = {
+      ...sentence,
+      sentence: newSentence,
+      timestamp: Date.now(),
+      concepts,
+    };
+    
     const newSentences = [...sentences];
-    newSentences[index] = newSentence;
+    newSentences[index] = updatedSentence;
     onSentencesUpdate(newSentences);
     setEditingIndex(null);
   };
@@ -221,7 +395,7 @@ export function SentenceInputStep({
                     title="Click to edit sentence"
                   >
                     <p className="text-base font-semibold leading-[32px] text-black underline decoration-dotted decoration-gray-400 underline-offset-4">
-                      {sentence}
+                      {sentence.sentence}
                     </p>
                   </div>
                   
@@ -297,7 +471,24 @@ export function SentenceInputStep({
 
           <Button
             type="button"
-            onClick={onNext}
+            onClick={() => {
+              const newShowMindmap = !showMindmap;
+              setShowMindmap(newShowMindmap);
+              
+              // Trigger speech immediately when showing mindmap
+              if (newShowMindmap && sentences.length >= 3) {
+                const speechText = `Here's a visualization of my brain about ${animalName}!`;
+                setTimeout(() => {
+                  speak(speechText, {
+                    onError: (error) => {
+                      if (error !== 'canceled') {
+                        console.warn('Speech synthesis error:', error);
+                      }
+                    }
+                  });
+                }, 300);
+              }
+            }}
             disabled={!canProceed}
             className={cn(
               "rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12",
@@ -306,16 +497,65 @@ export function SentenceInputStep({
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             )}
           >
-            See Zhorai's brain
+            {canProceed 
+              ? (showMindmap ? "Hide Zhorai's brain" : "See Zhorai's brain")
+              : "Show Zhorai's brain"
+            }
           </Button>
         </div>
       </div>
+
+      {/* Mindmap section - shows below the main container when toggle is active */}
+      {showMindmap && sentences.length > 0 && mindmapData && mindmapData.nodes.length > 0 && (
+        <div className="mt-6" data-mindmap-section>
+          <h3 className="text-base font-normal leading-[32px] text-black mb-4">
+            Here&apos;s a visualization of my brain about {animalName}!
+          </h3>
+          
+          {/* Mindmap and Zhorai character container */}
+          <div className="relative flex items-start gap-6">
+            {/* Mindmap visualization */}
+            <div className="relative w-full h-96 bg-white rounded-lg border border-gray-200 p-4 flex-1">
+              {isMobile ? (
+                <MindmapVisualizationMobile
+                  data={mindmapData}
+                  onNodeClick={(node) => console.log('Clicked node:', node)}
+                  onNodeHover={handleNodeHover}
+                />
+              ) : (
+                <MindmapVisualization
+                  data={mindmapData}
+                  width={500}
+                  height={300}
+                  showTooltips={true}
+                  animated={false}
+                  interactive={true}
+                  onNodeClick={(node) => console.log('Clicked node:', node)}
+                  onNodeHover={handleNodeHover}
+                />
+              )}
+            </div>
+
+            {/* Zhorai character */}
+            <div className="flex-shrink-0 w-[139px] h-[151px] relative">
+              <Image
+                src="/images/zhorai.png"
+                alt="Zhorai"
+                width={139}
+                height={151}
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       <EditModal
         isOpen={editingIndex !== null}
         onClose={() => setEditingIndex(null)}
-        sentence={editingIndex !== null ? sentences[editingIndex] : ''}
+        sentence={editingIndex !== null ? sentences[editingIndex].sentence : ''}
         onSave={(newSentence) => editingIndex !== null && handleEditSentence(editingIndex, newSentence)}
         animal={animal}
       />
@@ -340,6 +580,19 @@ export function SentenceInputStep({
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Bottom navigation - only show continue button after delay following hover */}
+      {showContinueButton && (
+        <div className="flex justify-start items-center mt-8">
+          <Button
+            onClick={onNext}
+            disabled={!canProceed}
+            className="bg-black text-white hover:bg-gray-800 disabled:opacity-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
+          >
+            Continue
+          </Button>
         </div>
       )}
     </div>

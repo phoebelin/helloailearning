@@ -27,10 +27,10 @@ export interface Animal {
 // Sentence and learning types
 export interface Sentence {
   id: string;
-  text: string;
+  sentence: string;
   timestamp: number;
   animalId: AnimalType;
-  extractedConcepts?: string[];
+  concepts: ConceptData[];
   confidence?: number;
 }
 

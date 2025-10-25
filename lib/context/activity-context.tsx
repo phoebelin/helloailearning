@@ -14,6 +14,7 @@ import {
   Sentence,
   MindmapData,
   PredictionResult,
+  ConceptData,
 } from '@/types/activity';
 
 interface ActivityContextType {
@@ -37,9 +38,10 @@ interface ActivityContextType {
   setCheckAnswers: (answers: string[]) => void;
   
   // Sentence management (Steps 5-6)
-  addSentence: (text: string) => void;
-  editSentence: (id: string, text: string) => void;
+  addSentence: (sentence: string) => void;
+  editSentence: (id: string, sentence: string) => void;
   deleteSentence: (id: string) => void;
+  updateSentenceConcepts: (id: string, concepts: ConceptData[]) => void;
   getSentenceCount: () => number;
   
   // Mindmap (Step 7)
@@ -190,12 +192,13 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
   }, []);
 
   // Sentence management
-  const addSentence = useCallback((text: string) => {
+  const addSentence = useCallback((sentence: string) => {
     const newSentence: Sentence = {
       id: `sentence-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      text,
+      sentence,
       timestamp: Date.now(),
       animalId: state.selectedAnimal!,
+      concepts: [], // Will be populated by concept extraction
     };
 
     setState(prev => ({
@@ -204,11 +207,11 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
     }));
   }, [state.selectedAnimal]);
 
-  const editSentence = useCallback((id: string, text: string) => {
+  const editSentence = useCallback((id: string, sentence: string) => {
     setState(prev => ({
       ...prev,
-      userSentences: prev.userSentences.map(sentence =>
-        sentence.id === id ? { ...sentence, text, timestamp: Date.now() } : sentence
+      userSentences: prev.userSentences.map(s =>
+        s.id === id ? { ...s, sentence, timestamp: Date.now() } : s
       ),
     }));
   }, []);
@@ -223,6 +226,15 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
   const getSentenceCount = useCallback((): number => {
     return state.userSentences.length;
   }, [state.userSentences.length]);
+
+  const updateSentenceConcepts = useCallback((id: string, concepts: ConceptData[]) => {
+    setState(prev => ({
+      ...prev,
+      userSentences: prev.userSentences.map(s =>
+        s.id === id ? { ...s, concepts } : s
+      ),
+    }));
+  }, []);
 
   // Mindmap
   const setMindmapData = useCallback((data: MindmapData) => {
@@ -286,6 +298,7 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
     addSentence,
     editSentence,
     deleteSentence,
+    updateSentenceConcepts,
     getSentenceCount,
     setMindmapData,
     setPredictionResult,

@@ -13,6 +13,7 @@ import { KnowledgeVisualizationStep } from '@/components/activity/knowledge-visu
 import { UnderstandingCheckStep } from '@/components/activity/understanding-check-step';
 import { AnimalSelectionStep } from '@/components/activity/animal-selection-step';
 import { SentenceInputStep } from '@/components/activity/sentence-input-step';
+import { PredictionStep } from '@/components/activity/prediction-step';
 import { ActivityProvider } from '@/lib/context/activity-context';
 import { EcosystemType, Sentence } from '@/types/activity';
 import { exposeDebugFunctions, testConceptExtraction, testSentimentExamples, testMindmapGeneration } from '@/lib/utils/debug-sentences';
@@ -47,7 +48,7 @@ function DebugInfo({
         <div className="mt-2 text-xs space-y-1">
           <p><strong>Current Step:</strong> {currentStep + 1}</p>
           <p><strong>Max Step Reached:</strong> {maxStepReached + 1}</p>
-          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 6</p>
+          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 7</p>
           <p><strong>Ecosystem:</strong> {selectedEcosystem || 'None'}</p>
           <p><strong>Animal:</strong> {selectedAnimal || 'None'}</p>
           <p><strong>Sentences:</strong> {sentences?.length || 0}</p>
@@ -178,8 +179,9 @@ export default function TestActivityStepsPage() {
   const step3Ref = useRef<HTMLDivElement>(null);
   const step4Ref = useRef<HTMLDivElement>(null);
   const step5Ref = useRef<HTMLDivElement>(null);
+  const step6Ref = useRef<HTMLDivElement>(null);
 
-  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref, step5Ref];
+  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref, step5Ref, step6Ref];
 
   // Auto-scroll to the current step when it changes
   useEffect(() => {
@@ -194,7 +196,7 @@ export default function TestActivityStepsPage() {
   }, [currentStep, stepRefs]);
 
   const handleNext = (stepIndex: number) => {
-    if (stepIndex < 5) {
+    if (stepIndex < 6) {
       const nextStep = stepIndex + 1;
       setCurrentStep(nextStep);
       setMaxStepReached(prev => Math.max(prev, nextStep));
@@ -212,7 +214,7 @@ export default function TestActivityStepsPage() {
               
               {/* Progress indicators */}
               <div className="flex gap-2">
-                {[0, 1, 2, 3, 4, 5].map((step) => (
+                {[0, 1, 2, 3, 4, 5, 6].map((step) => (
                   <div
                     key={step}
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
@@ -290,9 +292,21 @@ export default function TestActivityStepsPage() {
               animal={selectedAnimal}
               sentences={sentences}
               onSentencesUpdate={setSentences}
+              onNext={() => handleNext(5)}
+            />
+          </div>
+        )}
+
+        {/* Step 6: Prediction */}
+        {maxStepReached >= 6 && selectedAnimal && (
+          <div ref={step6Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+            <PredictionStep
+              selectedAnimal={selectedAnimal}
+              userSentences={sentences.map(s => s.sentence)}
               onNext={() => {
-                alert('Activity complete! In production, this would continue to the prediction step.');
+                alert('Activity complete! All steps finished.');
               }}
+              onPrevious={() => setCurrentStep(5)}
             />
           </div>
         )}

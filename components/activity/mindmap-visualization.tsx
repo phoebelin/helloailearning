@@ -146,7 +146,7 @@ function getNodeColorClasses(color: NodeColor): string {
     case 'orange':
       return 'bg-orange-500 text-white shadow-orange-200';
     case 'purple':
-      return 'bg-purple-500 text-white shadow-purple-200';
+      return 'bg-[#967fd8] text-white shadow-purple-200';
     case 'neutral':
     default:
       return 'bg-gray-500 text-white shadow-gray-200';
@@ -268,7 +268,7 @@ export function MindmapVisualization({
         y1={sourcePos.y}
         x2={targetPos.x}
         y2={targetPos.y}
-        stroke="#9333ea"
+        stroke="#967fd8"
         strokeWidth="4"
         strokeDasharray="10,5"
         strokeOpacity="1"
@@ -412,7 +412,7 @@ export function MindmapVisualizationMobile({
               'p-4 rounded-lg text-center transition-all duration-200',
               'hover:scale-105 active:scale-95',
               getNodeColorClasses(node.color),
-              selectedNode?.id === node.id && 'ring-2 ring-purple-300 ring-offset-2'
+              selectedNode?.id === node.id && 'ring-2 ring-[#967fd8]/50 ring-offset-2'
             )}
           >
             <div className="font-medium text-sm">{node.label}</div>
@@ -427,10 +427,10 @@ export function MindmapVisualizationMobile({
 
       {/* Selected node details */}
       {selectedNode && (
-        <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-          <h3 className="font-semibold text-purple-900 mb-2">{selectedNode.label}</h3>
+        <div className="p-4 bg-[#967fd8]/10 border border-[#967fd8]/30 rounded-lg">
+          <h3 className="font-semibold text-[#967fd8] mb-2">{selectedNode.label}</h3>
           {selectedNode.sourceSentences.length > 0 && (
-            <div className="text-sm text-purple-700">
+            <div className="text-sm text-[#967fd8]/80">
               <p className="font-medium mb-1">From these sentences:</p>
               <ul className="list-disc list-inside space-y-1">
                 {selectedNode.sourceSentences.map((sentence, index) => (

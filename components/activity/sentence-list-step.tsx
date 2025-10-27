@@ -106,7 +106,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
           {currentTranscript && (
             <Button
               onClick={handleUseTranscript}
-              className="mt-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg px-4 py-2 text-sm"
+              className="mt-2 bg-[#967fd8] text-white hover:bg-[#967fd8]/80 rounded-lg px-4 py-2 text-sm"
             >
               Use this recording
             </Button>

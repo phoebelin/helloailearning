@@ -47,6 +47,7 @@ export function ProbabilityChart({
 }: ProbabilityChartProps) {
   const [animationPhase, setAnimationPhase] = useState(0);
   const [hoveredEcosystem, setHoveredEcosystem] = useState<EcosystemType | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Animation effect
@@ -80,13 +81,23 @@ export function ProbabilityChart({
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
   const barWidth = chartWidth / data.ecosystems.length;
-  const maxHeight = chartHeight * 0.8;
+  const maxHeight = chartHeight;
 
   // Sort ecosystems by probability for better visual hierarchy
   const sortedEcosystems = [...data.ecosystems].sort((a, b) => b.probability - a.probability);
 
-  const handleBarHover = (ecosystem: EcosystemType, prediction: EcosystemPrediction) => {
+  const handleBarHover = (ecosystem: EcosystemType, prediction: EcosystemPrediction, event: React.MouseEvent) => {
     setHoveredEcosystem(ecosystem);
+    
+    // Calculate tooltip position relative to the container
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (rect) {
+      setTooltipPosition({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top - 10 // Offset above cursor
+      });
+    }
+    
     onBarHover?.(ecosystem, prediction);
   };
 
@@ -96,10 +107,10 @@ export function ProbabilityChart({
   };
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full relative', className)}>
       <svg
         ref={svgRef}
-        width={width}
+        width="100%"
         height={height}
         className="overflow-visible"
         viewBox={`0 0 ${width} ${height}`}
@@ -114,6 +125,17 @@ export function ProbabilityChart({
           stroke="#E5E7EB"
           strokeWidth="1"
         />
+
+        {/* Y-axis label */}
+        <text
+          x={margin.left - 50}
+          y={margin.top + chartHeight / 2}
+          textAnchor="middle"
+          className="text-sm font-semibold fill-gray-600"
+          transform={`rotate(-90, ${margin.left - 50}, ${margin.top + chartHeight / 2})`}
+        >
+          Confidence Level
+        </text>
 
         {/* Y-axis grid lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((value) => {
@@ -161,8 +183,8 @@ export function ProbabilityChart({
                 width={actualBarWidth}
                 height={barHeight}
                 fill={config.color}
-                stroke={isTopPrediction ? '#967FD8' : config.color}
-                strokeWidth={isTopPrediction ? '3' : '1'}
+                stroke={config.color}
+                strokeWidth="1"
                 rx="4"
                 ry="4"
                 className={cn(
@@ -170,7 +192,7 @@ export function ProbabilityChart({
                   isHovered && 'opacity-80',
                   isTopPrediction && 'drop-shadow-lg'
                 )}
-                onMouseEnter={() => handleBarHover(ecosystem, prediction)}
+                onMouseEnter={(e) => handleBarHover(ecosystem, prediction, e)}
                 onMouseLeave={handleBarLeave}
                 style={{
                   filter: isHovered ? 'brightness(1.1)' : 'none',
@@ -184,7 +206,7 @@ export function ProbabilityChart({
                 textAnchor="middle"
                 className={cn(
                   'text-sm font-semibold transition-colors duration-200',
-                  isHovered ? 'fill-purple-600' : 'fill-gray-700'
+                  isHovered ? 'fill-[#967fd8]' : 'fill-gray-700'
                 )}
               >
                 {config.name}
@@ -203,29 +225,23 @@ export function ProbabilityChart({
           );
         })}
 
-        {/* Top prediction indicator */}
-        {data.topPrediction && (
-          <g>
-            <text
-              x={width / 2}
-              y={margin.top - 5}
-              textAnchor="middle"
-              className="text-lg font-bold fill-purple-600"
-            >
-              Most Likely: {ECOSYSTEM_CONFIG[data.topPrediction].name}
-            </text>
-          </g>
-        )}
       </svg>
 
       {/* Hover tooltip */}
       {hoveredEcosystem && (
-        <div className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+        <div 
+          className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm pointer-events-none"
+          style={{
+            left: `${tooltipPosition.x}px`,
+            top: `${tooltipPosition.y}px`,
+            transform: 'translateX(-50%)'
+          }}
+        >
           <div className="text-sm font-semibold text-gray-800 mb-2">
             {ECOSYSTEM_CONFIG[hoveredEcosystem].name} Ecosystem
           </div>
           <div className="text-xs text-gray-600 mb-3">
-            Probability: {Math.round(data.ecosystems.find(e => e.ecosystem === hoveredEcosystem)?.probability || 0 * 100)}%
+            Probability: {Math.round((data.ecosystems.find(e => e.ecosystem === hoveredEcosystem)?.probability || 0) * 100)}%
           </div>
           
           {/* Influencing sentences */}

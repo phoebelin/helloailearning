@@ -30,6 +30,38 @@ export interface EmbeddingPredictionResult extends PredictionResult {
   keywordMatches: Record<EcosystemType, number>;
 }
 
+// Expanded word relationships for fuzzy matching
+const WORD_RELATIONSHIPS: Record<string, string[]> = {
+  // Rainforest related
+  'branch': ['tree', 'trees', 'forest', 'jungle', 'canopy', 'wood', 'trunk'],
+  'branches': ['tree', 'trees', 'forest', 'jungle', 'canopy', 'wood', 'trunk'],
+  'leaf': ['tree', 'trees', 'forest', 'jungle', 'green', 'foliage', 'vegetation'],
+  'leaves': ['tree', 'trees', 'forest', 'jungle', 'green', 'foliage', 'vegetation'],
+  'vine': ['tree', 'trees', 'forest', 'jungle', 'rainforest', 'tropical', 'plant'],
+  'vines': ['tree', 'trees', 'forest', 'jungle', 'rainforest', 'tropical', 'plant'],
+  'fruit': ['tree', 'trees', 'jungle', 'rainforest', 'tropical'],
+  'nuts': ['tree', 'trees', 'jungle', 'forest'],
+  // Ocean related
+  'wave': ['water', 'ocean', 'sea', 'beach', 'shore'],
+  'waves': ['water', 'ocean', 'sea', 'beach', 'shore'],
+  'shore': ['water', 'ocean', 'sea', 'beach', 'coast'],
+  'shore': ['water', 'ocean', 'sea', 'beach', 'coast'],
+  'clam': ['water', 'ocean', 'sea', 'marine', 'aquatic', 'shell'],
+  'crabs': ['water', 'ocean', 'sea', 'marine', 'beach'],
+  // Grassland related
+  'herd': ['grass', 'field', 'plains', 'savanna', 'prairie', 'meadow', 'grazing'],
+  'herds': ['grass', 'field', 'plains', 'savanna', 'prairie', 'meadow', 'grazing'],
+  'hay': ['grass', 'field', 'plains', 'meadow', 'hay'],
+  'pasture': ['grass', 'field', 'plains', 'meadow', 'grazing'],
+  // Tundra related
+  'frozen': ['cold', 'snow', 'ice', 'arctic', 'polar', 'winter'],
+  'snowing': ['cold', 'snow', 'ice', 'arctic', 'polar', 'winter'],
+  // Desert related
+  'sunny': ['hot', 'dry', 'desert', 'arid'],
+  'hot': ['desert', 'arid', 'dry', 'cactus'],
+  'sand': ['desert', 'dry', 'beach'],
+};
+
 class EcosystemPredictorDemo {
   private isInitialized = false;
 
@@ -185,9 +217,9 @@ class EcosystemPredictorDemo {
         similarities[ecosystem as EcosystemType] = similarities[ecosystem as EcosystemType] / total;
       });
     } else {
-      // Equal distribution if no matches
+      // Return zeros if no matches
       Object.keys(similarities).forEach(ecosystem => {
-        similarities[ecosystem as EcosystemType] = 0.2;
+        similarities[ecosystem as EcosystemType] = 0;
       });
     }
 
@@ -209,10 +241,32 @@ class EcosystemPredictorDemo {
 
     const lowerText = userText.toLowerCase();
     const sentiment = this.analyzeSentiment(userText);
+    
+    // Extract individual words from user text
+    const userWords = lowerText.split(/\s+/);
 
     Object.entries(ECOSYSTEM_KEYWORDS).forEach(([ecosystem, keywords]) => {
       keywords.forEach(keyword => {
+        let matched = false;
+        let matchedWord = '';
+        
+        // Check for exact keyword match
         if (lowerText.includes(keyword)) {
+          matched = true;
+          matchedWord = keyword;
+        } else {
+          // Check if any user word is related to this keyword
+          for (const userWord of userWords) {
+            const relationships = WORD_RELATIONSHIPS[userWord];
+            if (relationships && relationships.includes(keyword)) {
+              matched = true;
+              matchedWord = userWord;
+              break;
+            }
+          }
+        }
+        
+        if (matched) {
           // Check if this keyword is negated
           const isNegated = sentiment.negatedWords.some(negWord => 
             negWord.includes(keyword) || keyword.includes(negWord)
@@ -221,15 +275,15 @@ class EcosystemPredictorDemo {
           if (isNegated && sentiment.isNegative) {
             // Negative sentiment - reduce or eliminate score
             scores[ecosystem as EcosystemType] -= 1;
-            console.log(`🚫 Keyword fallback: Negated "${keyword}" for ${ecosystem}: -1 point`);
+            console.log(`🚫 Keyword fallback: Negated "${keyword}" (via "${matchedWord}") for ${ecosystem}: -1 point`);
           } else if (sentiment.isPositive) {
             // Positive sentiment - boost score
             scores[ecosystem as EcosystemType] += 2;
-            console.log(`✅ Keyword fallback: Positive "${keyword}" for ${ecosystem}: +2 points`);
+            console.log(`✅ Keyword fallback: Positive "${keyword}" (via "${matchedWord}") for ${ecosystem}: +2 points`);
           } else {
             // Neutral sentiment - normal score
             scores[ecosystem as EcosystemType] += 1;
-            console.log(`⚪ Keyword fallback: Neutral "${keyword}" for ${ecosystem}: +1 point`);
+            console.log(`⚪ Keyword fallback: Neutral "${keyword}" (via "${matchedWord}") for ${ecosystem}: +1 point`);
           }
         }
       });
@@ -250,12 +304,13 @@ class EcosystemPredictorDemo {
     const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
     
     if (total === 0) {
+      // If no matches at all, return all zeros instead of equal distribution
       return {
-        desert: 0.2,
-        ocean: 0.2,
-        rainforest: 0.2,
-        grassland: 0.2,
-        tundra: 0.2,
+        desert: 0,
+        ocean: 0,
+        rainforest: 0,
+        grassland: 0,
+        tundra: 0,
       };
     }
 
@@ -314,19 +369,36 @@ class EcosystemPredictorDemo {
     }
 
     // Create ecosystem predictions
-    const ecosystems: EcosystemPrediction[] = Object.entries(finalProbabilities).map(([ecosystem, probability]) => ({
-      ecosystem: ecosystem as EcosystemType,
-      probability,
-      influencingSentences: sentences.filter(sentence => {
+    const ecosystems: EcosystemPrediction[] = Object.entries(finalProbabilities).map(([ecosystem, probability]) => {
+      const influencingSentences = sentences.filter(sentence => {
         const lowerSentence = sentence.toLowerCase();
         return ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType].some(keyword => 
           lowerSentence.includes(keyword)
         );
-      }),
-      keywords: ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType].filter(keyword => 
+      });
+      
+      const keywords = ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType].filter(keyword => 
         userText.includes(keyword)
-      ),
-    }));
+      );
+      
+      // If there are no influencing sentences, set probability to 0
+      const finalProbability = influencingSentences.length > 0 ? probability : 0;
+      
+      return {
+        ecosystem: ecosystem as EcosystemType,
+        probability: finalProbability,
+        influencingSentences,
+        keywords,
+      };
+    });
+    
+    // Re-normalize probabilities after filtering
+    const total = ecosystems.reduce((sum, e) => sum + e.probability, 0);
+    if (total > 0) {
+      ecosystems.forEach(eco => {
+        eco.probability = eco.probability / total;
+      });
+    }
 
     // Find top prediction
     const topPrediction = ecosystems.reduce((max, current) => 

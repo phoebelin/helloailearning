@@ -205,7 +205,7 @@ export default function TestActivityStepsPage() {
 
   return (
     <ActivityProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         {/* Fixed Header - shows progress */}
         <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
           <div className="max-w-6xl mx-auto px-4 py-3">

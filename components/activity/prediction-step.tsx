@@ -16,6 +16,7 @@ import { ProbabilityChart } from './probability-chart';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ecosystemPredictorDemo, EmbeddingPredictionResult } from '@/lib/ml/ecosystem-predictor-demo';
+import { AudioRecorder } from './audio-recorder';
 
 export interface PredictionStepProps extends StepComponentProps {
   /** Selected animal for prediction */
@@ -25,6 +26,19 @@ export interface PredictionStepProps extends StepComponentProps {
   /** Callback when prediction is made */
   onPredictionMade?: (result: PredictionResult) => void;
 }
+
+// Correct answers for each animal
+const CORRECT_ANSWERS: Record<AnimalType, EcosystemType[]> = {
+  bees: ['rainforest', 'grassland'],
+  dolphins: ['ocean'],
+  monkeys: ['rainforest'],
+  zebras: ['grassland'],
+};
+
+// Check if the prediction is correct
+const isCorrectAnswer = (animal: AnimalType, ecosystem: EcosystemType): boolean => {
+  return CORRECT_ANSWERS[animal]?.includes(ecosystem) || false;
+};
 
 // Enhanced prediction using BERT with sentiment analysis
 const createEnhancedPrediction = async (animal: AnimalType, sentences: string[]): Promise<PredictionResult> => {
@@ -72,7 +86,7 @@ const createEnhancedPrediction = async (animal: AnimalType, sentences: string[])
     const totalScore = Object.values(ecosystemScores).reduce((sum, score) => sum + score, 0);
     const probabilities = Object.entries(ecosystemScores).map(([ecosystem, score]) => ({
       ecosystem: ecosystem as EcosystemType,
-      probability: totalScore > 0 ? score / totalScore : 0.2,
+      probability: totalScore > 0 ? score / totalScore : 0,
       influencingSentences: sentences.filter(sentence => 
         keywords[ecosystem as keyof typeof keywords].some(keyword => 
           sentence.toLowerCase().includes(keyword)
@@ -109,6 +123,8 @@ export function PredictionStep({
   const [hasAskedQuestion, setHasAskedQuestion] = useState(false);
   const [showChart, setShowChart] = useState(false);
   const [zhoraiResponse, setZhoraiResponse] = useState('');
+  const [currentTranscript, setCurrentTranscript] = useState('');
+  const [correctGuess, setCorrectGuess] = useState<boolean | null>(null);
   
   const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -117,18 +133,6 @@ export function PredictionStep({
     rate: 0.9,
     pitch: 1.1,
     useGoogleCloud: true,
-  });
-
-  // Speech recognition hook
-  const {
-    transcript,
-    isListening: isRecognitionListening,
-    startListening,
-    stopListening,
-    error: recognitionError,
-  } = useSpeechRecognition({
-    continuous: false,
-    interimResults: false,
   });
 
   // Animal display name
@@ -165,52 +169,45 @@ export function PredictionStep({
     }
   }, [userSentences, selectedAnimal, onPredictionMade]);
 
-  // Handle speech recognition result
+  // Handle when user asks a question
   useEffect(() => {
-    if (transcript && !isRecognitionListening) {
-      setUserQuestion(transcript);
-      setIsListening(false);
-      
+    if (userQuestion && predictionResult) {
       // Generate Zhorai's response
-      if (predictionResult) {
-        const ecosystemName = predictionResult.ecosystems.find(
-          e => e.ecosystem === predictionResult.topPrediction
-        )?.ecosystem || 'unknown';
-        
-        const confidenceLevel = predictionResult.confidence > 0.7 ? 'pretty sure' : 
-                               predictionResult.confidence > 0.4 ? 'think' : 'maybe';
-        
-        const response = `I ${confidenceLevel} ${animalDisplayName.toLowerCase()} live in the ${ecosystemName}!`;
-        setZhoraiResponse(response);
-        setShowChart(true);
-        setHasAskedQuestion(true);
-        
-        // Speak the response
-        setTimeout(() => {
-          speak(response, {
-            onError: (error) => {
-              if (error !== 'canceled') {
-                console.warn('Speech synthesis error:', error);
-              }
-            }
-          });
-        }, 500);
+      const ecosystemName = predictionResult.ecosystems.find(
+        e => e.ecosystem === predictionResult.topPrediction
+      )?.ecosystem || 'unknown';
+      
+      let confidenceLevel: string;
+      if (predictionResult.confidence > 0.7) {
+        confidenceLevel = "I'm pretty sure";
+      } else if (predictionResult.confidence > 0.4) {
+        confidenceLevel = 'I think';
+      } else {
+        confidenceLevel = 'I\'m not sure, but';
       }
+      
+      const response = `${confidenceLevel} ${animalDisplayName.toLowerCase()} ${confidenceLevel === 'I\'m not sure, but' ? 'might live' : 'live'} in the ${ecosystemName}! Did I guess right?`;
+      setZhoraiResponse(response);
+      
+      // Check if the guess is correct
+      const topEcosystem = predictionResult.topPrediction;
+      const isCorrect = isCorrectAnswer(selectedAnimal, topEcosystem);
+      setCorrectGuess(isCorrect);
+      
+      setShowChart(true);
+      
+      // Speak the response
+      setTimeout(() => {
+        speak(response, {
+          onError: (error) => {
+            if (error !== 'canceled') {
+              console.warn('Speech synthesis error:', error);
+            }
+          }
+        });
+      }, 500);
     }
-  }, [transcript, isRecognitionListening, predictionResult, animalDisplayName, speak]);
-
-  // Handle listening state
-  useEffect(() => {
-    setIsListening(isRecognitionListening);
-  }, [isRecognitionListening]);
-
-  const handleStartListening = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
+  }, [userQuestion, predictionResult, animalDisplayName, speak]);
 
   const handleBarHover = (ecosystem: EcosystemType, prediction: any) => {
     // Could add tooltip logic here if needed
@@ -222,76 +219,70 @@ export function PredictionStep({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-[682px] mx-auto px-0 py-20">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-4">
-          Based on what you&apos;ve taught Zhorai, do you think Zhorai can guess where a {animalDisplayName.toLowerCase()} lives? Try asking!
+      <div className="mb-8">
+        <h1 className="text-base font-normal text-gray-900 mb-4">
+          Based on what you&apos;ve taught Zhorai, do you think Zhorai can guess where {animalDisplayName.toLowerCase()} live? Try asking!
         </h1>
       </div>
 
       {/* Speech Input Section */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <div className="text-center mb-6">
-          <Button
-            onClick={handleStartListening}
-            disabled={isSpeaking}
-            className={cn(
-              "bg-black text-white hover:bg-gray-800 disabled:opacity-50 px-8 py-4 text-lg font-semibold",
-              isListening && "bg-red-600 hover:bg-red-700"
-            )}
-          >
-            {isListening ? (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                Listening...
-              </div>
-            ) : (
-              "Press and speak"
-            )}
-          </Button>
+      {/* Action Section - Button and Example */}
+      <div className="flex flex-row items-start gap-6 mb-8">
+        {/* Press and Speak Button - Fixed width container */}
+        <div className="flex-shrink-0 w-[180px]">
+          <AudioRecorder
+            showTranscript={false}
+            buttonText="Press and speak"
+            onTranscriptChange={(transcript, isFinal) => {
+              setCurrentTranscript(transcript);
+              if (isFinal && transcript) {
+                setUserQuestion(transcript);
+                setHasAskedQuestion(true);
+              }
+            }}
+            onStart={() => {
+              setIsListening(true);
+              setCurrentTranscript('');
+            }}
+            onStop={() => setIsListening(false)}
+            variant="default"
+            buttonClassName="px-6 py-3 h-12 rounded-xl"
+          />
         </div>
-
-        {/* Example question */}
-        <div className="text-center">
-          <p className="text-purple-600 font-medium">
-            Example: &quot;Where do {animalDisplayName.toLowerCase()} live?&quot;
-          </p>
-        </div>
-
-        {/* User question display */}
-        {userQuestion && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">You asked:</p>
-            <p className="text-gray-900 font-medium">&quot;{userQuestion}&quot;</p>
-          </div>
-        )}
-
-        {/* Recognition error */}
-        {recognitionError && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">
-              Speech recognition error: {recognitionError}
+        
+        {/* Example Question or Transcript - Fixed width, not affected by button state */}
+        <div className="flex-shrink-0 w-[400px] pt-3 min-h-[60px]">
+          {currentTranscript ? (
+            <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">
+              {currentTranscript}
             </p>
-          </div>
-        )}
+          ) : (
+            <p className="text-sm font-semibold leading-[17px] text-[#967FD8] opacity-50">
+              &quot;Where do {animalDisplayName.toLowerCase()} live?&quot;
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Zhorai's Response and Chart */}
       {hasAskedQuestion && predictionResult && (
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+        <div className="bg-white rounded-lg border border-gray-200 mb-8" style={{ padding: '24px' }}>
           {/* Zhorai's response */}
           {zhoraiResponse && (
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-3 bg-purple-50 border border-purple-200 rounded-lg px-6 py-4">
-                <Image
-                  src="/images/zhorai.png"
-                  alt="Zhorai"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-                <p className="text-purple-800 font-semibold text-lg">
+            <div className="flex justify-start items-center gap-4 mb-6">
+              {/* Zhorai Avatar */}
+              <Image
+                src="/images/zhorai.png"
+                alt="Zhorai"
+                width={48}
+                height={48}
+                className="rounded-full border-2 border-[#967fd8]/50 flex-shrink-0"
+              />
+              {/* Response Box */}
+              <div className="bg-[#967fd8]/10 border border-[#967fd8]/30 rounded-lg px-6 py-4">
+                <p className="text-[#967fd8] font-semibold text-base">
                   {zhoraiResponse}
                 </p>
               </div>
@@ -301,26 +292,23 @@ export function PredictionStep({
           {/* Probability Chart */}
           {showChart && (
             <div className="mb-6">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Here&apos;s how confident I am about each ecosystem:
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Hover over the bars to see what sentences I learned that correspond with each ecosystem
+              <div className="text-left mb-4">
+                <p className="text-base text-gray-900">
+                  {correctGuess === true && "It looks like Zhorai is right! "}
+                  {correctGuess === false && "It looks like Zhorai guessed incorrectly. "}
+                  Take a look at the chart below to see why Zhorai picked {predictionResult.ecosystems.find(e => e.ecosystem === predictionResult.topPrediction)?.ecosystem || 'this ecosystem'}. Hint: hover over the bars!
                 </p>
               </div>
               
-              <div className="flex justify-center">
-                <ProbabilityChart
-                  data={predictionResult}
-                  width={700}
-                  height={350}
-                  animated={true}
-                  onBarHover={handleBarHover}
-                  onBarLeave={handleBarLeave}
-                  className="max-w-full"
-                />
-              </div>
+              <ProbabilityChart
+                data={predictionResult}
+                width={600}
+                height={350}
+                animated={true}
+                onBarHover={handleBarHover}
+                onBarLeave={handleBarLeave}
+                className="max-w-full"
+              />
             </div>
           )}
         </div>

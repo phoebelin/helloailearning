@@ -228,7 +228,8 @@ export function SentenceInputStep({
         .sort(([,a], [,b]) => b.count - a.count)
         .slice(0, 8) // Limit to 8 nodes
         .forEach(([word, data]) => {
-          // Find the concept data to get sentiment-based abundance and color
+          // Get sentiment for this word by finding the FIRST occurrence in allConcepts
+          // This will give us the correct abundance/color based on how the word was used
           const conceptData = allConcepts.find(c => c.word.toLowerCase() === word);
           const abundance = conceptData?.abundance || 'high';
           // Child nodes only get blue or orange - no purple
@@ -244,7 +245,7 @@ export function SentenceInputStep({
             type: 'concept',
             color: color,
             size: size,
-            sourceSentences: data.sentences,
+            sourceSentences: data.sentences, // This already contains all sentences that mention this concept
             connections: [`center-${animal}`],
           });
         });
@@ -267,7 +268,7 @@ export function SentenceInputStep({
       console.error('Error generating mindmap:', error);
       return null;
     }
-  }, [sentences, animal, animalName]);
+  }, [sentences, animal]);
 
   // Check if mobile view
   useEffect(() => {

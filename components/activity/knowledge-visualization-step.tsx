@@ -32,7 +32,7 @@ function getNodeColorClass(color: NodeColor): string {
     case 'orange':
       return 'bg-orange-500 border-orange-600 text-white';
     case 'purple':
-      return 'bg-purple-500 border-purple-600 text-white';
+      return 'bg-[#967fd8] border-[#967fd8] text-white';
     case 'neutral':
       return 'bg-gray-400 border-gray-500 text-white';
     default:

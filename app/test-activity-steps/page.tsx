@@ -124,7 +124,7 @@ function DebugInfo({
                 
                 <button
                   onClick={() => {
-                    testConceptExtraction("Bees live in trees and make honey", "bees");
+                    testConceptExtraction('Bees live in trees and make honey', 'bees');
                   }}
                   className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-colors"
                 >

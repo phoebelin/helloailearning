@@ -5,6 +5,8 @@
  */
 
 import { EcosystemType, PredictionResult, EcosystemPrediction } from '@/types/activity';
+import { calculateSemanticMatch, calculateWordSimilarity } from './semantic-similarity';
+import { wordEmbeddingsXenova } from './word-embeddings-xenova';
 
 // Ecosystem descriptions for semantic similarity
 const ECOSYSTEM_DESCRIPTIONS: Record<EcosystemType, string> = {
@@ -30,38 +32,8 @@ export interface EmbeddingPredictionResult extends PredictionResult {
   keywordMatches: Record<EcosystemType, number>;
 }
 
-// Expanded word relationships for fuzzy matching
-const WORD_RELATIONSHIPS: Record<string, string[]> = {
-  // Rainforest related
-  'branch': ['tree', 'trees', 'forest', 'jungle', 'canopy', 'wood', 'trunk'],
-  'branches': ['tree', 'trees', 'forest', 'jungle', 'canopy', 'wood', 'trunk'],
-  'leaf': ['tree', 'trees', 'forest', 'jungle', 'green', 'foliage', 'vegetation'],
-  'leaves': ['tree', 'trees', 'forest', 'jungle', 'green', 'foliage', 'vegetation'],
-  'vine': ['tree', 'trees', 'forest', 'jungle', 'rainforest', 'tropical', 'plant'],
-  'vines': ['tree', 'trees', 'forest', 'jungle', 'rainforest', 'tropical', 'plant'],
-  'fruit': ['tree', 'trees', 'jungle', 'rainforest', 'tropical'],
-  'nuts': ['tree', 'trees', 'jungle', 'forest'],
-  // Ocean related
-  'wave': ['water', 'ocean', 'sea', 'beach', 'shore'],
-  'waves': ['water', 'ocean', 'sea', 'beach', 'shore'],
-  'shore': ['water', 'ocean', 'sea', 'beach', 'coast'],
-  'shore': ['water', 'ocean', 'sea', 'beach', 'coast'],
-  'clam': ['water', 'ocean', 'sea', 'marine', 'aquatic', 'shell'],
-  'crabs': ['water', 'ocean', 'sea', 'marine', 'beach'],
-  // Grassland related
-  'herd': ['grass', 'field', 'plains', 'savanna', 'prairie', 'meadow', 'grazing'],
-  'herds': ['grass', 'field', 'plains', 'savanna', 'prairie', 'meadow', 'grazing'],
-  'hay': ['grass', 'field', 'plains', 'meadow', 'hay'],
-  'pasture': ['grass', 'field', 'plains', 'meadow', 'grazing'],
-  // Tundra related
-  'frozen': ['cold', 'snow', 'ice', 'arctic', 'polar', 'winter'],
-  'snowing': ['cold', 'snow', 'ice', 'arctic', 'polar', 'winter'],
-  // Desert related
-  'sunny': ['hot', 'dry', 'desert', 'arid'],
-  'hot': ['desert', 'arid', 'dry', 'cactus'],
-  'sand': ['desert', 'dry', 'beach'],
-};
-
+// Note: WORD_RELATIONSHIPS has been replaced with semantic similarity functions
+// in lib/ml/semantic-similarity.ts for improved accuracy
 class EcosystemPredictorDemo {
   private isInitialized = false;
 
@@ -230,7 +202,7 @@ class EcosystemPredictorDemo {
   /**
    * Calculate keyword-based scores (fallback method) with sentiment analysis
    */
-  private calculateKeywordScores(userText: string): Record<EcosystemType, number> {
+  private async calculateKeywordScores(userText: string): Promise<Record<EcosystemType, number>> {
     const scores: Record<EcosystemType, number> = {
       desert: 0,
       ocean: 0,
@@ -242,8 +214,9 @@ class EcosystemPredictorDemo {
     const lowerText = userText.toLowerCase();
     const sentiment = this.analyzeSentiment(userText);
     
-    // Extract individual words from user text
+    // Extract individual words from ALL sentences combined
     const userWords = lowerText.split(/\s+/);
+    console.log(`🔍 Extracted words from ALL sentences: ${userWords.length} words`);
 
     Object.entries(ECOSYSTEM_KEYWORDS).forEach(([ecosystem, keywords]) => {
       keywords.forEach(keyword => {
@@ -255,10 +228,10 @@ class EcosystemPredictorDemo {
           matched = true;
           matchedWord = keyword;
         } else {
-          // Check if any user word is related to this keyword
+          // Check if any user word is semantically similar to this keyword
           for (const userWord of userWords) {
-            const relationships = WORD_RELATIONSHIPS[userWord];
-            if (relationships && relationships.includes(keyword)) {
+            const similarity = calculateWordSimilarity(userWord, keyword);
+            if (similarity > 0.3) { // Threshold for semantic match
               matched = true;
               matchedWord = userWord;
               break;
@@ -299,6 +272,7 @@ class EcosystemPredictorDemo {
 
   /**
    * Normalize scores to probabilities (sum to 1.0)
+   * Applies exponential scaling to create a clear winner
    */
   private normalizeToProbabilities(scores: Record<EcosystemType, number>): Record<EcosystemType, number> {
     const total = Object.values(scores).reduce((sum, score) => sum + score, 0);
@@ -315,11 +289,204 @@ class EcosystemPredictorDemo {
     }
 
     const probabilities: Record<EcosystemType, number> = {};
+    
+    // First, normalize to probabilities
     Object.entries(scores).forEach(([ecosystem, score]) => {
       probabilities[ecosystem as EcosystemType] = score / total;
     });
+    
+    // Apply exponential scaling (power of 3) to create a clear winner
+    // This amplifies differences: (0.5, 0.3, 0.2) -> (0.62, 0.14, 0.04) approximately
+    const scaledScores: Record<EcosystemType, number> = {};
+    Object.entries(probabilities).forEach(([ecosystem, prob]) => {
+      scaledScores[ecosystem as EcosystemType] = Math.pow(prob, 3);
+    });
+    
+    // Re-normalize to ensure sum = 1.0
+    const scaledTotal = Object.values(scaledScores).reduce((sum, score) => sum + score, 0);
+    if (scaledTotal > 0) {
+      Object.entries(scaledScores).forEach(([ecosystem, score]) => {
+        probabilities[ecosystem as EcosystemType] = score / scaledTotal;
+      });
+    }
 
     return probabilities;
+  }
+
+  /**
+   * Analyze a single sentence against all ecosystems using word embeddings
+   * Returns scores for each ecosystem with sentiment weighting
+   */
+  private async analyzePerSentence(
+    sentence: string,
+    sentenceIndex: number,
+    totalSentences: number
+  ): Promise<{
+    ecosystem: EcosystemType;
+    score: number;
+    similarity: number;
+    sentiment: 'positive' | 'negative' | 'neutral';
+    keywords: string[];
+  }[]> {
+    const lowerSentence = sentence.toLowerCase();
+    const sentiment = this.analyzeSentiment(sentence);
+    
+    const results: {
+      ecosystem: EcosystemType;
+      score: number;
+      similarity: number;
+      sentiment: 'positive' | 'negative' | 'neutral';
+      keywords: string[];
+    }[] = [];
+    
+    console.log(`\n📝 Analyzing sentence ${sentenceIndex + 1}/${totalSentences}: "${sentence}"`);
+    console.log(`   Sentiment: ${sentiment.isNegative ? 'negative' : sentiment.isPositive ? 'positive' : 'neutral'}`);
+    
+    // Check similarity against each ecosystem
+    for (const [ecosystem, keywords] of Object.entries(ECOSYSTEM_KEYWORDS)) {
+      const ecosystemDescription = keywords.join(' ');
+      
+      try {
+        // Use word embeddings to calculate semantic similarity
+        const embeddingSimilarity = await wordEmbeddingsXenova.calculateSimilarity(lowerSentence, ecosystemDescription);
+        
+        // Detect keyword matches
+        const matchedKeywords = keywords.filter(keyword => lowerSentence.includes(keyword));
+        
+        // Determine sentiment multiplier
+        let sentimentMultiplier = 1.0;
+        let sentimentLabel: 'positive' | 'negative' | 'neutral' = 'neutral';
+        
+        // Check if sentence has negative associations with this ecosystem
+        const hasNegativeAssociations = matchedKeywords.some(keyword => {
+          const keywordWords = keyword.split(/\s+/);
+          return keywordWords.some(kw => sentiment.negatedWords.some(neg => neg.includes(kw) || kw.includes(neg)));
+        });
+        
+        if (sentiment.isNegative || hasNegativeAssociations) {
+          sentimentMultiplier = -1.0;
+          sentimentLabel = 'negative';
+        } else if (sentiment.isPositive || matchedKeywords.length > 0) {
+          sentimentMultiplier = 1.0;
+          sentimentLabel = 'positive';
+        } else {
+          sentimentMultiplier = 0.5;
+          sentimentLabel = 'neutral';
+        }
+        
+        // Calculate final score: embedding similarity * sentiment multiplier
+        const finalScore = embeddingSimilarity * sentimentMultiplier;
+        
+        // Apply keyword match bonus
+        const keywordBonus = matchedKeywords.length * 0.1;
+        const adjustedScore = Math.max(0, finalScore + keywordBonus);
+        
+        results.push({
+          ecosystem: ecosystem as EcosystemType,
+          score: adjustedScore,
+          similarity: embeddingSimilarity,
+          sentiment: sentimentLabel,
+          keywords: matchedKeywords,
+        });
+        
+        console.log(`   ${ecosystem}: similarity=${(embeddingSimilarity * 100).toFixed(1)}%, sentiment=${sentimentLabel}, score=${adjustedScore.toFixed(3)}, keywords=[${matchedKeywords.join(', ')}]`);
+        
+      } catch (error) {
+        console.warn(`   ⚠️ Error analyzing ${ecosystem} for sentence ${sentenceIndex + 1}:`, error);
+      }
+    }
+    
+    return results;
+  }
+  
+  /**
+   * Aggregate scores from all sentences per ecosystem
+   */
+  private async aggregateEcosystemScores(
+    sentences: string[]
+  ): Promise<{
+    scores: Record<EcosystemType, number>;
+    matchCounts: Record<EcosystemType, number>;
+    negativeCounts: Record<EcosystemType, number>;
+    influencingSentences: Record<EcosystemType, string[]>;
+  }> {
+    const scores: Record<EcosystemType, number> = {
+      desert: 0,
+      ocean: 0,
+      rainforest: 0,
+      grassland: 0,
+      tundra: 0,
+    };
+    
+    const matchCounts: Record<EcosystemType, number> = {
+      desert: 0,
+      ocean: 0,
+      rainforest: 0,
+      grassland: 0,
+      tundra: 0,
+    };
+    
+    const negativeCounts: Record<EcosystemType, number> = {
+      desert: 0,
+      ocean: 0,
+      rainforest: 0,
+      grassland: 0,
+      tundra: 0,
+    };
+    
+    const influencingSentences: Record<EcosystemType, string[]> = {
+      desert: [],
+      ocean: [],
+      rainforest: [],
+      grassland: [],
+      tundra: [],
+    };
+    
+    console.log('\n========================================');
+    console.log('🔍 PER-SENTENCE ANALYSIS');
+    console.log('========================================');
+    
+    // Analyze each sentence independently
+    for (let idx = 0; idx < sentences.length; idx++) {
+      const sentenceResults = await this.analyzePerSentence(sentences[idx], idx, sentences.length);
+      
+      sentenceResults.forEach(({ ecosystem, score, similarity, sentiment, keywords }) => {
+        // Add score to ecosystem total (only if similarity is meaningful)
+        if (similarity > 0.1 || keywords.length > 0) {
+          scores[ecosystem] += score;
+          
+          // Track match count
+          matchCounts[ecosystem]++;
+          
+          // Track influencing sentences
+          if (!influencingSentences[ecosystem].includes(sentences[idx])) {
+            influencingSentences[ecosystem].push(sentences[idx]);
+          }
+          
+          // Track negative associations
+          if (sentiment === 'negative') {
+            negativeCounts[ecosystem]++;
+          }
+        }
+      });
+    }
+    
+    console.log('\n========================================');
+    console.log('✅ Aggregated Scores');
+    console.log('========================================');
+    Object.entries(scores).forEach(([ecosystem, score]) => {
+      if (score !== 0 || matchCounts[ecosystem as EcosystemType] > 0) {
+        console.log(`${ecosystem}: total score=${score.toFixed(2)}, matches=${matchCounts[ecosystem as EcosystemType]}, negatives=${negativeCounts[ecosystem as EcosystemType]}`);
+      }
+    });
+    console.log('========================================\n');
+    
+    return {
+      scores,
+      matchCounts,
+      negativeCounts,
+      influencingSentences,
+    };
   }
 
   /**
@@ -331,72 +498,58 @@ class EcosystemPredictorDemo {
   ): Promise<EmbeddingPredictionResult> {
     await this.initialize();
 
-    const userText = sentences.join(' ').toLowerCase();
-    let method: 'bert' | 'hybrid' | 'fallback' = 'fallback';
-    let embeddingSimilarities: Record<EcosystemType, number> = {
-      desert: 0,
-      ocean: 0,
-      rainforest: 0,
-      grassland: 0,
-      tundra: 0,
-    };
+    console.log('========================================');
+    console.log('🔮 PREDICTING ECOSYSTEM FOR:', animal);
+    console.log('📝 USER SENTENCES:');
+    sentences.forEach((sentence, idx) => {
+      console.log(`  ${idx + 1}. "${sentence}"`);
+    });
+    console.log('========================================\n');
 
-    // Try BERT-based prediction first
-    if (this.isInitialized) {
-      try {
-        embeddingSimilarities = this.simulateSemanticSimilarity(userText);
-        method = 'bert';
-        console.log('🧠 Using BERT semantic analysis');
-      } catch (error) {
-        console.warn('⚠️ BERT prediction failed, falling back to keyword matching:', error);
-        method = 'fallback';
+    // Use per-sentence analysis with word embeddings
+    const { scores, matchCounts, negativeCounts, influencingSentences } = await this.aggregateEcosystemScores(sentences);
+
+    // Normalize aggregated scores to probabilities
+    console.log('\n🎯 CALCULATING FINAL PROBABILITIES:');
+    console.log('Using per-sentence word embedding analysis with sentiment weighting');
+    console.log('More matches = higher score, Negative associations = score decreases\n');
+    
+    const finalProbabilities = this.normalizeToProbabilities(scores);
+    
+    console.log('📊 Probability Distribution:');
+    Object.entries(finalProbabilities).forEach(([ecosystem, prob]) => {
+      if (prob > 0) {
+        console.log(`  ${ecosystem}: ${(prob * 100).toFixed(1)}% (${matchCounts[ecosystem as EcosystemType]} matches, ${negativeCounts[ecosystem as EcosystemType]} negatives)`);
       }
-    }
-
-    // Calculate keyword scores as backup/hybrid
-    const keywordMatches = this.calculateKeywordScores(userText);
-
-    // Determine final probabilities
-    let finalProbabilities: Record<EcosystemType, number>;
-
-    if (method === 'bert') {
-      // Use BERT similarities directly (already normalized)
-      finalProbabilities = embeddingSimilarities;
-    } else {
-      // Fallback to keyword matching
-      finalProbabilities = this.normalizeToProbabilities(keywordMatches);
-      console.log('📝 Using keyword matching fallback');
-    }
+    });
+    console.log('');
 
     // Create ecosystem predictions
     const ecosystems: EcosystemPrediction[] = Object.entries(finalProbabilities).map(([ecosystem, probability]) => {
-      const influencingSentences = sentences.filter(sentence => {
-        const lowerSentence = sentence.toLowerCase();
-        return ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType].some(keyword => 
-          lowerSentence.includes(keyword)
-        );
-      });
-      
-      const keywords = ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType].filter(keyword => 
-        userText.includes(keyword)
+      const ecosystemKeywords = ECOSYSTEM_KEYWORDS[ecosystem as EcosystemType];
+      const keywords = ecosystemKeywords.filter(keyword => 
+        sentences.some(sentence => sentence.toLowerCase().includes(keyword))
       );
-      
-      // If there are no influencing sentences, set probability to 0
-      const finalProbability = influencingSentences.length > 0 ? probability : 0;
       
       return {
         ecosystem: ecosystem as EcosystemType,
-        probability: finalProbability,
-        influencingSentences,
+        probability,
+        influencingSentences: influencingSentences[ecosystem as EcosystemType] || [],
         keywords,
       };
     });
     
-    // Re-normalize probabilities after filtering
+    // Re-normalize probabilities to ensure sum = 100%
+    console.log('\n🔄 Re-normalization Step:');
+    console.log('Re-normalizing probabilities so sum = 100%');
     const total = ecosystems.reduce((sum, e) => sum + e.probability, 0);
     if (total > 0) {
       ecosystems.forEach(eco => {
+        const oldProb = eco.probability;
         eco.probability = eco.probability / total;
+        if (oldProb !== eco.probability) {
+          console.log(`  ${eco.ecosystem}: ${(oldProb * 100).toFixed(1)}% → ${(eco.probability * 100).toFixed(1)}% (after re-normalization)`);
+        }
       });
     }
 
@@ -405,17 +558,28 @@ class EcosystemPredictorDemo {
       current.probability > max.probability ? current : max
     );
 
+    // Print final results summary
+    console.log('\n========================================');
+    console.log('🏆 FINAL PREDICTION RESULTS:');
+    console.log(`🥇 Top Prediction: ${topPrediction.ecosystem} (${(topPrediction.probability * 100).toFixed(1)}%)`);
+    console.log('\n📊 All Ecosystem Probabilities:');
+    ecosystems
+      .sort((a, b) => b.probability - a.probability)
+      .forEach(eco => {
+        console.log(`  ${eco.probability > 0 ? '✅' : '❌'} ${eco.ecosystem}: ${(eco.probability * 100).toFixed(1)}%`);
+      });
+    console.log('========================================\n');
+
     return {
       ecosystems,
       topPrediction: topPrediction.ecosystem,
       confidence: topPrediction.probability,
       reasoning: [
-        method === 'bert' ? 'Based on semantic similarity using BERT embeddings' :
-        'Based on keyword matching (BERT unavailable)'
+        'Based on per-sentence word embeddings with sentiment analysis'
       ],
-      method,
-      embeddingSimilarities,
-      keywordMatches,
+      method: 'hybrid' as const,
+      embeddingSimilarities: finalProbabilities,
+      keywordMatches: scores,
     };
   }
 
@@ -459,7 +623,7 @@ class EcosystemPredictorDemo {
     );
 
     // Keyword method
-    const keywordScores = this.calculateKeywordScores(userText);
+    const keywordScores = await this.calculateKeywordScores(userText);
     const keywordProbabilities = this.normalizeToProbabilities(keywordScores);
     const keywordEcosystems: EcosystemPrediction[] = Object.entries(keywordProbabilities).map(([ecosystem, probability]) => ({
       ecosystem: ecosystem as EcosystemType,

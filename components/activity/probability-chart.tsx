@@ -134,7 +134,7 @@ export function ProbabilityChart({
           className="text-sm font-semibold fill-gray-600"
           transform={`rotate(-90, ${margin.left - 50}, ${margin.top + chartHeight / 2})`}
         >
-          Confidence Level
+          How sure is Zhorai?
         </text>
 
         {/* Y-axis grid lines */}

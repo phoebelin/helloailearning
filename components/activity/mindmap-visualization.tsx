@@ -92,15 +92,14 @@ function calculateNodePositions(
       
       // Check collision with other positioned nodes
       let hasCollision = false;
-      for (const [otherNodeId, otherPos] of positions) {
-        if (otherNodeId === centerNode.id) continue;
-        
+      positions.forEach((otherPos, otherNodeId) => {
+        if (hasCollision) return;
+        if (otherNodeId === centerNode.id) return;
         const distance = Math.sqrt((x - otherPos.x) ** 2 + (y - otherPos.y) ** 2);
         if (distance < minDistance) {
           hasCollision = true;
-          break;
         }
-      }
+      });
       
       if (!hasCollision) {
         finalX = x;
@@ -268,9 +267,10 @@ export function MindmapVisualization({
         y1={sourcePos.y}
         x2={targetPos.x}
         y2={targetPos.y}
-        stroke="#967fd8"
-        strokeWidth="4"
-        strokeDasharray="10,5"
+        stroke="#D1D5DB"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeDasharray="4,4"
         strokeOpacity="1"
         className="transition-opacity duration-500"
       />
@@ -329,7 +329,7 @@ export function MindmapVisualization({
   }
 
   return (
-    <div className={cn('relative', className)}>
+    <div className={cn('relative', className)} style={{ width, height }}>
       {/* SVG for connection lines */}
       <svg
         ref={svgRef}
@@ -344,11 +344,11 @@ export function MindmapVisualization({
         viewBox={`0 0 ${width} ${height}`}
       >
         {/* Render edges */}
-        {data.edges.map(renderEdge)}
+        {data.edges.length > 0 && data.edges.map(renderEdge)}
       </svg>
 
       {/* Interactive HTML nodes */}
-      <div className="relative w-full h-full" style={{ zIndex: 2 }}>
+      <div className="relative w-full h-full" style={{ zIndex: 2, width, height }}>
         {data.nodes.map(renderHTMLNode)}
       </div>
 

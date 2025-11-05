@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import {
   ActivityState,
   ActivityStep,
@@ -51,7 +51,7 @@ interface ActivityContextType {
   setPredictionResult: (result: PredictionResult) => void;
   
   // Speech tracking
-  markKnowledgeVisualizationSpoken: () => void;
+  markKnowledgeVisualizationSpoken: (ecosystem: EcosystemType) => void;
   
   // Activity completion
   completeActivity: () => void;
@@ -73,25 +73,96 @@ const stepSequence: ActivityStep[] = [
   'completion',
 ];
 
+const STORAGE_KEY = 'activity-state';
+
+/**
+ * Load activity state from localStorage
+ */
+function loadStateFromStorage(): ActivityState | null {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return null;
+    
+    const parsed = JSON.parse(stored);
+    // Validate that the stored state has the expected structure
+    if (parsed && typeof parsed === 'object' && 'currentStep' in parsed) {
+      return parsed as ActivityState;
+    }
+  } catch (error) {
+    console.warn('Failed to load activity state from localStorage:', error);
+  }
+  
+  return null;
+}
+
+/**
+ * Save activity state to localStorage
+ */
+function saveStateToStorage(state: ActivityState): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('Failed to save activity state to localStorage:', error);
+  }
+}
+
+/**
+ * Clear activity state from localStorage
+ */
+function clearStateFromStorage(): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.warn('Failed to clear activity state from localStorage:', error);
+  }
+}
+
 interface ActivityProviderProps {
   children: ReactNode;
   initialStep?: ActivityStep;
 }
 
 export function ActivityProvider({ children, initialStep = 'introduction' }: ActivityProviderProps) {
-  const [state, setState] = useState<ActivityState>({
-    currentStep: initialStep,
-    stepIndex: stepSequence.indexOf(initialStep),
-    selectedEcosystem: null,
-    selectedAnimal: null,
-    userSentences: [],
-    checkAnswers: [],
-    mindmapData: null,
-    predictionResult: null,
-    isComplete: false,
-    startTime: Date.now(),
-    hasKnowledgeVisualizationSpoken: false,
+  // Initialize state from localStorage or use defaults
+  const [state, setState] = useState<ActivityState>(() => {
+    const stored = loadStateFromStorage();
+    if (stored) {
+      // Preserve the stored startTime if it exists, otherwise use current time
+      // Ensure spokenEcosystems exists (for backward compatibility with old stored state)
+      return {
+        ...stored,
+        startTime: stored.startTime || Date.now(),
+        spokenEcosystems: stored.spokenEcosystems || [],
+      };
+    }
+    
+    // Default initial state
+    return {
+      currentStep: initialStep,
+      stepIndex: stepSequence.indexOf(initialStep),
+      selectedEcosystem: null,
+      selectedAnimal: null,
+      userSentences: [],
+      checkAnswers: [],
+      mindmapData: null,
+      predictionResult: null,
+      isComplete: false,
+      startTime: Date.now(),
+      hasKnowledgeVisualizationSpoken: false,
+      spokenEcosystems: [],
+    };
   });
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    saveStateToStorage(state);
+  }, [state]);
 
   // Navigation functions
   const goToStep = useCallback((step: ActivityStep) => {
@@ -253,10 +324,13 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
   }, []);
 
   // Speech tracking
-  const markKnowledgeVisualizationSpoken = useCallback(() => {
+  const markKnowledgeVisualizationSpoken = useCallback((ecosystem: EcosystemType) => {
     setState(prev => ({
       ...prev,
       hasKnowledgeVisualizationSpoken: true,
+      spokenEcosystems: prev.spokenEcosystems?.includes(ecosystem) 
+        ? prev.spokenEcosystems 
+        : [...(prev.spokenEcosystems || []), ecosystem],
     }));
   }, []);
 
@@ -270,8 +344,8 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
   }, []);
 
   const resetActivity = useCallback(() => {
-    setState({
-      currentStep: 'introduction',
+    const newState = {
+      currentStep: 'introduction' as ActivityStep,
       stepIndex: 0,
       selectedEcosystem: null,
       selectedAnimal: null,
@@ -282,7 +356,10 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
       isComplete: false,
       startTime: Date.now(),
       hasKnowledgeVisualizationSpoken: false,
-    });
+      spokenEcosystems: [],
+    };
+    setState(newState);
+    clearStateFromStorage();
   }, []);
 
   const value: ActivityContextType = {

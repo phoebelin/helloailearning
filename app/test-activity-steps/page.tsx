@@ -14,11 +14,35 @@ import { UnderstandingCheckStep } from '@/components/activity/understanding-chec
 import { AnimalSelectionStep } from '@/components/activity/animal-selection-step';
 import { SentenceInputStep } from '@/components/activity/sentence-input-step';
 import { PredictionStep } from '@/components/activity/prediction-step';
-import { ActivityProvider } from '@/lib/context/activity-context';
+import { ActivityProvider, useActivity } from '@/lib/context/activity-context';
 import { EcosystemType, Sentence } from '@/types/activity';
 import { exposeDebugFunctions, testConceptExtraction, testSentimentExamples, testMindmapGeneration } from '@/lib/utils/debug-sentences';
 
 type AnimalType = 'bees' | 'dolphins' | 'monkeys' | 'zebras';
+
+// Map ActivityStep to page step index
+const stepToIndexMap: Record<string, number> = {
+  'introduction': 0,
+  'ecosystem-selection': 1,
+  'knowledge-visualization': 2,
+  'understanding-check': 3,
+  'animal-selection': 4,
+  'sentence-input': 5,
+  'sentence-list': 5, // Same as sentence-input
+  'mindmap-display': 5, // Same as sentence-input
+  'prediction': 6,
+  'completion': 6, // Same as prediction
+};
+
+const indexToStepMap: Record<number, string> = {
+  0: 'introduction',
+  1: 'ecosystem-selection',
+  2: 'knowledge-visualization',
+  3: 'understanding-check',
+  4: 'animal-selection',
+  5: 'sentence-input',
+  6: 'prediction',
+};
 
 function DebugInfo({ 
   currentStep, 
@@ -165,12 +189,27 @@ function DebugInfo({
   );
 }
 
-export default function TestActivityStepsPage() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [maxStepReached, setMaxStepReached] = useState(0);
-  const [selectedEcosystem, setSelectedEcosystem] = useState<EcosystemType | null>(null);
-  const [selectedAnimal, setSelectedAnimal] = useState<AnimalType | null>(null);
-  const [sentences, setSentences] = useState<Sentence[]>([]);
+function TestActivityStepsContent() {
+  const {
+    state,
+    nextStep: contextNextStep,
+    goToStep,
+    selectEcosystem,
+    selectAnimal,
+    addSentence,
+    editSentence,
+    deleteSentence,
+    updateSentenceConcepts,
+  } = useActivity();
+
+  // Convert context step to page step index
+  const currentStepIndex = stepToIndexMap[state.currentStep] ?? 0;
+  const [maxStepReached, setMaxStepReached] = useState(currentStepIndex);
+
+  // Sync maxStepReached with current step
+  useEffect(() => {
+    setMaxStepReached(prev => Math.max(prev, currentStepIndex));
+  }, [currentStepIndex]);
 
   // Refs for each step to enable auto-scrolling
   const step0Ref = useRef<HTMLDivElement>(null);
@@ -185,142 +224,223 @@ export default function TestActivityStepsPage() {
 
   // Auto-scroll to the current step when it changes
   useEffect(() => {
-    if (currentStep > 0 && stepRefs[currentStep]?.current) {
+    if (currentStepIndex > 0 && stepRefs[currentStepIndex]?.current) {
       setTimeout(() => {
-        stepRefs[currentStep].current?.scrollIntoView({ 
+        stepRefs[currentStepIndex].current?.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'start' 
         });
       }, 100); // Small delay to let the step render
     }
-  }, [currentStep, stepRefs]);
+  }, [currentStepIndex, stepRefs]);
 
   const handleNext = (stepIndex: number) => {
     if (stepIndex < 6) {
-      const nextStep = stepIndex + 1;
-      setCurrentStep(nextStep);
-      setMaxStepReached(prev => Math.max(prev, nextStep));
+      const nextStepIndex = stepIndex + 1;
+      const nextStep = indexToStepMap[nextStepIndex];
+      if (nextStep) {
+        goToStep(nextStep as any);
+      }
+      setMaxStepReached(prev => Math.max(prev, nextStepIndex));
     }
   };
 
+  // Sync sentences from context
+  const sentences = state.userSentences;
+  const selectedEcosystem = state.selectedEcosystem;
+  const selectedAnimal = state.selectedAnimal as AnimalType | null;
+
+  const handleEcosystemSelected = (ecosystem: EcosystemType) => {
+    selectEcosystem(ecosystem);
+  };
+
+  const handleAnimalSelected = (animal: AnimalType) => {
+    selectAnimal(animal);
+  };
+
+  const handleSentencesUpdate = (newSentences: Sentence[]) => {
+    // Sync sentences array with context
+    // Compare current context sentences with new sentences
+    const currentSentences = state.userSentences;
+    
+    // Find sentences to add (in newSentences but not in currentSentences by ID or text)
+    newSentences.forEach(newSentence => {
+      const existsById = currentSentences.some(s => s.id === newSentence.id);
+      const existsByText = currentSentences.some(s => 
+        s.sentence.toLowerCase().trim() === newSentence.sentence.toLowerCase().trim()
+      );
+      
+      if (!existsById && !existsByText) {
+        // Add new sentence via context
+        addSentence(newSentence.sentence);
+        // After adding, update concepts if they were extracted
+        // Note: concepts will be updated in the next render cycle
+        setTimeout(() => {
+          const addedSentence = state.userSentences.find(s => 
+            s.sentence.toLowerCase().trim() === newSentence.sentence.toLowerCase().trim() &&
+            s.id !== newSentence.id
+          );
+          if (addedSentence && newSentence.concepts.length > 0) {
+            updateSentenceConcepts(addedSentence.id, newSentence.concepts);
+          }
+        }, 0);
+      } else if (existsById) {
+        // Check if sentence was edited
+        const currentSentence = currentSentences.find(s => s.id === newSentence.id);
+        if (currentSentence && currentSentence.sentence !== newSentence.sentence) {
+          // Edit sentence via context
+          editSentence(newSentence.id, newSentence.sentence);
+        }
+        // Update concepts if they changed
+        if (currentSentence && JSON.stringify(currentSentence.concepts) !== JSON.stringify(newSentence.concepts)) {
+          updateSentenceConcepts(newSentence.id, newSentence.concepts);
+        }
+      }
+    });
+    
+    // Find sentences to delete (in currentSentences but not in newSentences)
+    currentSentences.forEach(currentSentence => {
+      const stillExists = newSentences.some(s => 
+        s.id === currentSentence.id || 
+        s.sentence.toLowerCase().trim() === currentSentence.sentence.toLowerCase().trim()
+      );
+      if (!stillExists) {
+        // Delete sentence via context
+        deleteSentence(currentSentence.id);
+      }
+    });
+  };
+
   return (
-    <ActivityProvider>
-      <div className="min-h-screen bg-white">
-        {/* Fixed Header - shows progress */}
-        <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <h1 className="text-lg font-semibold">Activity Steps Test</h1>
-              
-              {/* Progress indicators */}
-              <div className="flex gap-2">
-                {[0, 1, 2, 3, 4, 5, 6].map((step) => (
-                  <div
-                    key={step}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                      step <= currentStep
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-500'
-                    }`}
-                  >
-                    {step + 1}
-                  </div>
-                ))}
-              </div>
+    <div className="min-h-screen bg-white">
+      {/* Fixed Header - shows progress */}
+      <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-semibold">Activity Steps Test</h1>
+            
+            {/* Progress indicators */}
+            <div className="flex gap-2">
+              {[0, 1, 2, 3, 4, 5, 6].map((step) => (
+                <div
+                  key={step}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+                    step <= currentStepIndex
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {step + 1}
+                </div>
+              ))}
             </div>
           </div>
         </div>
-
-        {/* Scrollable Content with Snap Scrolling */}
-        <div className="pt-20 pb-20 snap-y snap-mandatory overflow-y-auto h-screen">
-        {/* Step 0: Introduction */}
-        {currentStep >= 0 && (
-          <div ref={step0Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <IntroductionStep
-              onNext={() => handleNext(0)}
-            />
-          </div>
-        )}
-
-        {/* Step 1: Ecosystem Selection */}
-        {currentStep >= 1 && (
-          <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <EcosystemSelectionStep
-              onNext={() => handleNext(1)}
-              onEcosystemSelected={(ecosystem) => setSelectedEcosystem(ecosystem)}
-              selectedEcosystem={selectedEcosystem}
-            />
-          </div>
-        )}
-
-        {/* Step 2: Knowledge Visualization */}
-        {maxStepReached >= 2 && selectedEcosystem && (
-          <div ref={step2Ref} data-step="knowledge-visualization" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <KnowledgeVisualizationStep
-              ecosystem={selectedEcosystem}
-              onNext={() => handleNext(2)}
-              onChangeEcosystem={() => setCurrentStep(1)}
-            />
-          </div>
-        )}
-
-        {/* Step 3: Understanding Check */}
-        {maxStepReached >= 3 && selectedEcosystem && (
-          <div ref={step3Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <UnderstandingCheckStep
-              ecosystem={selectedEcosystem}
-              onNext={() => handleNext(3)}
-            />
-          </div>
-        )}
-
-        {/* Step 4: Animal Selection */}
-        {maxStepReached >= 4 && (
-          <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <AnimalSelectionStep
-              onNext={() => handleNext(4)}
-              onAnimalSelected={(animal) => setSelectedAnimal(animal)}
-              selectedAnimal={selectedAnimal}
-            />
-          </div>
-        )}
-
-        {/* Step 5: Sentence Input */}
-        {maxStepReached >= 5 && selectedAnimal && (
-          <div ref={step5Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <SentenceInputStep
-              animal={selectedAnimal}
-              sentences={sentences}
-              onSentencesUpdate={setSentences}
-              onNext={() => handleNext(5)}
-            />
-          </div>
-        )}
-
-        {/* Step 6: Prediction */}
-        {maxStepReached >= 6 && selectedAnimal && (
-          <div ref={step6Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
-            <PredictionStep
-              selectedAnimal={selectedAnimal}
-              userSentences={sentences.map(s => s.sentence)}
-              onNext={() => {
-                alert('Activity complete! All steps finished.');
-              }}
-              onPrevious={() => setCurrentStep(5)}
-            />
-          </div>
-        )}
-        </div>
-
-        {/* Debug Info */}
-        <DebugInfo 
-          currentStep={currentStep} 
-          maxStepReached={maxStepReached}
-          selectedEcosystem={selectedEcosystem}
-          selectedAnimal={selectedAnimal}
-          sentences={sentences}
-        />
       </div>
+
+      {/* Scrollable Content with Snap Scrolling */}
+      <div className="pt-20 pb-20 snap-y snap-mandatory overflow-y-auto h-screen">
+      {/* Step 0: Introduction */}
+      {currentStepIndex >= 0 && (
+        <div ref={step0Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <IntroductionStep
+            onNext={() => handleNext(0)}
+            onPrevious={() => {}}
+          />
+        </div>
+      )}
+
+      {/* Step 1: Ecosystem Selection */}
+      {currentStepIndex >= 1 && (
+        <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <EcosystemSelectionStep
+            onNext={() => handleNext(1)}
+            onPrevious={() => goToStep('introduction')}
+            onEcosystemSelected={handleEcosystemSelected}
+            selectedEcosystem={selectedEcosystem}
+          />
+        </div>
+      )}
+
+      {/* Step 2: Knowledge Visualization */}
+      {maxStepReached >= 2 && selectedEcosystem && (
+        <div ref={step2Ref} data-step="knowledge-visualization" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <KnowledgeVisualizationStep
+            ecosystem={selectedEcosystem}
+            onNext={() => handleNext(2)}
+            onPrevious={() => goToStep('ecosystem-selection')}
+            onChangeEcosystem={() => goToStep('ecosystem-selection')}
+          />
+        </div>
+      )}
+
+      {/* Step 3: Understanding Check */}
+      {maxStepReached >= 3 && selectedEcosystem && (
+        <div ref={step3Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <UnderstandingCheckStep
+            ecosystem={selectedEcosystem}
+            onNext={() => handleNext(3)}
+            onPrevious={() => goToStep('knowledge-visualization')}
+          />
+        </div>
+      )}
+
+      {/* Step 4: Animal Selection */}
+      {maxStepReached >= 4 && (
+        <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <AnimalSelectionStep
+            onNext={() => handleNext(4)}
+            onPrevious={() => goToStep('understanding-check')}
+            onAnimalSelected={handleAnimalSelected}
+            selectedAnimal={selectedAnimal}
+          />
+        </div>
+      )}
+
+      {/* Step 5: Sentence Input */}
+      {maxStepReached >= 5 && selectedAnimal && (
+        <div ref={step5Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <SentenceInputStep
+            animal={selectedAnimal}
+            sentences={sentences}
+            onSentencesUpdate={handleSentencesUpdate}
+            onNext={() => handleNext(5)}
+            onPrevious={() => goToStep('animal-selection')}
+          />
+        </div>
+      )}
+
+      {/* Step 6: Prediction */}
+      {maxStepReached >= 6 && selectedAnimal && (
+        <div ref={step6Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+          <PredictionStep
+            selectedAnimal={selectedAnimal}
+            userSentences={sentences.map(s => s.sentence)}
+            onNext={() => {
+              alert('Activity complete! All steps finished.');
+            }}
+            onPrevious={() => goToStep('sentence-input')}
+          />
+        </div>
+      )}
+      </div>
+
+      {/* Debug Info */}
+      <DebugInfo 
+        currentStep={currentStepIndex} 
+        maxStepReached={maxStepReached}
+        selectedEcosystem={selectedEcosystem}
+        selectedAnimal={selectedAnimal}
+        sentences={sentences}
+      />
+    </div>
+  );
+}
+
+export default function TestActivityStepsPage() {
+  return (
+    <ActivityProvider>
+      <TestActivityStepsContent />
     </ActivityProvider>
   );
 }

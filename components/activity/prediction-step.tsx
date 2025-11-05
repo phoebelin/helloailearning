@@ -127,6 +127,7 @@ export function PredictionStep({
   const [correctGuess, setCorrectGuess] = useState<boolean | null>(null);
   
   const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
   // Enhanced TTS hook
   const { speak, isSpeaking } = useEnhancedTextToSpeech({
@@ -208,6 +209,23 @@ export function PredictionStep({
       }, 500);
     }
   }, [userQuestion, predictionResult, animalDisplayName, speak]);
+
+  // Debug: Log correctGuess value
+  useEffect(() => {
+    console.log('correctGuess value:', correctGuess);
+  }, [correctGuess]);
+
+  // Auto-scroll to chart when it displays
+  useEffect(() => {
+    if (showChart && chartRef.current) {
+      setTimeout(() => {
+        chartRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 100); // Small delay to ensure chart is rendered
+    }
+  }, [showChart]);
 
   const handleBarHover = (ecosystem: EcosystemType, prediction: any) => {
     // Could add tooltip logic here if needed
@@ -291,7 +309,7 @@ export function PredictionStep({
 
           {/* Probability Chart */}
           {showChart && (
-            <div className="mb-6">
+            <div ref={chartRef} className="mb-6">
               <div className="text-left mb-4">
                 <p className="text-base text-gray-900">
                   {correctGuess === true && "It looks like Zhorai is right! "}
@@ -314,37 +332,58 @@ export function PredictionStep({
         </div>
       )}
 
-      {/* Zhorai Character */}
-      <div className="flex justify-center mb-8">
-        <div className="relative">
-          <Image
-            src="/images/zhorai.png"
-            alt="Zhorai"
-            width={139}
-            height={151}
-            className="object-contain"
-            priority
-          />
+      {/* Navigation - only show after chart is displayed and correctGuess is set */}
+      {showChart && correctGuess !== null && (
+        <div className="flex justify-start items-center">
+          <div className="flex gap-3">
+            {correctGuess === true ? (
+              <>
+                {/* When correct: Continue is primary, Teach Zhorai more is secondary */}
+                <Button
+                  onClick={onNext}
+                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6"
+                >
+                  Continue
+                </Button>
+                <Button
+                  onClick={() => {
+                    const el = document.getElementById('add-sentences-step');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  variant="outline"
+                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                >
+                  Teach Zhorai more
+                </Button>
+              </>
+            ) : (
+              <>
+                {/* When incorrect: Teach Zhorai more is primary, Continue is secondary */}
+                <Button
+                  onClick={() => {
+                    const el = document.getElementById('add-sentences-step');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                >
+                  Teach Zhorai more
+                </Button>
+                <Button
+                  onClick={onNext}
+                  variant="outline"
+                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                >
+                  Continue
+                </Button>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-
-      {/* Navigation */}
-      <div className="flex justify-between items-center">
-        <Button
-          onClick={onPrevious}
-          variant="outline"
-          className="border-gray-300 text-gray-700 hover:bg-gray-50"
-        >
-          Previous
-        </Button>
-        
-        <Button
-          onClick={onNext}
-          className="bg-black text-white hover:bg-gray-800"
-        >
-          Continue
-        </Button>
-      </div>
+      )}
     </div>
   );
 }

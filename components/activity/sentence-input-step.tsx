@@ -363,7 +363,7 @@ export function SentenceInputStep({
   };
 
   return (
-    <div className="flex flex-col gap-6 py-20 px-0 max-w-[682px] w-full mx-auto">
+    <div id="add-sentences-step" className="flex flex-col gap-6 py-20 px-0 max-w-[682px] w-full mx-auto">
       {/* Heading - matches Figma exactly */}
       <h1 className="text-base font-normal leading-[32px] text-black text-left w-full">
         Tell Zhorai three things about {animalName}.

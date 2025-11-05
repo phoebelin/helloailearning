@@ -9,7 +9,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { StepComponentProps, EcosystemType, MindmapNode, NodeColor } from '@/types/activity';
+import { StepComponentProps, EcosystemType, MindmapNode, NodeColor, NodeType } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
@@ -213,16 +213,18 @@ export function KnowledgeVisualizationStep({
   onChangeEcosystem,
 }: KnowledgeVisualizationStepProps) {
   const mindmap = getEcosystemMindmap(ecosystem);
-  const { markKnowledgeVisualizationSpoken } = useActivity();
+  const { state, markKnowledgeVisualizationSpoken } = useActivity();
   
   const [isThinking, setIsThinking] = useState(false);
   const [showMindmap, setShowMindmap] = useState(false);
   
-  // Track if speech has been attempted for current ecosystem
-  const speechAttemptedRef = useRef<string | null>(null);
-  
   // Store current hook values in refs to avoid stale closures
-  const hookValuesRef = useRef({ speak: null, isSupported: false, isGoogleCloudAvailable: false, isGoogleCloudChecked: false });
+  const hookValuesRef = useRef<{ 
+    speak: ((text: string, options?: any) => void) | null; 
+    isSupported: boolean; 
+    isGoogleCloudAvailable: boolean; 
+    isGoogleCloudChecked: boolean;
+  }>({ speak: null, isSupported: false, isGoogleCloudAvailable: false, isGoogleCloudChecked: false });
 
   const { speak, isSupported, isGoogleCloudAvailable, isGoogleCloudChecked } = useEnhancedTextToSpeech({
     rate: 0.9, // Slightly slower for child comprehension
@@ -252,9 +254,19 @@ export function KnowledgeVisualizationStep({
     // Reset mindmap visibility when ecosystem changes
     setShowMindmap(false);
     setIsThinking(false);
+
+    // Check if this ecosystem has already been spoken about (persisted state)
+    const hasBeenSpokenForThisEcosystem = state.spokenEcosystems?.includes(ecosystem) || false;
     
-    // Reset speech attempted ref when ecosystem changes
-    speechAttemptedRef.current = null;
+    // Only speak if this ecosystem hasn't been spoken about yet
+    if (hasBeenSpokenForThisEcosystem) {
+      console.log(`Knowledge Visualization: Already spoken for ${ecosystem}, skipping speech and showing mindmap directly`);
+      // If already spoken, show mindmap directly
+      setTimeout(() => {
+        setShowMindmap(true);
+      }, 300);
+      return;
+    }
 
     const message = `I've heard so much about ${ecosystemName} before! Here's a visualization of my brain:`;
     
@@ -264,32 +276,24 @@ export function KnowledgeVisualizationStep({
       ttsMethod: isGoogleCloudAvailable ? 'Google Cloud TTS' : 'Web Speech API',
       message, 
       ecosystem,
+      hasBeenSpoken: hasBeenSpokenForThisEcosystem,
       speechSynthesis: typeof window !== 'undefined' ? window.speechSynthesis : null 
     });
     
-        // Wait for Google Cloud TTS availability check to complete
-        const timer = setTimeout(() => {
-          // Check if speech has already been attempted for this ecosystem
-          if (speechAttemptedRef.current === ecosystem) {
-            console.log(`Knowledge Visualization: Speech already attempted for ${ecosystem}, skipping.`);
-            return;
-          }
-          
-          // Get fresh values from refs (avoid stale closures)
-          const { speak: currentSpeak, isSupported: currentSupported, isGoogleCloudAvailable: currentGoogleCloudAvailable, isGoogleCloudChecked: currentGoogleCloudChecked } = hookValuesRef.current;
-          
-          if (currentSupported && currentGoogleCloudChecked) {
-            // Mark speech as attempted for this ecosystem
-            speechAttemptedRef.current = ecosystem;
-            
-            // ADD DEBUG LOG TO CHECK AVAILABILITY AT SPEAK TIME
-            console.log('Knowledge Visualization: Before calling speak() - isGoogleCloudAvailable:', currentGoogleCloudAvailable);
-            console.log('Knowledge Visualization: Calling speak()...');
-            currentSpeak(message, {
+    // Wait for Google Cloud TTS availability check to complete
+    const timer = setTimeout(() => {
+      // Get fresh values from refs (avoid stale closures)
+      const { speak: currentSpeak, isSupported: currentSupported, isGoogleCloudAvailable: currentGoogleCloudAvailable, isGoogleCloudChecked: currentGoogleCloudChecked } = hookValuesRef.current;
+      
+      if (currentSupported && currentGoogleCloudChecked && currentSpeak) {
+        // ADD DEBUG LOG TO CHECK AVAILABILITY AT SPEAK TIME
+        console.log('Knowledge Visualization: Before calling speak() - isGoogleCloudAvailable:', currentGoogleCloudAvailable);
+        console.log('Knowledge Visualization: Calling speak()...');
+        currentSpeak(message, {
           onStart: () => {
             // Mark as spoken when speech actually starts
             console.log('Knowledge Visualization: Speech started');
-            markKnowledgeVisualizationSpoken();
+            markKnowledgeVisualizationSpoken(ecosystem);
           },
           onEnd: () => {
             console.log('Knowledge Visualization: Speech ended, showing thinking state');
@@ -302,10 +306,10 @@ export function KnowledgeVisualizationStep({
               setShowMindmap(true);
             }, 1500); // 1.5 second thinking time
           },
-          onError: (error) => {
+          onError: (error: unknown) => {
             console.error('Knowledge Visualization: Speech error:', error);
-            // Mark speech as attempted for this ecosystem (even though it failed)
-            speechAttemptedRef.current = ecosystem;
+            // Mark as spoken even if speech fails
+            markKnowledgeVisualizationSpoken(ecosystem);
             // Show mindmap anyway if speech fails
             setIsThinking(true);
             setTimeout(() => {
@@ -317,18 +321,16 @@ export function KnowledgeVisualizationStep({
       } else {
         console.warn('Knowledge Visualization: Speech not supported! Browser may not support Web Speech API');
         console.log('Knowledge Visualization: Going straight to mindmap without speech');
-        // Mark speech as attempted for this ecosystem
-        speechAttemptedRef.current = ecosystem;
         // If speech not supported, go straight to thinking then mindmap
         // Mark as spoken immediately since no speech will happen
-        markKnowledgeVisualizationSpoken();
+        markKnowledgeVisualizationSpoken(ecosystem);
         setIsThinking(true);
         setTimeout(() => {
           setIsThinking(false);
           setShowMindmap(true);
         }, 2000);
       }
-        }, 1000); // Increased delay to allow Google Cloud TTS availability check to complete
+    }, 1000); // Increased delay to allow Google Cloud TTS availability check to complete
 
     return () => {
       console.log('Knowledge Visualization: Cleanup', { ecosystem });

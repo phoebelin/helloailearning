@@ -6,9 +6,10 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StepComponentProps, EcosystemType, MindmapNode, NodeColor } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
+import { useActivity } from '@/lib/context/activity-context';
 import { cn } from '@/lib/utils';
 
 export interface UnderstandingCheckStepProps extends StepComponentProps {
@@ -61,12 +62,31 @@ export function UnderstandingCheckStep({
   onNext,
   onPrevious,
 }: UnderstandingCheckStepProps) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const { state, setCheckAnswers } = useActivity();
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(state.checkAnswers || []);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [hasContinued, setHasContinued] = useState(false);
+  
+  // Check if step is already completed (from persisted state)
+  const isCompleted = state.checkAnswers.length === 2;
+  // Only show bottom nav when actually on the understanding-check step
+  const isOnUnderstandingCheckStep = state.currentStep === 'understanding-check';
+  const hasInitialized = useRef(false);
+  
+  // Initialize selectedOptions from persisted checkAnswers on mount
+  useEffect(() => {
+    if (!hasInitialized.current && state.checkAnswers.length > 0) {
+      setSelectedOptions(state.checkAnswers);
+      // If we have 2 answers, mark as submitted and correct
+      if (state.checkAnswers.length === 2) {
+        setHasSubmitted(true);
+        setIsCorrect(true);
+      }
+      hasInitialized.current = true;
+    }
+  }, [state.checkAnswers]);
 
   // Get mindmap data for the selected ecosystem
   const mindmap = getEcosystemMindmap(ecosystem);
@@ -92,7 +112,9 @@ export function UnderstandingCheckStep({
     
     setIsCorrect(correct);
     
+    // Save answers to context (persisted state)
     if (correct) {
+      setCheckAnswers(selectedOptions);
       // Show celebration animation
       setShowCelebration(true);
       setTimeout(() => {
@@ -102,8 +124,6 @@ export function UnderstandingCheckStep({
   };
 
   const handleContinue = () => {
-    setHasContinued(true);
-    
     // Small delay to ensure the bottom nav disappears first, then advance to next step
     setTimeout(() => {
       onNext();
@@ -234,7 +254,7 @@ export function UnderstandingCheckStep({
         </div>
 
         {/* Bottom Navigation Pattern - Only show when user is actively working on this step */}
-        {!hasContinued ? (
+        {!isCompleted && isOnUnderstandingCheckStep ? (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-6">
             <div className="max-w-[682px] mx-auto flex justify-center items-center">
               {/* Centered content */}

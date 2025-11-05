@@ -103,6 +103,7 @@ export interface ActivityState {
   startTime: number;
   endTime?: number;
   hasKnowledgeVisualizationSpoken?: boolean;
+  spokenEcosystems?: EcosystemType[]; // Track which ecosystems' knowledge visualization has been spoken
 }
 
 // Step component props

@@ -88,6 +88,7 @@ export type ActivityStep =
   | 'sentence-list'
   | 'mindmap-display'
   | 'prediction'
+  | 'reflection'
   | 'completion';
 
 export interface ActivityState {

@@ -11,7 +11,7 @@ The codebase is a Next.js application with:
 - Styling with Tailwind CSS
 - Uses Inter font for typography (per Figma specs)
 
-The existing `LessonLayout` component provides step navigation functionality that can be leveraged for the 8-step activity flow.
+The existing `LessonLayout` component provides step navigation functionality that can be leveraged for the 9-step activity flow.
 
 ## Testing Strategy
 
@@ -41,6 +41,7 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
 - **Step 6 - Sentence List**: [Desktop - 13](https://www.figma.com/design/XP8JMtQI4NCvdxls3dfEJu/Ai-literacy-for-kids?node-id=196-531)
 - **Step 7 - Mindmap Display**: [Desktop - 14](https://www.figma.com/design/XP8JMtQI4NCvdxls3dfEJu/Ai-literacy-for-kids?node-id=200-1372)
 - **Step 8 - Prediction**: [Desktop - 15](https://www.figma.com/design/XP8JMtQI4NCvdxls3dfEJu/Ai-literacy-for-kids?node-id=200-1591)
+- **Step 9 - Reflection**: [Desktop - 22](https://www.figma.com/design/XP8JMtQI4NCvdxls3dfEJu/AI-literacy-for-kids?node-id=555-994&t=vRSfo3enqjpEemkx-4)
 
 **Design Specs**:
 - Color scheme: White background (#FFFFFF), black text (#000000), purple accent (#967FD8), light purple background (#F4F0FF)
@@ -69,6 +70,7 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
 - `components/activity/sentence-list-step.tsx` - Step 6 (Figma: Desktop-13): View/edit/delete sentences with cards (CREATED)
 - `components/activity/mindmap-display-step.tsx` - Step 7 (Figma: Desktop-14): User-taught concepts in mindmap
 - `components/activity/prediction-step.tsx` - Step 8 (Figma: Desktop-15): ML ecosystem prediction with bar chart
+- `components/activity/reflection-step.tsx` - Step 9 (Figma: Desktop-22): Back-and-forth reflection conversation between user and Zhorai
 - `components/activity/zhorai-character.tsx` - Animated Zhorai character component
 - `components/activity/mindmap-visualization.tsx` - Interactive mindmap visualization component
 - `components/activity/probability-chart.tsx` - Bar chart for ecosystem predictions
@@ -152,16 +154,16 @@ All screens reference: [Figma - Ai literacy for kids](https://www.figma.com/desi
   - [x] 5.5 Create `components/activity/probability-chart.tsx` - Bar chart component showing probabilities for each ecosystem with different bar heights based on ML confidence, hover tooltips displaying which sentences influenced each ecosystem prediction, animated bar growth on initial render, clear labels for each ecosystem
   - [x] 5.6 Create `components/activity/prediction-step.tsx` - **Figma: Desktop-15** - Heading "Based on what you've taught Zhorai, do you think Zhorai can guess where a [animal] lives? Try asking!", "Press and speak" button (black), example question "Where do [animal] live?" (purple text), bar chart visualization showing probabilities for each ecosystem, hover instruction "Hover over the bars to see what sentences I learned that correspond with each ecosystem", Zhorai's response "I think [animal] live in [ecosystem]" with confidence language ("I think", "I'm pretty sure", "Maybe"), Zhorai character visible on right side
   - [x] 5.7 Write unit tests for ML models: test `concept-extractor` with various sentences, test `ecosystem-predictor` with known input/output pairs
-  - [ ] 5.8 Create temporary test page to verify mindmap visualization and prediction chart render correctly with sample data
+  - [x] 5.9 Create `components/activity/reflection-step.tsx` - **Figma: Desktop-22** - Heading "Thanks for teaching me so much about animals! Now let's reflect on what we did today!", two reflection question boxes in bordered frames (12px border radius, black 1px border), Question 1: "If you asked Zhorai about any random animal, do you think Zhorai would be able to guess which ecosystem it is from? Why or why not?" with volume_up icon button next to it for TTS, Question 2: "Do you think Zhorai's knowledge of the world is biased or not? How can we improve Zhorai's brain?" with volume_up icon button next to it for TTS, "Press and speak" button (black background, white text, 600 weight) below each question for user to record responses, user responses displayed as text below each button after recording, questions use Inter font 16px 400 weight, Zhorai character visible on right side (absolute position), Previous/Next/Close navigation buttons at top, gap of 24px between question boxes
 
 - [ ] 6.0 Integrate all steps into activity flow
-  - [ ] 6.1 Create `app/lessons/how-machines-learn/ecosystem-activity/page.tsx` as main activity page component with all 8 step components wrapped in array
+  - [ ] 6.1 Create `app/lessons/how-machines-learn/ecosystem-activity/page.tsx` as main activity page component with all 9 step components wrapped in array
   - [ ] 6.2 Integrate with existing `LessonLayout` component or create custom activity layout with step navigation, progress indicator (purple bars), Previous/Next buttons, and Close (X) button
   - [ ] 6.3 Implement activity state management across all steps with React Context provider wrapping activity page, state persistence during navigation, and step validation before proceeding
   - [ ] 6.4 Add step transition logic with validation checks (e.g., can't proceed without 3 sentences), smooth animations between steps, and disabled Previous button on first step
-  - [ ] 6.5 Implement completion screen (after Step 8) showing summary of what Zhorai learned, congratulations message, and "Continue to next activity" button
+  - [ ] 6.5 Implement completion screen (after Step 9) showing summary of what Zhorai learned, congratulations message, and "Continue to next activity" button
   - [ ] 6.6 Update `app/lessons/how-machines-learn/page.tsx` to link to new ecosystem activity page
-  - [ ] 6.7 Write integration tests for complete activity flow: test navigation between all 8 steps, state persistence, validation gates
+  - [ ] 6.7 Write integration tests for complete activity flow: test navigation between all 9 steps, state persistence, validation gates
   - [ ] 6.8 Manual browser testing: run dev server and complete full activity flow, verify all steps work correctly
 
 - [ ] 7.0 Add animations, polish, and responsive design

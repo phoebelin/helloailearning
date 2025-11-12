@@ -70,6 +70,7 @@ const stepSequence: ActivityStep[] = [
   'sentence-list',
   'mindmap-display',
   'prediction',
+  'reflection',
   'completion',
 ];
 
@@ -226,6 +227,8 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
       case 'mindmap-display':
         return true;
       case 'prediction':
+        return true;
+      case 'reflection':
         return true;
       case 'completion':
         return false;

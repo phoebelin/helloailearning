@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { IntroductionStep } from '@/components/activity/introduction-step';
 import { EcosystemSelectionStep } from '@/components/activity/ecosystem-selection-step';
 import { KnowledgeVisualizationStep } from '@/components/activity/knowledge-visualization-step';
@@ -14,9 +14,12 @@ import { UnderstandingCheckStep } from '@/components/activity/understanding-chec
 import { AnimalSelectionStep } from '@/components/activity/animal-selection-step';
 import { SentenceInputStep } from '@/components/activity/sentence-input-step';
 import { PredictionStep } from '@/components/activity/prediction-step';
+import { ReflectionStep } from '@/components/activity/reflection-step';
 import { ActivityProvider, useActivity } from '@/lib/context/activity-context';
 import { EcosystemType, Sentence } from '@/types/activity';
 import { exposeDebugFunctions, testConceptExtraction, testSentimentExamples, testMindmapGeneration } from '@/lib/utils/debug-sentences';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type AnimalType = 'bees' | 'dolphins' | 'monkeys' | 'zebras';
 
@@ -31,7 +34,8 @@ const stepToIndexMap: Record<string, number> = {
   'sentence-list': 5, // Same as sentence-input
   'mindmap-display': 5, // Same as sentence-input
   'prediction': 6,
-  'completion': 6, // Same as prediction
+  'reflection': 7,
+  'completion': 7, // Same as reflection
 };
 
 const indexToStepMap: Record<number, string> = {
@@ -42,6 +46,7 @@ const indexToStepMap: Record<number, string> = {
   4: 'animal-selection',
   5: 'sentence-input',
   6: 'prediction',
+  7: 'reflection',
 };
 
 function DebugInfo({ 
@@ -72,7 +77,7 @@ function DebugInfo({
         <div className="mt-2 text-xs space-y-1">
           <p><strong>Current Step:</strong> {currentStep + 1}</p>
           <p><strong>Max Step Reached:</strong> {maxStepReached + 1}</p>
-          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 7</p>
+          <p><strong>Steps Revealed:</strong> {maxStepReached + 1} of 8</p>
           <p><strong>Ecosystem:</strong> {selectedEcosystem || 'None'}</p>
           <p><strong>Animal:</strong> {selectedAnimal || 'None'}</p>
           <p><strong>Sentences:</strong> {sentences?.length || 0}</p>
@@ -193,6 +198,7 @@ function TestActivityStepsContent() {
   const {
     state,
     nextStep: contextNextStep,
+    previousStep: contextPreviousStep,
     goToStep,
     selectEcosystem,
     selectAnimal,
@@ -203,15 +209,37 @@ function TestActivityStepsContent() {
   } = useActivity();
 
   // Convert context step to page step index
-  const currentStepIndex = stepToIndexMap[state.currentStep] ?? 0;
+  // Use state.stepIndex from context, but map it to our page step index
+  const contextStepIndex = state.stepIndex;
+  const currentStepIndex = stepToIndexMap[state.currentStep] ?? contextStepIndex;
+  
   const [maxStepReached, setMaxStepReached] = useState(currentStepIndex);
+  const [visibleStepIndex, setVisibleStepIndex] = useState(currentStepIndex);
 
   // Sync maxStepReached with current step
   useEffect(() => {
     setMaxStepReached(prev => Math.max(prev, currentStepIndex));
   }, [currentStepIndex]);
 
+  // Sync visibleStepIndex with currentStepIndex immediately on navigation
+  // This prevents flashing when navigating between steps
+  useEffect(() => {
+    // Only update if we're not in the middle of programmatic navigation
+    // This prevents race conditions with Intersection Observer
+    if (!isNavigatingProgrammaticallyRef.current) {
+      setVisibleStepIndex(currentStepIndex);
+    } else {
+      // If we are navigating programmatically, update immediately
+      setVisibleStepIndex(currentStepIndex);
+      // Reset the flag after a short delay to allow Intersection Observer to work for manual scrolling
+      setTimeout(() => {
+        isNavigatingProgrammaticallyRef.current = false;
+      }, 500);
+    }
+  }, [currentStepIndex]);
+
   // Refs for each step to enable auto-scrolling
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const step0Ref = useRef<HTMLDivElement>(null);
   const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
@@ -219,23 +247,104 @@ function TestActivityStepsContent() {
   const step4Ref = useRef<HTMLDivElement>(null);
   const step5Ref = useRef<HTMLDivElement>(null);
   const step6Ref = useRef<HTMLDivElement>(null);
+  const step7Ref = useRef<HTMLDivElement>(null);
 
-  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref, step5Ref, step6Ref];
+  const stepRefs = [step0Ref, step1Ref, step2Ref, step3Ref, step4Ref, step5Ref, step6Ref, step7Ref];
 
-  // Auto-scroll to the current step when it changes
+  // Track if user is manually scrolling to prevent auto-scroll interference
+  const isUserScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isNavigatingProgrammaticallyRef = useRef(false);
+
+  // Only auto-scroll when step changes programmatically (via buttons), not during manual scrolling
   useEffect(() => {
-    if (currentStepIndex > 0 && stepRefs[currentStepIndex]?.current) {
-      setTimeout(() => {
-        stepRefs[currentStepIndex].current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
-      }, 100); // Small delay to let the step render
+    // Don't auto-scroll if user is currently scrolling
+    if (isUserScrollingRef.current) return;
+    
+    // Only auto-scroll if we're navigating programmatically
+    if (!isNavigatingProgrammaticallyRef.current) return;
+    
+    const stepRef = stepRefs[currentStepIndex]?.current;
+    if (stepRef) {
+      // Use a small delay to ensure DOM is updated and step is rendered
+      const timeoutId = setTimeout(() => {
+        if (!isUserScrollingRef.current && stepRefs[currentStepIndex]?.current) {
+          stepRefs[currentStepIndex].current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+          });
+        }
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [currentStepIndex, stepRefs]);
 
+  // Detect manual scrolling
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      isUserScrollingRef.current = true;
+      
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Reset flag after scrolling stops
+      scrollTimeoutRef.current = setTimeout(() => {
+        isUserScrollingRef.current = false;
+      }, 150);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Track which step is currently visible in viewport using Intersection Observer
+  // Only update during manual scrolling, not during programmatic navigation
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    
+    stepRefs.forEach((ref, index) => {
+      if (!ref.current) return;
+      
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+              // Only update if user is manually scrolling AND not navigating programmatically
+              // This prevents flashing during button navigation
+              if (isUserScrollingRef.current && !isNavigatingProgrammaticallyRef.current) {
+                setVisibleStepIndex(index);
+              }
+            }
+          });
+        },
+        {
+          threshold: [0, 0.5, 1],
+          rootMargin: '-20% 0px -20% 0px', // Only trigger when step is in center 60% of viewport
+        }
+      );
+      
+      observer.observe(ref.current);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach(observer => observer.disconnect());
+    };
+  }, [stepRefs, maxStepReached]);
+
   const handleNext = (stepIndex: number) => {
-    if (stepIndex < 6) {
+    if (stepIndex < 7) {
       const nextStepIndex = stepIndex + 1;
       const nextStep = indexToStepMap[nextStepIndex];
       if (nextStep) {
@@ -311,38 +420,138 @@ function TestActivityStepsContent() {
     });
   };
 
+  // Total number of steps (introduction through reflection, excluding completion)
+  const totalSteps = 8; // indices 0-7 (removed last 2 rectangles)
+
+  // Navigation handlers for header buttons
+  // We need to navigate based on the page's step mapping, not the context's step sequence
+  const handleHeaderPrevious = useCallback(() => {
+    // Calculate currentStepIndex fresh to ensure we have the latest value
+    const calculatedIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    
+    if (calculatedIndex <= 0) return;
+    
+    // Find the previous step in our page mapping
+    const prevIndex = calculatedIndex - 1;
+    const prevStepName = indexToStepMap[prevIndex];
+    
+    if (!prevStepName) return;
+    
+    // Mark that we're navigating programmatically
+    isNavigatingProgrammaticallyRef.current = true;
+    
+    // Update visibleStepIndex immediately to prevent flashing
+    setVisibleStepIndex(prevIndex);
+    
+    // Navigate to the previous step
+    goToStep(prevStepName as any);
+    
+    // Ensure scroll happens after state update
+    setTimeout(() => {
+      const stepRef = stepRefs[prevIndex]?.current;
+      if (stepRef) {
+        stepRef.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
+  }, [goToStep, state.currentStep, state.stepIndex, stepRefs]);
+
+  const handleHeaderNext = useCallback(() => {
+    // Calculate currentStepIndex fresh to ensure we have the latest value
+    const calculatedIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    
+    if (calculatedIndex >= totalSteps - 1) return;
+    
+    const nextIndex = calculatedIndex + 1;
+    const nextStep = indexToStepMap[nextIndex];
+    
+    if (!nextStep) return;
+    
+    // Mark that we're navigating programmatically
+    isNavigatingProgrammaticallyRef.current = true;
+    
+    // Update visibleStepIndex immediately to prevent flashing
+    setVisibleStepIndex(nextIndex);
+    
+    // Navigate to the next step
+    goToStep(nextStep as any);
+    setMaxStepReached(prev => Math.max(prev, nextIndex));
+    
+    // Ensure scroll happens after state update
+    setTimeout(() => {
+      const stepRef = stepRefs[nextIndex]?.current;
+      if (stepRef) {
+        stepRef.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
+  }, [goToStep, state.currentStep, state.stepIndex, totalSteps, stepRefs]);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed Header - shows progress */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-semibold">Activity Steps Test</h1>
+        <div className="max-w-[1200px] mx-auto px-[60px] py-6">
+          <div className="flex items-center justify-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleHeaderPrevious}
+              disabled={currentStepIndex === 0}
+              className="text-sm"
+            >
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Previous
+            </Button>
             
-            {/* Progress indicators */}
-            <div className="flex gap-2">
-              {[0, 1, 2, 3, 4, 5, 6].map((step) => (
-                <div
-                  key={step}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
-                    step <= currentStepIndex
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  {step + 1}
-                </div>
-              ))}
+            {/* Progress indicators - rectangular bars matching Figma design */}
+            <div className="flex items-center" style={{ width: '432px', gap: '8px' }}>
+              {Array.from({ length: totalSteps }).map((_, index) => {
+                const isCompleted = index <= visibleStepIndex;
+                return (
+                  <div
+                    key={index}
+                    className="h-3 transition-colors"
+                    style={{
+                      flex: 1,
+                      backgroundColor: isCompleted ? '#967FD8' : '#D9D9D9',
+                      borderRadius: '12px',
+                    }}
+                  />
+                );
+              })}
             </div>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleHeaderNext}
+              disabled={currentStepIndex >= totalSteps - 1}
+              className="text-sm"
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Scrollable Content with Snap Scrolling */}
-      <div className="pt-20 pb-20 snap-y snap-mandatory overflow-y-auto h-screen">
+      <div 
+        ref={scrollContainerRef} 
+        className="overflow-y-auto h-screen"
+        style={{ 
+          scrollSnapType: 'y mandatory',
+        }}
+      >
+        <div className="pt-20 pb-20">
       {/* Step 0: Introduction */}
       {currentStepIndex >= 0 && (
-        <div ref={step0Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step0Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <IntroductionStep
             onNext={() => handleNext(0)}
             onPrevious={() => {}}
@@ -352,7 +561,7 @@ function TestActivityStepsContent() {
 
       {/* Step 1: Ecosystem Selection */}
       {currentStepIndex >= 1 && (
-        <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <EcosystemSelectionStep
             onNext={() => handleNext(1)}
             onPrevious={() => goToStep('introduction')}
@@ -364,7 +573,7 @@ function TestActivityStepsContent() {
 
       {/* Step 2: Knowledge Visualization */}
       {maxStepReached >= 2 && selectedEcosystem && (
-        <div ref={step2Ref} data-step="knowledge-visualization" className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step2Ref} data-step="knowledge-visualization" className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <KnowledgeVisualizationStep
             ecosystem={selectedEcosystem}
             onNext={() => handleNext(2)}
@@ -376,7 +585,7 @@ function TestActivityStepsContent() {
 
       {/* Step 3: Understanding Check */}
       {maxStepReached >= 3 && selectedEcosystem && (
-        <div ref={step3Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step3Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <UnderstandingCheckStep
             ecosystem={selectedEcosystem}
             onNext={() => handleNext(3)}
@@ -387,7 +596,7 @@ function TestActivityStepsContent() {
 
       {/* Step 4: Animal Selection */}
       {maxStepReached >= 4 && (
-        <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step4Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <AnimalSelectionStep
             onNext={() => handleNext(4)}
             onPrevious={() => goToStep('understanding-check')}
@@ -399,7 +608,7 @@ function TestActivityStepsContent() {
 
       {/* Step 5: Sentence Input */}
       {maxStepReached >= 5 && selectedAnimal && (
-        <div ref={step5Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step5Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <SentenceInputStep
             animal={selectedAnimal}
             sentences={sentences}
@@ -412,17 +621,28 @@ function TestActivityStepsContent() {
 
       {/* Step 6: Prediction */}
       {maxStepReached >= 6 && selectedAnimal && (
-        <div ref={step6Ref} className="min-h-screen flex items-center justify-center py-12 snap-center snap-always">
+        <div ref={step6Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <PredictionStep
             selectedAnimal={selectedAnimal}
             userSentences={sentences.map(s => s.sentence)}
-            onNext={() => {
-              alert('Activity complete! All steps finished.');
-            }}
+            onNext={() => handleNext(6)}
             onPrevious={() => goToStep('sentence-input')}
           />
         </div>
       )}
+
+      {/* Step 7: Reflection */}
+      {maxStepReached >= 7 && (
+        <div ref={step7Ref} className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
+          <ReflectionStep
+            onNext={() => {
+              alert('Activity complete! All steps finished.');
+            }}
+            onPrevious={() => goToStep('prediction')}
+          />
+        </div>
+      )}
+        </div>
       </div>
 
       {/* Debug Info */}

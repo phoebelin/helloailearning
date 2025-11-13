@@ -19,7 +19,8 @@ import { ActivityProvider, useActivity } from '@/lib/context/activity-context';
 import { EcosystemType, Sentence } from '@/types/activity';
 import { exposeDebugFunctions, testConceptExtraction, testSentimentExamples, testMindmapGeneration } from '@/lib/utils/debug-sentences';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 type AnimalType = 'bees' | 'dolphins' | 'monkeys' | 'zebras';
 
@@ -210,6 +211,7 @@ function DebugInfo({
 }
 
 function TestActivityStepsContent() {
+  const router = useRouter();
   const {
     state,
     nextStep: contextNextStep,
@@ -238,24 +240,10 @@ function TestActivityStepsContent() {
     setVisibleStepIndex(initialIndex);
   }, []); // Only run on mount
 
-  // Sync maxStepReached with current step
+  // Sync maxStepReached with visible step (what's actually scrolled to)
   useEffect(() => {
-    setMaxStepReached(prev => Math.max(prev, currentStepIndex));
-  }, [currentStepIndex]);
-
-  // Sync visibleStepIndex with currentStepIndex only on initial load or programmatic navigation
-  // After that, let Intersection Observer control it based on scroll position
-  useEffect(() => {
-    // Only sync if we're navigating programmatically or on initial mount
-    // This allows Intersection Observer to take over for manual scrolling
-    if (isNavigatingProgrammaticallyRef.current) {
-      setVisibleStepIndex(currentStepIndex);
-      // Reset the flag after a delay to allow Intersection Observer to work
-      setTimeout(() => {
-        isNavigatingProgrammaticallyRef.current = false;
-      }, 500);
-    }
-  }, [currentStepIndex]);
+    setMaxStepReached(prev => Math.max(prev, visibleStepIndex));
+  }, [visibleStepIndex]);
 
   // Refs for each step to enable auto-scrolling
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -274,9 +262,51 @@ function TestActivityStepsContent() {
   const isUserScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isNavigatingProgrammaticallyRef = useRef(false);
+  const hasRestoredScrollPositionRef = useRef(false);
+
+  // Restore scroll position on initial page load from saved state
+  useEffect(() => {
+    // Only restore once on initial mount
+    if (hasRestoredScrollPositionRef.current) return;
+    
+    const savedStepIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    
+    // Mark that we're restoring programmatically to prevent Intersection Observer interference
+    isNavigatingProgrammaticallyRef.current = true;
+    
+    // Ensure maxStepReached is at least the saved step so it's rendered
+    if (savedStepIndex > 0) {
+      setMaxStepReached(prev => Math.max(prev, savedStepIndex));
+      
+      // Wait for DOM to render, then scroll to saved position
+      const timeoutId = setTimeout(() => {
+        const stepRef = stepRefs[savedStepIndex]?.current;
+        if (stepRef) {
+          stepRef.scrollIntoView({ 
+            behavior: 'auto', // Use 'auto' for instant scroll on page load
+            block: 'start' 
+          });
+          setVisibleStepIndex(savedStepIndex);
+        }
+        hasRestoredScrollPositionRef.current = true;
+        // Reset the flag after restoration is complete
+        setTimeout(() => {
+          isNavigatingProgrammaticallyRef.current = false;
+        }, 500);
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
+    } else {
+      hasRestoredScrollPositionRef.current = true;
+      isNavigatingProgrammaticallyRef.current = false;
+    }
+  }, [state.currentStep, state.stepIndex, stepRefs]);
 
   // Only auto-scroll when step changes programmatically (via buttons), not during manual scrolling
   useEffect(() => {
+    // Don't auto-scroll if we haven't restored the initial position yet
+    if (!hasRestoredScrollPositionRef.current) return;
+    
     // Don't auto-scroll if user is currently scrolling
     if (isUserScrollingRef.current) return;
     
@@ -328,7 +358,7 @@ function TestActivityStepsContent() {
   }, []);
 
   // Track which step is currently visible in viewport using Intersection Observer
-  // This updates the progress tracker to reflect scroll position
+  // This updates both the progress tracker and context state to reflect scroll position
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     
@@ -341,10 +371,19 @@ function TestActivityStepsContent() {
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                // Update visibleStepIndex based on what's actually visible
-                // Only skip if we're in the middle of programmatic navigation
+                // Only update if we're not in the middle of programmatic navigation
                 if (!isNavigatingProgrammaticallyRef.current) {
+                  // Update visible step index for progress tracker
                   setVisibleStepIndex(index);
+                  
+                  // Also update context state to keep it in sync with scroll
+                  const stepName = indexToStepMap[index];
+                  if (stepName && stepName !== state.currentStep) {
+                    goToStep(stepName as any);
+                  }
+                  
+                  // Update maxStepReached to ensure future steps are rendered
+                  setMaxStepReached(prev => Math.max(prev, index));
                 }
               }
             });
@@ -364,11 +403,13 @@ function TestActivityStepsContent() {
       clearTimeout(timeoutId);
       observers.forEach(observer => observer.disconnect());
     };
-  }, [stepRefs, maxStepReached]);
+  }, [stepRefs, maxStepReached, state.currentStep, goToStep]);
 
   const handleNext = (stepIndex: number) => {
-    if (stepIndex < 7) {
-      const nextStepIndex = stepIndex + 1;
+    // Use visibleStepIndex (the step currently scrolled to) instead of the passed stepIndex
+    const currentVisibleIndex = visibleStepIndex;
+    if (currentVisibleIndex < 7) {
+      const nextStepIndex = currentVisibleIndex + 1;
       const nextStep = indexToStepMap[nextStepIndex];
       if (nextStep) {
         // Mark that we're navigating programmatically
@@ -467,26 +508,23 @@ function TestActivityStepsContent() {
   const totalSteps = 8; // indices 0-7 (removed last 2 rectangles)
 
   // Navigation handlers for header buttons
-  // We need to navigate based on the page's step mapping, not the context's step sequence
+  // Buttons use visibleStepIndex (what's actually scrolled to) instead of context state
   const handleHeaderPrevious = useCallback(() => {
-    // Calculate currentStepIndex fresh to ensure we have the latest value
-    const calculatedIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    // Use visibleStepIndex - the step that's actually visible, not what context thinks
+    if (visibleStepIndex <= 0) return;
     
-    if (calculatedIndex <= 0) return;
-    
-    // Find the previous step in our page mapping
-    const prevIndex = calculatedIndex - 1;
+    const prevIndex = visibleStepIndex - 1;
     const prevStepName = indexToStepMap[prevIndex];
     
     if (!prevStepName) return;
     
-    // Mark that we're navigating programmatically
+    // Mark that we're navigating programmatically to prevent Intersection Observer interference
     isNavigatingProgrammaticallyRef.current = true;
     
     // Update visibleStepIndex immediately to prevent flashing
     setVisibleStepIndex(prevIndex);
     
-    // Navigate to the previous step
+    // Update context state to keep it in sync
     goToStep(prevStepName as any);
     
     // Ensure scroll happens after state update
@@ -498,29 +536,33 @@ function TestActivityStepsContent() {
           block: 'start' 
         });
       }
+      // Reset flag after scroll completes
+      setTimeout(() => {
+        isNavigatingProgrammaticallyRef.current = false;
+      }, 500);
     }, 100);
-  }, [goToStep, state.currentStep, state.stepIndex, stepRefs]);
+  }, [goToStep, visibleStepIndex, stepRefs]);
 
   const handleHeaderNext = useCallback(() => {
-    // Calculate currentStepIndex fresh to ensure we have the latest value
-    const calculatedIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    // Use visibleStepIndex - the step that's actually visible, not what context thinks
+    if (visibleStepIndex >= totalSteps - 1) return;
     
-    if (calculatedIndex >= totalSteps - 1) return;
-    
-    const nextIndex = calculatedIndex + 1;
+    const nextIndex = visibleStepIndex + 1;
     const nextStep = indexToStepMap[nextIndex];
     
     if (!nextStep) return;
     
-    // Mark that we're navigating programmatically
+    // Mark that we're navigating programmatically to prevent Intersection Observer interference
     isNavigatingProgrammaticallyRef.current = true;
     
     // Update visibleStepIndex immediately to prevent flashing
     setVisibleStepIndex(nextIndex);
     
-    // Navigate to the next step
-    goToStep(nextStep as any);
+    // Update maxStepReached to ensure the next step is rendered
     setMaxStepReached(prev => Math.max(prev, nextIndex));
+    
+    // Update context state to keep it in sync
+    goToStep(nextStep as any);
     
     // Ensure scroll happens after state update
     setTimeout(() => {
@@ -531,53 +573,73 @@ function TestActivityStepsContent() {
           block: 'start' 
         });
       }
+      // Reset flag after scroll completes
+      setTimeout(() => {
+        isNavigatingProgrammaticallyRef.current = false;
+      }, 500);
     }, 100);
-  }, [goToStep, state.currentStep, state.stepIndex, totalSteps, stepRefs]);
+  }, [goToStep, visibleStepIndex, totalSteps, stepRefs]);
 
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed Header - shows progress */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
         <div className="max-w-[1200px] mx-auto px-[60px] py-6">
-          <div className="flex items-center justify-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleHeaderPrevious}
-              disabled={currentStepIndex === 0}
-              className="text-sm"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Previous
-            </Button>
+          <div className="flex items-center justify-between">
+            {/* Left spacer for balance */}
+            <div className="w-20" />
             
-            {/* Progress indicators - rectangular bars matching Figma design */}
-            <div className="flex items-center" style={{ width: '432px', gap: '8px' }}>
-              {Array.from({ length: totalSteps }).map((_, index) => {
-                const isCompleted = index <= visibleStepIndex;
-                return (
-                  <div
-                    key={index}
-                    className="h-3 transition-colors"
-                    style={{
-                      flex: 1,
-                      backgroundColor: isCompleted ? '#967FD8' : '#D9D9D9',
-                      borderRadius: '12px',
-                    }}
-                  />
-                );
-              })}
+            {/* Centered navigation */}
+            <div className="flex items-center justify-center gap-3">
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={handleHeaderPrevious}
+                       disabled={visibleStepIndex === 0}
+                       className="text-sm"
+                     >
+                       <ChevronLeft className="w-4 h-4 mr-1" />
+                       Previous
+                     </Button>
+              
+              {/* Progress indicators - rectangular bars matching Figma design */}
+              <div className="flex items-center" style={{ width: '432px', gap: '8px' }}>
+                {Array.from({ length: totalSteps }).map((_, index) => {
+                  const isCompleted = index <= visibleStepIndex;
+                  return (
+                    <div
+                      key={index}
+                      className="h-3 transition-colors"
+                      style={{
+                        flex: 1,
+                        backgroundColor: isCompleted ? '#967FD8' : '#D9D9D9',
+                        borderRadius: '12px',
+                      }}
+                    />
+                  );
+                })}
+              </div>
+              
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       onClick={handleHeaderNext}
+                       disabled={visibleStepIndex >= totalSteps - 1}
+                       className="text-sm"
+                     >
+                       Next
+                       <ChevronRight className="w-4 h-4 ml-1" />
+                     </Button>
             </div>
             
+            {/* Right side - X button */}
             <Button
               variant="ghost"
-              size="sm"
-              onClick={handleHeaderNext}
-              disabled={currentStepIndex >= totalSteps - 1}
-              className="text-sm"
+              size="icon"
+              onClick={() => router.push('/courses')}
+              className="text-gray-500 hover:text-gray-700"
             >
-              Next
-              <ChevronRight className="w-4 h-4 ml-1" />
+              <X className="w-5 h-5" />
             </Button>
           </div>
         </div>

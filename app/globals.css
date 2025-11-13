@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent content shift when scrollbar appears/disappears */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Prevent content shift when Radix UI modals/dropdowns open */
+/* Radix UI applies overflow: hidden to body, which removes scrollbar */
+/* We need to maintain scrollbar space even when overflow is hidden */
+body {
+  scrollbar-gutter: stable;
+}
+
+/* Apply padding when body has overflow hidden (Radix UI dropdowns) */
+/* This CSS rule will apply immediately when Radix UI sets overflow: hidden */
+body[style*="overflow: hidden"],
+body[style*="overflow:hidden"] {
+  padding-right: var(--scrollbar-width, 17px) !important;
+}
+
+/* Also apply to html element */
+html[style*="overflow: hidden"],
+html[style*="overflow:hidden"] {
+  padding-right: var(--scrollbar-width, 17px) !important;
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

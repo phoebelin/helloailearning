@@ -274,7 +274,7 @@ export function ReflectionStep({
                 <div className="text-center">
                   <div className="text-6xl mb-4 animate-bounce">🎉</div>
                   <h2 className="text-3xl font-bold text-[#967FD8] mb-2">Congratulations!</h2>
-                  <p className="text-lg text-gray-700">You&apos;ve completed the activity!</p>
+                  <p className="text-lg text-gray-700">You&apos;ve completed How machines learn with Zhorai!</p>
                 </div>
               </div>
             </div>

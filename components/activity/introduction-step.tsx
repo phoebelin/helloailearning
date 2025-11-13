@@ -31,7 +31,7 @@ export interface IntroductionStepProps extends StepComponentProps {
  */
 export function IntroductionStep({
   onNext,
-  title = 'How machine learns with Zhorai',
+  title = 'How machines learn with Zhorai',
   description = "In this course, you'll teach Zhorai, our conversational agent, all about animals and ecosystems and understand how Zhorai learns.",
   requireMicrophone = false,
 }: IntroductionStepProps) {
@@ -105,7 +105,6 @@ export function IntroductionStep({
       </div>
 
       {/* Microphone Permission Dialog */}
-      {console.log('Rendering dialog, isOpen:', isDialogOpen)}
       <MicrophonePermissionDialog
         isOpen={isDialogOpen}
         onClose={closeDialog}

@@ -366,7 +366,7 @@ export function SentenceInputStep({
     <div id="add-sentences-step" className="flex flex-col gap-6 py-20 px-0 max-w-[682px] w-full mx-auto">
       {/* Heading - matches Figma exactly */}
       <h1 className="text-base font-normal leading-[32px] text-black text-left w-full">
-        Tell Zhorai three things about {animalName}.
+        Tell Zhorai three things about {animalName}. Then take a look at Zhorai's brain!
       </h1>
 
       {/* Main container with border - matches Figma exactly */}
@@ -478,7 +478,7 @@ export function SentenceInputStep({
               
               // Trigger speech immediately when showing mindmap
               if (newShowMindmap && sentences.length >= 3) {
-                const speechText = `Here's a visualization of my brain about ${animalName}!`;
+                const speechText = `Here's a visualization of my brain about ${animalName}! Hover over the circles to see what sentences I learned that correspond with each word.`;
                 setTimeout(() => {
                   speak(speechText, {
                     onError: (error) => {
@@ -510,7 +510,7 @@ export function SentenceInputStep({
       {showMindmap && sentences.length > 0 && mindmapData && mindmapData.nodes.length > 0 && (
         <div className="mt-6" data-mindmap-section>
           <h3 className="text-base font-normal leading-[32px] text-black mb-4">
-            Here&apos;s a visualization of my brain about {animalName}!
+            Here&apos;s a visualization of my brain about {animalName}! Hover over the circles to see what sentences I learned that correspond with each word.
           </h3>
           
           {/* Mindmap and Zhorai character container */}

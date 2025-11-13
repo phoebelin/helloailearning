@@ -13,6 +13,7 @@ import { AudioRecorder } from './audio-recorder';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
 import { Volume2 } from 'lucide-react';
 import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 export interface ReflectionStepProps extends StepComponentProps {}
 
@@ -29,6 +30,10 @@ export function ReflectionStep({
   const [currentTranscript2, setCurrentTranscript2] = useState('');
   const [isRecording1, setIsRecording1] = useState(false);
   const [isRecording2, setIsRecording2] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  
+  // Check if both responses have been added
+  const hasBothResponses = response1.trim().length > 0 && response2.trim().length > 0;
 
   const { speak, isSpeaking } = useEnhancedTextToSpeech({
     rate: 0.9,
@@ -57,6 +62,14 @@ export function ReflectionStep({
         }
       }
     });
+  };
+
+  const handleComplete = () => {
+    setShowCelebration(true);
+    // Hide celebration after animation
+    setTimeout(() => {
+      setShowCelebration(false);
+    }, 3000);
   };
 
   return (
@@ -193,6 +206,18 @@ export function ReflectionStep({
               </div>
             )}
           </div>
+          
+          {/* Complete Button - only show when both responses are added */}
+          {hasBothResponses && (
+            <div className="flex justify-center mt-6">
+              <Button
+                onClick={handleComplete}
+                className="bg-black text-white hover:bg-black/90 rounded-xl px-8 py-4 text-base font-semibold"
+              >
+                Complete
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Zhorai character on left side, close to containers */}
@@ -208,6 +233,89 @@ export function ReflectionStep({
           </div>
         </div>
       </div>
+
+      {/* Celebration Animation */}
+      {showCelebration && (
+        <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center bg-black/20">
+          <div className="relative w-full h-full overflow-hidden">
+            {/* Confetti particles */}
+            {Array.from({ length: 50 }).map((_, i) => {
+              const colors = ['#967FD8', '#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'];
+              const color = colors[i % colors.length];
+              const duration = 2 + (i % 3) * 0.5;
+              const delay = (i % 10) * 0.1;
+              const startX = 40 + (i * 7.2) % 20; // Start from center area
+              const startY = 40 + (i % 3) * 5; // Start from upper-middle area
+              const endX = startX + ((i % 2 === 0 ? 1 : -1) * (20 + (i % 3) * 10));
+              const rotation = i * 14.4;
+              
+              return (
+                <div
+                  key={i}
+                  className="absolute w-3 h-3 rounded-full"
+                  style={{
+                    left: `${startX}%`,
+                    top: `${startY}%`,
+                    backgroundColor: color,
+                    animation: `celebrate-${i} ${duration}s ease-out ${delay}s forwards`,
+                  }}
+                />
+              );
+            })}
+            
+            {/* Celebration message */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div 
+                className="bg-white rounded-xl px-8 py-6 shadow-2xl border-2 border-[#967FD8]"
+                style={{
+                  animation: 'scale-in 0.5s ease-out',
+                }}
+              >
+                <div className="text-center">
+                  <div className="text-6xl mb-4 animate-bounce">🎉</div>
+                  <h2 className="text-3xl font-bold text-[#967FD8] mb-2">Congratulations!</h2>
+                  <p className="text-lg text-gray-700">You&apos;ve completed the activity!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Celebration animation styles */}
+      <style dangerouslySetInnerHTML={{__html: `
+        ${Array.from({ length: 50 }).map((_, i) => {
+          const startX = 40 + (i * 7.2) % 20;
+          const endX = startX + ((i % 2 === 0 ? 1 : -1) * (20 + (i % 3) * 10));
+          const rotation = i * 14.4;
+          const translateX = endX - startX;
+          return `
+            @keyframes celebrate-${i} {
+              0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+              }
+              100% {
+                transform: translate(${translateX}%, 100vh) rotate(${rotation}deg) scale(0);
+                opacity: 0;
+              }
+            }
+          `;
+        }).join('')}
+        @keyframes scale-in {
+          0% {
+            transform: scale(0);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}} />
     </div>
   );
 }

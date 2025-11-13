@@ -54,13 +54,15 @@ function DebugInfo({
   maxStepReached,
   selectedEcosystem, 
   selectedAnimal,
-  sentences
+  sentences,
+  onResetProgress
 }: { 
   currentStep: number; 
   maxStepReached: number;
   selectedEcosystem: EcosystemType | null; 
   selectedAnimal: AnimalType | null;
   sentences: Sentence[];
+  onResetProgress: () => void;
 }) {
   const [mounted, setMounted] = React.useState(false);
 
@@ -180,6 +182,19 @@ function DebugInfo({
               </div>
             </div>
           )}
+          {/* Clear Progress Button */}
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <button
+              onClick={() => {
+                if (confirm('Are you sure you want to clear all progress? This will reset the activity to the beginning.')) {
+                  onResetProgress();
+                }
+              }}
+              className="w-full px-3 py-2 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors font-medium"
+            >
+              Clear Progress
+            </button>
+          </div>
           {mounted && (
             <>
               <p className="mt-2"><strong>Browser Support:</strong></p>
@@ -206,6 +221,7 @@ function TestActivityStepsContent() {
     editSentence,
     deleteSentence,
     updateSentenceConcepts,
+    resetActivity,
   } = useActivity();
 
   // Convert context step to page step index
@@ -216,22 +232,25 @@ function TestActivityStepsContent() {
   const [maxStepReached, setMaxStepReached] = useState(currentStepIndex);
   const [visibleStepIndex, setVisibleStepIndex] = useState(currentStepIndex);
 
+  // Initialize visibleStepIndex on mount with current step
+  useEffect(() => {
+    const initialIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
+    setVisibleStepIndex(initialIndex);
+  }, []); // Only run on mount
+
   // Sync maxStepReached with current step
   useEffect(() => {
     setMaxStepReached(prev => Math.max(prev, currentStepIndex));
   }, [currentStepIndex]);
 
-  // Sync visibleStepIndex with currentStepIndex immediately on navigation
-  // This prevents flashing when navigating between steps
+  // Sync visibleStepIndex with currentStepIndex only on initial load or programmatic navigation
+  // After that, let Intersection Observer control it based on scroll position
   useEffect(() => {
-    // Only update if we're not in the middle of programmatic navigation
-    // This prevents race conditions with Intersection Observer
-    if (!isNavigatingProgrammaticallyRef.current) {
+    // Only sync if we're navigating programmatically or on initial mount
+    // This allows Intersection Observer to take over for manual scrolling
+    if (isNavigatingProgrammaticallyRef.current) {
       setVisibleStepIndex(currentStepIndex);
-    } else {
-      // If we are navigating programmatically, update immediately
-      setVisibleStepIndex(currentStepIndex);
-      // Reset the flag after a short delay to allow Intersection Observer to work for manual scrolling
+      // Reset the flag after a delay to allow Intersection Observer to work
       setTimeout(() => {
         isNavigatingProgrammaticallyRef.current = false;
       }, 500);
@@ -309,36 +328,40 @@ function TestActivityStepsContent() {
   }, []);
 
   // Track which step is currently visible in viewport using Intersection Observer
-  // Only update during manual scrolling, not during programmatic navigation
+  // This updates the progress tracker to reflect scroll position
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     
-    stepRefs.forEach((ref, index) => {
-      if (!ref.current) return;
-      
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-              // Only update if user is manually scrolling AND not navigating programmatically
-              // This prevents flashing during button navigation
-              if (isUserScrollingRef.current && !isNavigatingProgrammaticallyRef.current) {
-                setVisibleStepIndex(index);
+    // Add a small delay to prevent initial load interference
+    const timeoutId = setTimeout(() => {
+      stepRefs.forEach((ref, index) => {
+        if (!ref.current) return;
+        
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                // Update visibleStepIndex based on what's actually visible
+                // Only skip if we're in the middle of programmatic navigation
+                if (!isNavigatingProgrammaticallyRef.current) {
+                  setVisibleStepIndex(index);
+                }
               }
-            }
-          });
-        },
-        {
-          threshold: [0, 0.5, 1],
-          rootMargin: '-20% 0px -20% 0px', // Only trigger when step is in center 60% of viewport
-        }
-      );
-      
-      observer.observe(ref.current);
-      observers.push(observer);
-    });
+            });
+          },
+          {
+            threshold: [0, 0.5, 1],
+            rootMargin: '-20% 0px -20% 0px', // Only trigger when step is in center 60% of viewport
+          }
+        );
+        
+        observer.observe(ref.current);
+        observers.push(observer);
+      });
+    }, 100);
 
     return () => {
+      clearTimeout(timeoutId);
       observers.forEach(observer => observer.disconnect());
     };
   }, [stepRefs, maxStepReached]);
@@ -348,9 +371,29 @@ function TestActivityStepsContent() {
       const nextStepIndex = stepIndex + 1;
       const nextStep = indexToStepMap[nextStepIndex];
       if (nextStep) {
+        // Mark that we're navigating programmatically
+        isNavigatingProgrammaticallyRef.current = true;
+        
+        // Update maxStepReached first to ensure the next step is rendered
+        setMaxStepReached(prev => Math.max(prev, nextStepIndex));
+        
+        // Update visibleStepIndex immediately to prevent flashing
+        setVisibleStepIndex(nextStepIndex);
+        
+        // Then navigate to the next step
         goToStep(nextStep as any);
+        
+        // Ensure scroll happens after state update
+        setTimeout(() => {
+          const stepRef = stepRefs[nextStepIndex]?.current;
+          if (stepRef) {
+            stepRef.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start' 
+            });
+          }
+        }, 100);
       }
-      setMaxStepReached(prev => Math.max(prev, nextStepIndex));
     }
   };
 
@@ -652,6 +695,7 @@ function TestActivityStepsContent() {
         selectedEcosystem={selectedEcosystem}
         selectedAnimal={selectedAnimal}
         sentences={sentences}
+        onResetProgress={resetActivity}
       />
     </div>
   );

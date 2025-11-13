@@ -68,12 +68,38 @@ export function UnderstandingCheckStep({
   const [showCelebration, setShowCelebration] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // Check if step is already completed (from persisted state)
-  const isCompleted = state.checkAnswers.length === 2;
-  // Only show bottom nav when actually on the understanding-check step
-  const isOnUnderstandingCheckStep = state.currentStep === 'understanding-check';
+  // Only consider it completed if we've submitted and moved on, not just if answers are saved
+  const hasSavedAnswers = state.checkAnswers.length === 2;
   const hasInitialized = useRef(false);
+
+  // Track visibility of this step in viewport using Intersection Observer
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Consider visible if more than 50% is in viewport
+          setIsVisible(entry.isIntersecting && entry.intersectionRatio > 0.5);
+        });
+      },
+      {
+        threshold: [0, 0.5, 1],
+        rootMargin: '-20% 0px -20% 0px', // Only trigger when step is in center 60% of viewport
+      }
+    );
+
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
   
   // Initialize selectedOptions from persisted checkAnswers on mount
   useEffect(() => {
@@ -153,7 +179,7 @@ export function UnderstandingCheckStep({
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="flex flex-col gap-6 py-20 px-4 max-w-[682px] mx-auto min-h-screen pb-24">
+      <div ref={containerRef} className="flex flex-col gap-6 py-20 px-4 max-w-[682px] mx-auto min-h-screen pb-24">
         {/* Main content area */}
         <div className="flex flex-col gap-6 w-full flex-1">
           
@@ -253,8 +279,8 @@ export function UnderstandingCheckStep({
           </div>
         </div>
 
-        {/* Bottom Navigation Pattern - Only show when user is actively working on this step */}
-        {!isCompleted && isOnUnderstandingCheckStep ? (
+        {/* Bottom Navigation Pattern - Only show when this step is visible in viewport */}
+        {isVisible ? (
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-6">
             <div className="max-w-[682px] mx-auto flex justify-center items-center">
               {/* Centered content */}

@@ -16,6 +16,7 @@ import {
   PredictionResult,
   ConceptData,
 } from '@/types/activity';
+import { markActivityAsCompleted } from '@/lib/utils/activity-tracking';
 
 interface ActivityContextType {
   // State
@@ -339,11 +340,17 @@ export function ActivityProvider({ children, initialStep = 'introduction' }: Act
 
   // Activity completion
   const completeActivity = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      isComplete: true,
-      endTime: Date.now(),
-    }));
+    setState(prev => {
+      // Mark activity as completed in tracking system
+      // Using a default activity ID - can be made configurable later
+      markActivityAsCompleted('how-machines-learn');
+      
+      return {
+        ...prev,
+        isComplete: true,
+        endTime: Date.now(),
+      };
+    });
   }, []);
 
   const resetActivity = useCallback(() => {

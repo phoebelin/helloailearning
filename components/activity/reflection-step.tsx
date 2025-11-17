@@ -14,6 +14,7 @@ import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
 import { Volume2 } from 'lucide-react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { useActivity } from '@/lib/context/activity-context';
 
 export interface ReflectionStepProps extends StepComponentProps {}
 
@@ -24,6 +25,7 @@ export function ReflectionStep({
   onNext,
   onPrevious,
 }: ReflectionStepProps) {
+  const { completeActivity } = useActivity();
   const [response1, setResponse1] = useState('');
   const [response2, setResponse2] = useState('');
   const [currentTranscript1, setCurrentTranscript1] = useState('');
@@ -65,10 +67,14 @@ export function ReflectionStep({
   };
 
   const handleComplete = () => {
+    // Mark activity as completed
+    completeActivity();
     setShowCelebration(true);
     // Hide celebration after animation
     setTimeout(() => {
       setShowCelebration(false);
+      // Call onNext after celebration
+      onNext();
     }, 3000);
   };
 

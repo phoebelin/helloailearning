@@ -2,10 +2,40 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, User } from "lucide-react"
+import { Flame, User } from "lucide-react"
+import { useEffect, useState } from "react"
+import { getCompletedActivitiesCount } from "@/lib/utils/activity-tracking"
 
 export function Nav() {
   const pathname = usePathname()
+  const [completedCount, setCompletedCount] = useState(0)
+  
+  // Only show streak on projects and courses pages
+  const showStreak = pathname === '/projects' || pathname === '/courses'
+
+  useEffect(() => {
+    if (showStreak) {
+      setCompletedCount(getCompletedActivitiesCount())
+      
+      // Listen for custom event when activities are completed
+      const handleActivityCompleted = () => {
+        setCompletedCount(getCompletedActivitiesCount())
+      }
+      
+      // Also listen for storage changes (for cross-tab updates)
+      const handleStorageChange = () => {
+        setCompletedCount(getCompletedActivitiesCount())
+      }
+      
+      window.addEventListener('activity-completed', handleActivityCompleted)
+      window.addEventListener('storage', handleStorageChange)
+      
+      return () => {
+        window.removeEventListener('activity-completed', handleActivityCompleted)
+        window.removeEventListener('storage', handleStorageChange)
+      }
+    }
+  }, [showStreak])
 
   return (
     <header className="border-b">
@@ -36,12 +66,12 @@ export function Nav() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <button className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              2
-            </span>
-          </button>
+          {showStreak && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">{completedCount}</span>
+              <Flame className="w-5 h-5" />
+            </div>
+          )}
           <button>
             <User className="w-5 h-5" />
           </button>

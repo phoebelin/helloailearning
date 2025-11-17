@@ -61,10 +61,10 @@ export function Hero() {
   if (step === null) {
     return (
       <section className="text-center py-20 px-4 max-w-3xl mx-auto">
-        <h1 className="text-5xl font-serif mb-4">
+        <h1 className="text-5xl font-serif mb-6">
           Anyone can learn <span className="block italic">artificial intelligence</span>
         </h1>
-        <p className="text-lg mb-8 text-gray-600">
+        <p className="text-lg mb-6 text-gray-600">
           Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
         </p>
         <Button
@@ -75,6 +75,13 @@ export function Hero() {
         >
           Join the waitlist
         </Button>
+        <div className="mt-12">
+          <img 
+            src="/images/hero-image.png" 
+            alt="AI Learning for Kids" 
+            className="w-full max-w-4xl mx-auto rounded-xl"
+          />
+        </div>
       </section>
     )
   }
@@ -82,14 +89,21 @@ export function Hero() {
   if (step === "submitted" && success) {
     return (
       <section className="text-center py-20 px-4 max-w-3xl mx-auto">
-        <h1 className="text-5xl font-serif mb-4">
+        <h1 className="text-5xl font-serif mb-6">
           Anyone can learn <span className="block italic">artificial intelligence</span>
         </h1>
-        <p className="text-lg mb-8 text-gray-600">
+        <p className="text-lg mb-6 text-gray-600">
           Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
         </p>
         <div className="flex flex-col items-center gap-2">
           <p className="text-lg font-bold text-purple-400 font-[var(--font-inter)]">Thank you! We'll be in touch soon.</p>
+        </div>
+        <div className="mt-12">
+          <img 
+            src="/images/hero-image.png" 
+            alt="AI Learning for Kids" 
+            className="w-full max-w-4xl mx-auto rounded-xl"
+          />
         </div>
       </section>
     )
@@ -97,10 +111,10 @@ export function Hero() {
 
   return (
     <section className="text-center py-20 px-4 max-w-3xl mx-auto">
-      <h1 className="text-5xl font-serif mb-4">
+      <h1 className="text-5xl font-serif mb-6">
         Anyone can learn <span className="block italic">artificial intelligence</span>
       </h1>
-      <p className="text-lg mb-8 text-gray-600">
+      <p className="text-lg mb-6 text-gray-600">
         Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
       </p>
       <form
@@ -150,6 +164,13 @@ export function Hero() {
           <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>
         )}
       </form>
+      <div className="mt-12">
+        <img 
+          src="/images/hero-image.png" 
+          alt="AI Learning for Kids" 
+          className="w-full max-w-4xl mx-auto rounded-xl"
+        />
+      </div>
     </section>
   )
 }

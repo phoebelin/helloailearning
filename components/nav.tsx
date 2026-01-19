@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Flame, User } from "lucide-react"
+import { Flame } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getCompletedActivitiesCount } from "@/lib/utils/activity-tracking"
 
@@ -72,9 +72,9 @@ export function Nav() {
               <Flame className="w-5 h-5" />
             </div>
           )}
-          <button>
-            <User className="w-5 h-5" />
-          </button>
+          <Link href="/login" className="text-sm">
+            Login
+          </Link>
         </div>
       </nav>
     </header>

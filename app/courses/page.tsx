@@ -97,6 +97,39 @@ export default function CoursesPage() {
                 </p>
               </button>
             </div>
+
+            {/* Chapter 2 Section */}
+            <div className="flex flex-col gap-6">
+              <p className="text-sm font-semibold text-black text-center" style={{ lineHeight: '1.7142857142857142em' }}>
+                Chapter 2
+              </p>
+              
+              {/* How machines use patterns with Mori Tile */}
+              <button
+                onClick={() => router.push('/lessons/chapter-2')}
+                className="flex flex-col items-center justify-between gap-0 bg-white border border-black rounded-xl cursor-pointer transition-shadow hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
+                style={{
+                  width: '261px',
+                  height: '285px',
+                  padding: '24px',
+                  borderRadius: '12px',
+                }}
+              >
+                <Image
+                  src="/images/mori-course.png"
+                  alt="Mori"
+                  width={200}
+                  height={179}
+                  className="object-contain"
+                />
+                <p 
+                  className="text-sm font-semibold text-black text-center whitespace-pre-line"
+                  style={{ lineHeight: '1.7142857142857142em' }}
+                >
+                  How machines{'\n'}use patterns with Mori
+                </p>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -160,7 +160,7 @@ export function Hero() {
         {error && (
           <p className="text-sm text-red-600">{error}</p>
         )}
-        {step === "email" && (
+        {(step === "email" || step === "name") && (
           <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>
         )}
       </form>

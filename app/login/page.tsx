@@ -1,15 +1,12 @@
 "use client"
 import { useState } from "react"
 import { Nav } from "@/components/nav"
-import { Hero } from "@/components/hero"
-import { Features } from "@/components/features"
-import { Testimonials } from "@/components/testimonials"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 type FormStep = "email" | "name" | "submitted"
 
-export default function Home() {
+export default function LoginPage() {
   const [step, setStep] = useState<FormStep | null>(null)
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
@@ -65,9 +62,17 @@ export default function Home() {
     <div className="min-h-screen">
       <Nav />
       <main>
-        <Hero />
-        <Features />
-        <Testimonials />
+        <section className="text-center py-20 px-4 max-w-4xl mx-auto">
+          <h1 className="text-5xl font-serif mb-6">Login</h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Login functionality is coming soon! We're working hard to bring you a seamless experience.
+          </p>
+          <div className="bg-gray-50 rounded-xl p-8 mb-12">
+            <p className="text-lg text-gray-700">
+              In the meantime, join our waitlist to be notified when login becomes available.
+            </p>
+          </div>
+        </section>
         <section className="text-center py-20 px-4">
           <h2 className="text-4xl font-serif mb-8">Prepare your child for the AI era</h2>
           {step === null ? (

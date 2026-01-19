@@ -1,6 +1,6 @@
 export function Features() {
   return (
-    <section className="py-20 px-4 max-w-7xl mx-auto">
+    <section className="py-20 px-10 max-w-7xl mx-auto">
       <div className="grid md:grid-cols-2 gap-16">
         <img 
           src="/images/feature-standards-aligned.png" 

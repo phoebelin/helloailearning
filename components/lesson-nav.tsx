@@ -1,6 +1,6 @@
 "use client"
 
-import { X, Bell, ChevronLeft, ChevronRight } from "lucide-react"
+import { X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
@@ -13,42 +13,70 @@ interface LessonNavProps {
 
 export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: LessonNavProps) {
   const router = useRouter()
+  const visibleStepIndex = currentStep - 1 // Convert to 0-based index
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white border-b z-50">
-      <div className="flex items-center justify-between p-4">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-1">
-            <Bell className="w-5 h-5" />
-            <span className="font-medium">2</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={onPrevious} disabled={currentStep === 1} className="text-sm">
+    <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
+      <div className="max-w-[1200px] mx-auto px-[60px] py-6">
+        <div className="flex items-center justify-between">
+          {/* Left spacer for balance */}
+          <div className="w-20" />
+          
+          {/* Centered navigation */}
+          <div className="flex items-center justify-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onPrevious}
+              disabled={visibleStepIndex === 0}
+              className="text-sm"
+            >
               <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
             </Button>
-            <div className="flex gap-2">
-              {Array.from({ length: totalSteps }).map((_, i) => (
-                <div key={i} className={`h-2 w-16 rounded-full ${i < currentStep ? "bg-[#967fd8]" : "bg-gray-200"}`} />
-              ))}
+            
+            {/* Progress indicators - rectangular bars matching Figma design */}
+            <div className="flex items-center" style={{ width: '432px', gap: '8px' }}>
+              {Array.from({ length: totalSteps }).map((_, index) => {
+                const isCompleted = index <= visibleStepIndex
+                return (
+                  <div
+                    key={index}
+                    className="h-3 transition-colors"
+                    style={{
+                      flex: 1,
+                      backgroundColor: isCompleted ? '#967FD8' : '#D9D9D9',
+                      borderRadius: '12px',
+                    }}
+                  />
+                )
+              })}
             </div>
+            
             <Button
               variant="ghost"
               size="sm"
               onClick={onNext}
-              disabled={currentStep === totalSteps}
+              disabled={visibleStepIndex >= totalSteps - 1}
               className="text-sm"
             >
               Next
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
+          
+          {/* Right side - X button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push('/courses')}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-5 h-5" />
+          </Button>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => router.push("/projects")} className="text-gray-500">
-          <X className="w-5 h-5" />
-        </Button>
       </div>
-    </header>
+    </div>
   )
 }
 

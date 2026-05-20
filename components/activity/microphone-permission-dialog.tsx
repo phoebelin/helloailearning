@@ -89,15 +89,14 @@ export function MicrophonePermissionDialog({
                 onPermissionDenied();
               }
             };
-          } catch (err) {
+          } catch {
             // Permission query not supported, default to prompt
             setPermissionState('prompt');
           }
         } else {
           setPermissionState('prompt');
         }
-      } catch (error) {
-        console.error('Error checking microphone permission:', error);
+      } catch {
         setPermissionState('prompt');
       }
     };
@@ -201,9 +200,9 @@ export function MicrophonePermissionDialog({
               <div className="bg-muted/50 rounded-lg p-4">
                 <p className="text-sm mb-2 font-medium">What happens next:</p>
                 <ol className="text-sm space-y-2 list-decimal list-inside text-muted-foreground">
-                  <li>Click "Allow Microphone Access" below</li>
+                  <li>Click &quot;Allow Microphone Access&quot; below</li>
                   <li>Your browser will ask for permission</li>
-                  <li>Click "Allow" in the browser popup</li>
+                  <li>Click &quot;Allow&quot; in the browser popup</li>
                 </ol>
               </div>
               
@@ -243,7 +242,7 @@ export function MicrophonePermissionDialog({
                         Click the <strong className="text-foreground">lock icon</strong> or <strong className="text-foreground">camera icon</strong> in the address bar
                       </li>
                       <li className="text-muted-foreground">
-                        Change microphone permission to <strong className="text-foreground">"Allow"</strong>
+                        Change microphone permission to <strong className="text-foreground">&quot;Allow&quot;</strong>
                       </li>
                       <li className="text-muted-foreground">
                         Reload the page
@@ -255,7 +254,7 @@ export function MicrophonePermissionDialog({
                         Go to <strong className="text-foreground">Safari → Settings for This Website</strong>
                       </li>
                       <li className="text-muted-foreground">
-                        Change Microphone to <strong className="text-foreground">"Allow"</strong>
+                        Change Microphone to <strong className="text-foreground">&quot;Allow&quot;</strong>
                       </li>
                       <li className="text-muted-foreground">
                         Reload the page
@@ -267,7 +266,7 @@ export function MicrophonePermissionDialog({
                         Click the <strong className="text-foreground">microphone icon</strong> in the address bar
                       </li>
                       <li className="text-muted-foreground">
-                        Remove the "Blocked Temporarily" setting
+                        Remove the &quot;Blocked Temporarily&quot; setting
                       </li>
                       <li className="text-muted-foreground">
                         Reload the page and allow access
@@ -276,10 +275,10 @@ export function MicrophonePermissionDialog({
                   ) : (
                     <>
                       <li className="text-muted-foreground">
-                        Look for permission icons in your browser's address bar
+                        Look for permission icons in your browser&apos;s address bar
                       </li>
                       <li className="text-muted-foreground">
-                        Change microphone permission to "Allow"
+                        Change microphone permission to &quot;Allow&quot;
                       </li>
                       <li className="text-muted-foreground">
                         Reload the page
@@ -313,9 +312,9 @@ export function MicrophonePermissionDialog({
                   Microphone access is not available. This could be because:
                 </p>
                 <ul className="text-sm space-y-2 list-disc list-inside ml-2 text-muted-foreground">
-                  <li>Your browser doesn't support the Web Speech API</li>
-                  <li>You're using an unsecured connection (not HTTPS)</li>
-                  <li>Your device doesn't have a microphone</li>
+                  <li>Your browser doesn&apos;t support the Web Speech API</li>
+                  <li>You&apos;re using an unsecured connection (not HTTPS)</li>
+                  <li>Your device doesn&apos;t have a microphone</li>
                 </ul>
               </div>
               
@@ -331,7 +330,7 @@ export function MicrophonePermissionDialog({
             <div className="space-y-4">
               <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg p-4 text-center">
                 <p className="text-sm text-green-700 dark:text-green-400">
-                  ✓ You're all set! Speech recognition is now enabled.
+                  ✓ You&apos;re all set! Speech recognition is now enabled.
                 </p>
               </div>
               
@@ -371,13 +370,13 @@ export function useMicrophonePermission() {
             result.onchange = () => {
               setPermissionState(result.state as PermissionState);
             };
-          } catch (err) {
+          } catch {
             setPermissionState('prompt');
           }
         } else {
           setPermissionState('prompt');
         }
-      } catch (error) {
+      } catch {
         setPermissionState('prompt');
       }
     };
@@ -391,7 +390,7 @@ export function useMicrophonePermission() {
       stream.getTracks().forEach(track => track.stop());
       setPermissionState('granted');
       return true;
-    } catch (error) {
+    } catch {
       setPermissionState('denied');
       return false;
     }

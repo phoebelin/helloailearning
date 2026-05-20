@@ -131,9 +131,9 @@ function calculateNodePositions(
 /**
  * Get text color for different node types
  */
-function getNodeTextColor(color: NodeColor): string {
-  return '#ffffff'; // white text for all colors
-}
+// function getNodeTextColor(color: NodeColor): string {
+//   return '#ffffff'; // white text for all colors
+// }
 
 /**
  * Get color classes for different node types (for mobile component)
@@ -282,7 +282,7 @@ export function MindmapVisualization({
     const position = positions.get(node.id);
     if (!position) return null;
 
-    const isHovered = hoveredNode?.id === node.id;
+    // const isHovered = hoveredNode?.id === node.id;
     const scale = animated ? animationPhase : 1;
     const opacity = animated ? animationPhase : 1;
 
@@ -364,7 +364,7 @@ export function MindmapVisualization({
             fontWeight: 'bold',
           }}
         >
-          &quot;{tooltip.content}&quot;
+          "{tooltip.content}"
         </div>
       )}
     </div>

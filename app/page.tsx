@@ -54,8 +54,8 @@ export default function Home() {
 
       setSuccess(true)
       setStep("submitted")
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -81,8 +81,8 @@ export default function Home() {
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You're on the waitlist.</p>
-              <p className="text-sm text-[#49454f]">We'll be in touch soon.</p>
+              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (
             <form

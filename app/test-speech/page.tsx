@@ -355,7 +355,12 @@ export default function TestSpeechPage() {
                         // Test basic audio context to check if audio is working at all
                         addTestResult('Testing audio context...');
                         try {
-                          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+                          const AudioContextClass = window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+                          if (!AudioContextClass) {
+                            addTestResult('Audio context not supported');
+                            return;
+                          }
+                          const audioContext = new AudioContextClass();
                           addTestResult(`Audio context state: ${audioContext.state}`);
                           
                           if (audioContext.state === 'suspended') {
@@ -507,7 +512,7 @@ export default function TestSpeechPage() {
                           addTestResult(`"${text}" -> ${ecosystem || 'none'}`);
                         }}
                       >
-                        Test: "{text}"
+                        Test: &quot;{text}&quot;
                       </Button>
                     ))}
                   </div>

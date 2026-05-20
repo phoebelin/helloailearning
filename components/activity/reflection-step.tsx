@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useActivity } from '@/lib/context/activity-context';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ReflectionStepProps extends StepComponentProps {}
 
 /**
@@ -23,15 +24,14 @@ export interface ReflectionStepProps extends StepComponentProps {}
  */
 export function ReflectionStep({
   onNext,
-  onPrevious,
 }: ReflectionStepProps) {
   const { completeActivity } = useActivity();
   const [response1, setResponse1] = useState('');
   const [response2, setResponse2] = useState('');
   const [currentTranscript1, setCurrentTranscript1] = useState('');
   const [currentTranscript2, setCurrentTranscript2] = useState('');
-  const [isRecording1, setIsRecording1] = useState(false);
-  const [isRecording2, setIsRecording2] = useState(false);
+  const [, setIsRecording1] = useState(false);
+  const [, setIsRecording2] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   
   // Check if both responses have been added
@@ -43,8 +43,21 @@ export function ReflectionStep({
     useGoogleCloud: true,
   });
 
+  const greetingMessage = "Thanks for teaching me so much about animals! Now let's reflect on what we did today!";
   const question1 = "If you asked Zhorai about any random animal, do you think Zhorai would be able to guess which ecosystem it is from? Why or why not?";
   const question2 = "Do you think Zhorai's knowledge of the world is biased or not? How can we improve Zhorai's brain?";
+
+  // Speak greeting message when component mounts
+  React.useEffect(() => {
+    speak(greetingMessage, {
+      onError: (error) => {
+        if (error !== 'canceled') {
+          console.warn('Speech synthesis error:', error);
+        }
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array ensures this only runs once on mount
 
   const handleSpeakQuestion1 = () => {
     speak(question1, {
@@ -252,8 +265,8 @@ export function ReflectionStep({
               const delay = (i % 10) * 0.1;
               const startX = 40 + (i * 7.2) % 20; // Start from center area
               const startY = 40 + (i % 3) * 5; // Start from upper-middle area
-              const endX = startX + ((i % 2 === 0 ? 1 : -1) * (20 + (i % 3) * 10));
-              const rotation = i * 14.4;
+              // const _endX = startX + ((i % 2 === 0 ? 1 : -1) * (20 + (i % 3) * 10));
+              // const _rotation = i * 14.4;
               
               return (
                 <div

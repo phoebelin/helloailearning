@@ -21,7 +21,7 @@ export default function HowMachinesLearn() {
           with Zhorai
         </h1>
         <p className="text-gray-600 max-w-xl mb-8">
-          In this course, you'll teach Zhorai, our conversational agent, all about animals and ecosystems and understand
+          In this course, you&apos;ll teach Zhorai, our conversational agent, all about animals and ecosystems and understand
           how Zhorai learns.
         </p>
         <div className="flex gap-4">
@@ -51,7 +51,7 @@ export default function HowMachinesLearn() {
         </div>
         <div className="flex items-center gap-4">
           <Button className="bg-black text-white hover:bg-black/90">Press and speak</Button>
-          <span className="text-[#967fd8]">"What do you know about the desert?"</span>
+          <span className="text-[#967fd8]">&quot;What do you know about the desert?&quot;</span>
         </div>
       </div>
     </LessonLayout>

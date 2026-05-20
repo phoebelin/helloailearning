@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { AudioRecorder } from './audio-recorder';
 import { cn } from '@/lib/utils';
 import { validateSentence } from '@/lib/utils/validation';
-import Image from 'next/image';
 
 export interface SentenceListStepProps extends StepComponentProps {
   /** Selected animal to teach about */
@@ -40,7 +39,7 @@ interface EditModalProps {
 
 function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps) {
   const [editText, setEditText] = useState(sentence);
-  const [isRecording, setIsRecording] = useState(false);
+  const [, setIsRecording] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -147,7 +146,7 @@ export function SentenceListStep({
   onNext,
   onPrevious,
 }: SentenceListStepProps) {
-  const [isRecording, setIsRecording] = useState(false);
+  const [, setIsRecording] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -340,7 +339,7 @@ export function SentenceListStep({
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             )}
           >
-            See Zhorai's brain
+            See Zhorai&apos;s brain
           </Button>
 
           {onPrevious && (

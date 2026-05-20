@@ -8,7 +8,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { StepComponentProps, EcosystemType, MindmapNode, NodeColor, NodeType } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
@@ -192,7 +191,7 @@ function InteractiveMindmap({
             >
               <div className="absolute top-full mt-8 left-1/2 -translate-x-1/2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
                 <p className="text-sm font-bold text-center text-black">
-                  "{node.sourceSentences[0]}"
+                  &quot;{node.sourceSentences[0]}&quot;
                 </p>
               </div>
             </div>
@@ -219,10 +218,10 @@ export function KnowledgeVisualizationStep({
   const [showMindmap, setShowMindmap] = useState(false);
   
   // Store current hook values in refs to avoid stale closures
-  const hookValuesRef = useRef<{ 
-    speak: ((text: string, options?: any) => void) | null; 
-    isSupported: boolean; 
-    isGoogleCloudAvailable: boolean; 
+  const hookValuesRef = useRef<{
+    speak: ((text: string, options?: { onStart?: () => void; onEnd?: () => void; onError?: (error: unknown) => void }) => void) | null;
+    isSupported: boolean;
+    isGoogleCloudAvailable: boolean;
     isGoogleCloudChecked: boolean;
   }>({ speak: null, isSupported: false, isGoogleCloudAvailable: false, isGoogleCloudChecked: false });
 
@@ -345,7 +344,7 @@ export function KnowledgeVisualizationStep({
       <div className="flex flex-col gap-6 w-full relative">
             {/* Message */}
             <p className="text-base font-normal leading-[32px] text-black w-full">
-              I've heard so much about {ecosystemName} before! Here's a visualization of my brain:
+              I&apos;ve heard so much about {ecosystemName} before! Here&apos;s a visualization of my brain:
             </p>
         
         {/* Mindmap Container - fixed width and height to match mindmap */}

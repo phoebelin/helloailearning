@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Successfully added to waitlist',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Waitlist API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

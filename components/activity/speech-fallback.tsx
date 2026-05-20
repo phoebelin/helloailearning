@@ -177,7 +177,7 @@ export function SpeechUnavailableAlert({ className }: { className?: string }) {
             Speech recognition is not available
           </p>
           <p className="text-yellow-700 dark:text-yellow-300">
-            Your browser ({browserInfo.name}) doesn't support speech recognition, or you're not using a secure connection (HTTPS).
+            Your browser ({browserInfo.name}) doesn&apos;t support speech recognition, or you&apos;re not using a secure connection (HTTPS).
           </p>
           
           <div className="mt-3 space-y-1">
@@ -186,13 +186,13 @@ export function SpeechUnavailableAlert({ className }: { className?: string }) {
             </p>
             <ul className="list-disc list-inside space-y-1 text-yellow-700 dark:text-yellow-300 ml-2">
               <li>Use Chrome, Edge, or Safari browser</li>
-              <li>Make sure you're on a secure HTTPS connection</li>
+              <li>Make sure you&apos;re on a secure HTTPS connection</li>
               <li>Check that your device has a microphone</li>
             </ul>
           </div>
 
           <p className="text-yellow-700 dark:text-yellow-300 mt-3">
-            <strong>Don't worry!</strong> You can complete this activity by typing your answers instead.
+            <strong>Don&apos;t worry!</strong> You can complete this activity by typing your answers instead.
           </p>
         </div>
       </div>
@@ -218,7 +218,6 @@ export function SpeechInputWithFallback({
   const isSupported = isSpeechRecognitionSupported();
 
   // Auto-enable text input if speech not supported
-  const shouldUseTextInput = !isSupported || useTextInput;
 
   return (
     <div className={cn('space-y-3', className)}>

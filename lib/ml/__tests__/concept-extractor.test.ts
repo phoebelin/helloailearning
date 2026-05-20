@@ -13,9 +13,8 @@ import {
   filterConceptsByConfidence,
   ExtractedConcept,
   ConceptRelationship,
-  ConceptExtractionResult,
 } from '@/lib/ml/concept-extractor';
-import { Sentence, ConceptData } from '@/types/activity';
+import { Sentence } from '@/types/activity';
 
 describe('Concept Extractor', () => {
   describe('extractConceptsFromSentence', () => {

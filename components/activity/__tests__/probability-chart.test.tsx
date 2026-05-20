@@ -7,7 +7,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ProbabilityChart } from '../probability-chart';
-import { PredictionResult, EcosystemPrediction } from '@/types/activity';
+import { PredictionResult } from '@/types/activity';
 
 describe('ProbabilityChart', () => {
   const mockOnBarHover = jest.fn();

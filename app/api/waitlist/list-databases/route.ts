@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { Client } from '@notionhq/client';
 
 /**
@@ -7,7 +7,7 @@ import { Client } from '@notionhq/client';
  * 
  * This helps you find the correct database ID if you're having trouble
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     if (!process.env.NOTION_API_TOKEN) {
       return NextResponse.json(
@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     // Search for all items
     const response = await notion.search({});
 
-    // Filter results to only include databases
+    // Filter results to only include databases (using type assertion)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const databases = response.results
       .filter((item: any) => item.object === 'database')
       .map((item: any) => ({
@@ -35,10 +36,11 @@ export async function GET(request: NextRequest) {
       }));
 
     // Also show what types of items the integration CAN see
-    const itemTypes = response.results.reduce((acc: any, item: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const itemTypes = response.results.reduce((acc: Record<string, number>, item: any) => {
       acc[item.object] = (acc[item.object] || 0) + 1;
       return acc;
-    }, {});
+    }, {} as Record<string, number>);
 
     if (databases.length === 0) {
       const hasAnyAccess = response.results.length > 0;
@@ -94,10 +96,12 @@ export async function GET(request: NextRequest) {
         '4. Restart your dev server',
       ],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('List databases error:', error);
-    
-    if (error.code === 'unauthorized') {
+
+    const notionError = error as { code?: string; message?: string };
+
+    if (notionError.code === 'unauthorized') {
       return NextResponse.json(
         { 
           error: 'Unauthorized',
@@ -114,10 +118,10 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to list databases',
-        message: error.message,
-        code: error.code,
+        message: notionError.message || 'Unknown error',
+        code: notionError.code,
       },
       { status: 500 }
     );

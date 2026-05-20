@@ -8,7 +8,7 @@ import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ActivityContext } from '@/lib/context/activity-context';
+// import { ActivityContext } from '@/lib/context/activity-context';
 import { ProbabilityChart } from '@/components/activity/probability-chart';
 import { AnimalType, EcosystemType } from '@/types/activity';
 import { ecosystemPredictor, EmbeddingPredictionResult } from '@/lib/ml/ecosystem-predictor-bert';
@@ -36,7 +36,7 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
     useGoogleCloud: true,
   });
 
-  const { startListening, stopListening, transcript, isListening: speechIsListening } = useSpeechRecognition({
+  const { startListening, stopListening, transcript, isListening } = useSpeechRecognition({
     onResult: (result) => {
       console.log('Speech recognition result:', result);
     },
@@ -124,7 +124,7 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
     }
   };
 
-  const handleBarHover = (ecosystem: EcosystemType, prediction: any) => {
+  const handleBarHover = (ecosystem: EcosystemType, prediction: { ecosystem: string; probability: number; influencingSentences: string[]; keywords: string[] }) => {
     console.log(`Hovered over ${ecosystem}:`, prediction);
   };
 

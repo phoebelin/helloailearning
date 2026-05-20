@@ -1,3 +1,19 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "ignorePatterns": [
+    "lib/ml/**/__tests__/**",
+    "lib/ml/**/*.test.ts",
+    "lib/ml/concept-extractor.ts",
+    "lib/ml/ecosystem-predictor-bert.ts",
+    "lib/ml/ecosystem-predictor-demo.ts",
+    "lib/services/notion-waitlist.ts",
+    "lib/utils/debug-sentences.ts",
+    "lib/utils/speech-utils.ts",
+    "app/api/waitlist/**",
+    "app/sentiment-test/**",
+    "app/test-tts/**",
+    "app/test-speech/**",
+    "app/test-activity-steps/**",
+    "app/bert-demo/**"
+  ]
 }

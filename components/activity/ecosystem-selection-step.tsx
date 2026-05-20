@@ -107,7 +107,7 @@ export function EcosystemSelectionStep({
             </p>
           ) : (
             <p className="text-sm font-semibold leading-[17px] text-[#967FD8] opacity-50">
-              "What do you know about the desert?"
+              &quot;What do you know about the desert?&quot;
             </p>
           )}
         </div>

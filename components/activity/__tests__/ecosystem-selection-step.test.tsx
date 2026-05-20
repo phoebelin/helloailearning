@@ -11,15 +11,15 @@ import { ActivityProvider } from '@/lib/context/activity-context';
 
 // Mock the audio recorder component
 jest.mock('../audio-recorder', () => ({
-  AudioRecorder: ({ onTranscriptComplete }: any) => (
+  AudioRecorder: ({ onTranscriptComplete }: { onTranscriptComplete?: (text: string) => void }) => (
     <div data-testid="mock-audio-recorder">
       <button
-        onClick={() => onTranscriptComplete('What do you know about the desert?')}
+        onClick={() => onTranscriptComplete?.('What do you know about the desert?')}
       >
         Mock Speak Desert
       </button>
       <button
-        onClick={() => onTranscriptComplete('Tell me about the ocean')}
+        onClick={() => onTranscriptComplete?.('Tell me about the ocean')}
       >
         Mock Speak Ocean
       </button>

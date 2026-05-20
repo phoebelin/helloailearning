@@ -85,7 +85,7 @@ export function Testimonials() {
                 style={{ minWidth: '500px', maxWidth: '600px', width: 'calc((100vw - 120px) / 2)' }}
               >
                 <blockquote className="text-xl mb-4">
-                  "{testimonial.quote}"
+                  &quot;{testimonial.quote}&quot;
                 </blockquote>
                 <cite className="text-gray-600">{testimonial.author}</cite>
               </div>

@@ -160,7 +160,7 @@ export function extractRelationships(
   concepts: ExtractedConcept[]
 ): ConceptRelationship[] {
   const relationships: ConceptRelationship[] = [];
-  const words = sentence.toLowerCase().split(/\s+/);
+  const _words = sentence.toLowerCase().split(/\s+/);
   
   // Find verbs and their surrounding nouns
   concepts.forEach(concept => {
@@ -397,7 +397,7 @@ export function extractConceptsFromSentenceEcosystemFormat(
   });
 
   // Only create concepts for meaningful words (nouns, habitats, not verbs)
-  Object.entries(wordCount).forEach(([word, count]) => {
+  Object.entries(wordCount).forEach(([word, _count]) => {
     let wordType: NodeType = 'concept';
     let shouldInclude = false;
 
@@ -492,7 +492,7 @@ function determineSentimentAbundance(sentence: string, word: string, animalType:
   ];
   
   // Check for positive sentiment patterns
-  const hasPositiveSentiment = positiveIndicators.some(indicator => {
+  const _hasPositiveSentiment = positiveIndicators.some(indicator => {
     const pattern = new RegExp(`\\b${indicator}\\b`, 'i');
     return pattern.test(lowerSentence);
   });
@@ -529,7 +529,7 @@ function determineSentimentAbundance(sentence: string, word: string, animalType:
   ];
   
   // Check for positive patterns
-  const hasPositivePattern = positivePatterns.some(pattern => pattern.test(lowerSentence));
+  const _hasPositivePattern = positivePatterns.some(pattern => pattern.test(lowerSentence));
   
   // Check for negative patterns
   const hasNegativePattern = negativePatterns.some(pattern => pattern.test(lowerSentence));

@@ -214,8 +214,6 @@ function TestActivityStepsContent() {
   const router = useRouter();
   const {
     state,
-    nextStep: contextNextStep,
-    previousStep: contextPreviousStep,
     goToStep,
     selectEcosystem,
     selectAnimal,
@@ -379,7 +377,7 @@ function TestActivityStepsContent() {
                   // Also update context state to keep it in sync with scroll
                   const stepName = indexToStepMap[index];
                   if (stepName && stepName !== state.currentStep) {
-                    goToStep(stepName as any);
+                    goToStep(stepName as 'introduction' | 'ecosystem-selection' | 'knowledge-visualization' | 'understanding-check' | 'animal-selection' | 'sentence-input' | 'sentence-list' | 'mindmap-display' | 'prediction' | 'reflection' | 'completion');
                   }
                   
                   // Update maxStepReached to ensure future steps are rendered
@@ -405,8 +403,8 @@ function TestActivityStepsContent() {
     };
   }, [stepRefs, maxStepReached, state.currentStep, goToStep]);
 
-  const handleNext = (stepIndex: number) => {
-    // Use visibleStepIndex (the step currently scrolled to) instead of the passed stepIndex
+  const handleNext = () => {
+    // Use visibleStepIndex (the step currently scrolled to)
     const currentVisibleIndex = visibleStepIndex;
     if (currentVisibleIndex < 7) {
       const nextStepIndex = currentVisibleIndex + 1;
@@ -422,7 +420,7 @@ function TestActivityStepsContent() {
         setVisibleStepIndex(nextStepIndex);
         
         // Then navigate to the next step
-        goToStep(nextStep as any);
+        goToStep(nextStep as 'introduction' | 'ecosystem-selection' | 'knowledge-visualization' | 'understanding-check' | 'animal-selection' | 'sentence-input' | 'sentence-list' | 'mindmap-display' | 'prediction' | 'reflection' | 'completion');
         
         // Ensure scroll happens after state update
         setTimeout(() => {
@@ -525,7 +523,7 @@ function TestActivityStepsContent() {
     setVisibleStepIndex(prevIndex);
     
     // Update context state to keep it in sync
-    goToStep(prevStepName as any);
+    goToStep(prevStepName as 'introduction' | 'ecosystem-selection' | 'knowledge-visualization' | 'understanding-check' | 'animal-selection' | 'sentence-input' | 'sentence-list' | 'mindmap-display' | 'prediction' | 'reflection' | 'completion');
     
     // Ensure scroll happens after state update
     setTimeout(() => {
@@ -562,7 +560,7 @@ function TestActivityStepsContent() {
     setMaxStepReached(prev => Math.max(prev, nextIndex));
     
     // Update context state to keep it in sync
-    goToStep(nextStep as any);
+    goToStep(nextStep as 'introduction' | 'ecosystem-selection' | 'knowledge-visualization' | 'understanding-check' | 'animal-selection' | 'sentence-input' | 'sentence-list' | 'mindmap-display' | 'prediction' | 'reflection' | 'completion');
     
     // Ensure scroll happens after state update
     setTimeout(() => {

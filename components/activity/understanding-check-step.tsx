@@ -7,7 +7,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { StepComponentProps, EcosystemType, MindmapNode, NodeColor } from '@/types/activity';
+import { StepComponentProps, EcosystemType, NodeColor } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
 import { cn } from '@/lib/utils';
@@ -60,12 +60,11 @@ const checkboxOptions: CheckboxOption[] = [
 export function UnderstandingCheckStep({
   ecosystem,
   onNext,
-  onPrevious,
 }: UnderstandingCheckStepProps) {
   const { state, setCheckAnswers } = useActivity();
   const [selectedOptions, setSelectedOptions] = useState<string[]>(state.checkAnswers || []);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
+  const [, setShowCelebration] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -73,7 +72,6 @@ export function UnderstandingCheckStep({
   
   // Check if step is already completed (from persisted state)
   // Only consider it completed if we've submitted and moved on, not just if answers are saved
-  const hasSavedAnswers = state.checkAnswers.length === 2;
   const hasInitialized = useRef(false);
 
   // Track visibility of this step in viewport using Intersection Observer
@@ -289,12 +287,12 @@ export function UnderstandingCheckStep({
                 {hasSubmitted && isCorrect && (
                   <div className="flex items-center gap-2">
                     <span className="text-base">🎉</span>
-                    <span className="text-base font-semibold text-[#967FD8]">That's right!</span>
+                    <span className="text-base font-semibold text-[#967FD8]">That&apos;s right!</span>
                   </div>
                 )}
                 {hasSubmitted && !isCorrect && (
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-semibold text-[#967FD8]">💪 Hey, that's okay!</span>
+                    <span className="text-base font-semibold text-[#967FD8]">💪 Hey, that&apos;s okay!</span>
                   </div>
                 )}
 

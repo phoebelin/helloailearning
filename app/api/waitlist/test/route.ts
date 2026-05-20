@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { Client } from '@notionhq/client';
 
 /**
  * Test endpoint to verify Notion connection
  * GET /api/waitlist/test
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check environment variables
     if (!process.env.NOTION_API_TOKEN) {
@@ -58,13 +58,24 @@ export async function GET(request: NextRequest) {
     try {
       console.log('Attempting to retrieve database with ID:', databaseId.substring(0, 8) + '...');
       const database = await notion.databases.retrieve({ database_id: databaseId });
-      
+
+      interface NotionProperty {
+        type: string;
+        date?: { format?: string };
+      }
+
+      interface NotionDatabase {
+        id: string;
+        title?: Array<{ plain_text: string }>;
+        properties?: Record<string, NotionProperty>;
+      }
+
       // Access properties correctly - handle Notion API response type
-      const db = database as any;
+      const db = database as NotionDatabase;
       const properties = db.properties || {};
       const propertyKeys = Object.keys(properties);
       const propertyDetails = propertyKeys.map((key) => {
-        const prop = properties[key] as any;
+        const prop = properties[key];
         return {
           name: key,
           type: prop.type,
@@ -94,17 +105,15 @@ export async function GET(request: NextRequest) {
           dateProperties: propertyDetails.filter(p => p.type === 'date').map(p => p.name),
         }
       });
-    } catch (notionError: any) {
+    } catch (notionError: unknown) {
+      const error = notionError as { code?: string; message?: string; status?: number };
       console.error('Notion API error:', {
-        code: notionError.code,
-        message: notionError.message,
-        status: notionError.status,
+        code: error.code,
+        message: error.message,
+        status: error.status,
       });
 
-      if (notionError.code === 'object_not_found') {
-        // Try with hyphens in case that's the issue
-        const withHyphens = `${databaseId.slice(0, 8)}-${databaseId.slice(8, 12)}-${databaseId.slice(12, 16)}-${databaseId.slice(16, 20)}-${databaseId.slice(20, 32)}`;
-        
+      if (error.code === 'object_not_found') {
         return NextResponse.json(
           { 
             error: 'Database not found',
@@ -135,8 +144,8 @@ export async function GET(request: NextRequest) {
           { status: 404 }
         );
       }
-      
-      if (notionError.code === 'unauthorized') {
+
+      if (error.code === 'unauthorized') {
         return NextResponse.json(
           { 
             error: 'Unauthorized',
@@ -150,15 +159,16 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      throw notionError;
+      throw error;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string; code?: string };
     console.error('Test endpoint error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Unexpected error',
-        message: error.message,
-        details: error.code || 'Unknown error code'
+        message: err.message || 'Unknown error',
+        details: err.code || 'Unknown error code'
       },
       { status: 500 }
     );

@@ -202,7 +202,7 @@ export async function addWaitlistEntry({ email, name }: WaitlistEntry) {
       success: true,
       pageId: response.id,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error adding waitlist entry to Notion:', error);
     console.error('Error code:', error.code);
     console.error('Error message:', error.message);

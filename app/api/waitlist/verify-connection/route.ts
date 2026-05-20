@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Clean database ID
     const originalId = databaseId.trim();
-    let cleanedId = originalId.replace(/-/g, '');
+    const cleanedId = originalId.replace(/-/g, '');
 
     // Validate format
     if (!/^[0-9a-f]{32}$/i.test(cleanedId)) {
@@ -57,9 +57,15 @@ export async function POST(request: NextRequest) {
 
     const results = [];
 
+    interface NotionDatabase {
+      id: string;
+      title?: Array<{ plain_text: string }>;
+      properties?: Record<string, unknown>;
+    }
+
     for (const format of formats) {
       try {
-        const database = await notion.databases.retrieve({ database_id: format });
+        const database = await notion.databases.retrieve({ database_id: format }) as NotionDatabase;
         results.push({
           format,
           success: true,
@@ -70,11 +76,12 @@ export async function POST(request: NextRequest) {
           },
         });
         break; // If one works, stop trying
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const err = error as { code?: string; message?: string };
         results.push({
           format,
           success: false,
-          error: error.code || error.message,
+          error: err.code || err.message || 'Unknown error',
         });
       }
     }
@@ -104,12 +111,13 @@ export async function POST(request: NextRequest) {
       },
       { status: 404 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error('Verify connection error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Unexpected error',
-        message: error.message,
+        message: err.message || 'Unknown error',
       },
       { status: 500 }
     );

@@ -180,7 +180,7 @@ class EcosystemPredictor {
    */
   async predictEcosystem(
     sentences: string[],
-    animal: string
+    _animal: string
   ): Promise<EmbeddingPredictionResult> {
     await this.initialize();
 

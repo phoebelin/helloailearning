@@ -596,7 +596,7 @@ class EcosystemPredictorDemo {
   /**
    * Compare BERT vs Keyword methods side by side
    */
-  async compareMethods(sentences: string[], animal: string): Promise<{
+  async compareMethods(sentences: string[], _animal: string): Promise<{
     bert: EmbeddingPredictionResult;
     keyword: EmbeddingPredictionResult;
   }> {

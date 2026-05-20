@@ -10,7 +10,7 @@
 import { PredictionResult, EcosystemType } from '@/types/activity';
 
 // Mock ecosystem predictor function (to be replaced with actual implementation)
-const mockPredictEcosystem = (sentences: string[], animal: string): PredictionResult => {
+const mockPredictEcosystem = (sentences: string[], _animal: string): PredictionResult => {
   // Simple mock implementation for testing
   const allText = sentences.join(' ').toLowerCase();
   

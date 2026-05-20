@@ -6,8 +6,8 @@
 
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { StepComponentProps, AnimalType, MindmapNode, NodeColor, Sentence, ConceptData } from '@/types/activity';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { StepComponentProps, AnimalType, MindmapNode, Sentence, ConceptData } from '@/types/activity';
 import { Button } from '@/components/ui/button';
 import { AudioRecorder } from './audio-recorder';
 import { MindmapVisualization, MindmapVisualizationMobile } from './mindmap-visualization';
@@ -136,7 +136,7 @@ export function SentenceInputStep({
   const canProceed = sentences.length >= 3;
 
   // TTS hook for Zhorai's speech - matching animal-selection-step implementation
-  const { speak, isSpeaking } = useEnhancedTextToSpeech({
+  const { speak } = useEnhancedTextToSpeech({
     rate: 0.9, // Slightly slower for child comprehension
     pitch: 1.1, // Slightly higher pitch for friendly tone
     useGoogleCloud: true, // Prefer Google Cloud TTS for better Chrome compatibility
@@ -158,9 +158,9 @@ export function SentenceInputStep({
       setTimeout(() => {
         const mindmapElement = document.querySelector('[data-mindmap-section]');
         if (mindmapElement) {
-          mindmapElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
+          mindmapElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
           });
         }
       }, 100);
@@ -169,7 +169,7 @@ export function SentenceInputStep({
 
 
   // Handle node hover events
-  const handleNodeHover = useCallback((node: any) => {
+  const handleNodeHover = useCallback((node: unknown) => {
     if (node && !hasHoveredNodes) {
       setHasHoveredNodes(true);
       
@@ -366,7 +366,7 @@ export function SentenceInputStep({
     <div id="add-sentences-step" className="flex flex-col gap-6 py-20 px-0 max-w-[682px] w-full mx-auto">
       {/* Heading - matches Figma exactly */}
       <h1 className="text-base font-normal leading-[32px] text-black text-left w-full">
-        Tell Zhorai three things about {animalName}. Then take a look at Zhorai's brain!
+        Tell Zhorai three things about {animalName}. Then take a look at Zhorai&apos;s brain!
       </h1>
 
       {/* Main container with border - matches Figma exactly */}
@@ -475,9 +475,11 @@ export function SentenceInputStep({
             onClick={() => {
               const newShowMindmap = !showMindmap;
               setShowMindmap(newShowMindmap);
-              
-              // Trigger speech immediately when showing mindmap
+
+              // Show continue button immediately when showing mindmap
               if (newShowMindmap && sentences.length >= 3) {
+                setShowContinueButton(true);
+
                 const speechText = `Here's a visualization of my brain about ${animalName}! Hover over the circles to see what sentences I learned that correspond with each word.`;
                 setTimeout(() => {
                   speak(speechText, {

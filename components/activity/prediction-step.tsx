@@ -9,13 +9,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { StepComponentProps, PredictionResult, EcosystemType, AnimalType } from '@/types/activity';
-import { cn } from '@/lib/utils';
+// import { cn } from '@/lib/utils';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
-import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
+// import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
 import { ProbabilityChart } from './probability-chart';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { ecosystemPredictorDemo, EmbeddingPredictionResult } from '@/lib/ml/ecosystem-predictor-demo';
+import { ecosystemPredictorDemo } from '@/lib/ml/ecosystem-predictor-demo';
 import { AudioRecorder } from './audio-recorder';
 
 export interface PredictionStepProps extends StepComponentProps {
@@ -114,11 +114,10 @@ export function PredictionStep({
   selectedAnimal,
   userSentences,
   onNext,
-  onPrevious,
   onPredictionMade,
 }: PredictionStepProps) {
   const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
-  const [isListening, setIsListening] = useState(false);
+  const [, setIsListening] = useState(false);
   const [userQuestion, setUserQuestion] = useState('');
   const [hasAskedQuestion, setHasAskedQuestion] = useState(false);
   const [showChart, setShowChart] = useState(false);
@@ -126,11 +125,10 @@ export function PredictionStep({
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [correctGuess, setCorrectGuess] = useState<boolean | null>(null);
   
-  const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const chartRef = useRef<HTMLDivElement>(null);
 
   // Enhanced TTS hook
-  const { speak, isSpeaking } = useEnhancedTextToSpeech({
+  const { speak } = useEnhancedTextToSpeech({
     rate: 0.9,
     pitch: 1.1,
     useGoogleCloud: true,
@@ -177,7 +175,7 @@ export function PredictionStep({
       const ecosystemName = predictionResult.ecosystems.find(
         e => e.ecosystem === predictionResult.topPrediction
       )?.ecosystem || 'unknown';
-      
+
       let confidenceLevel: string;
       if (predictionResult.confidence > 0.7) {
         confidenceLevel = "I'm pretty sure";
@@ -186,17 +184,17 @@ export function PredictionStep({
       } else {
         confidenceLevel = 'I\'m not sure, but';
       }
-      
+
       const response = `${confidenceLevel} ${animalDisplayName.toLowerCase()} ${confidenceLevel === 'I\'m not sure, but' ? 'might live' : 'live'} in the ${ecosystemName}! Did I guess right?`;
       setZhoraiResponse(response);
-      
+
       // Check if the guess is correct
       const topEcosystem = predictionResult.topPrediction;
       const isCorrect = isCorrectAnswer(selectedAnimal, topEcosystem);
       setCorrectGuess(isCorrect);
-      
+
       setShowChart(true);
-      
+
       // Speak the response
       setTimeout(() => {
         speak(response, {
@@ -208,7 +206,10 @@ export function PredictionStep({
         });
       }, 500);
     }
-  }, [userQuestion, predictionResult, animalDisplayName, speak]);
+    // FIXED: Removed 'speak' from dependencies to prevent infinite loop
+    // speak is a callback that changes on every render, causing the effect to re-run
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userQuestion, predictionResult, animalDisplayName, selectedAnimal]);
 
   // Debug: Log correctGuess value
   useEffect(() => {
@@ -227,7 +228,7 @@ export function PredictionStep({
     }
   }, [showChart]);
 
-  const handleBarHover = (ecosystem: EcosystemType, prediction: any) => {
+  const handleBarHover = (ecosystem: EcosystemType, prediction: { ecosystem: string; probability: number; influencingSentences: string[]; keywords: string[] }) => {
     // Could add tooltip logic here if needed
     console.log(`Hovering over ${ecosystem}:`, prediction);
   };

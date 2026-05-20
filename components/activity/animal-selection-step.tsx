@@ -122,7 +122,7 @@ export function AnimalSelectionStep({
         {/* Context Text */}
         <div className="text-left">
           <p className="text-base leading-8 text-black">
-            Zhorai knows a lot about ecosystems, but hasn't met any animals before! Can you teach it about some animals?
+            Zhorai knows a lot about ecosystems, but hasn&apos;t met any animals before! Can you teach it about some animals?
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export function AnimalSelectionStep({
             </div>
             {selected && (
               <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">
-                "Yay! Can you teach me about {animalOptions.find(a => a.id === selected)?.name.toLowerCase()}?"
+                &quot;Yay! Can you teach me about {animalOptions.find(a => a.id === selected)?.name.toLowerCase()}?&quot;
               </p>
             )}
           </div>

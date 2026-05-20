@@ -3,8 +3,7 @@
  * Tests semantic similarity using word embeddings
  */
 
-import { ecosystemPredictor, EmbeddingPredictionResult } from '@/lib/ml/ecosystem-predictor-bert';
-import { EcosystemType } from '@/types/activity';
+import { ecosystemPredictor } from '@/lib/ml/ecosystem-predictor-bert';
 
 // Mock the @xenova/transformers library for testing
 jest.mock('@xenova/transformers', () => ({

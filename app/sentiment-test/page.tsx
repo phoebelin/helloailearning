@@ -13,7 +13,7 @@ import { PredictionResult } from '@/types/activity';
 export default function SentimentTestPage() {
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [testSentences, setTestSentences] = useState([
+  const [testSentences] = useState([
     'Bees don\'t like water',
     'Bees avoid swimming',
     'Bees prefer dry environments'
@@ -127,8 +127,8 @@ export default function SentimentTestPage() {
         <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <h3 className="font-semibold text-yellow-800 mb-2">Expected Behavior</h3>
           <p className="text-yellow-700">
-            With sentiment analysis, sentences like "Bees don't like water" should <strong>reduce</strong> 
-            the probability for the ocean ecosystem, even though "water" is mentioned. 
+            With sentiment analysis, sentences like &quot;Bees don&apos;t like water&quot; should <strong>reduce</strong>
+            the probability for the ocean ecosystem, even though &quot;water&quot; is mentioned.
             Check the browser console for detailed sentiment analysis logs.
           </p>
         </div>

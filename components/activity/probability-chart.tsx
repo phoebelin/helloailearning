@@ -254,7 +254,7 @@ export function ProbabilityChart({
               ?.influencingSentences.slice(0, 3)
               .map((sentence, index) => (
                 <div key={index} className="text-xs text-gray-600 italic">
-                  "{sentence}"
+                  &quot;{sentence}&quot;
                 </div>
               ))}
           </div>

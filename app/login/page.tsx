@@ -51,8 +51,8 @@ export default function LoginPage() {
 
       setSuccess(true)
       setStep("submitted")
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -65,7 +65,7 @@ export default function LoginPage() {
         <section className="text-center py-20 px-4 max-w-4xl mx-auto">
           <h1 className="text-5xl font-serif mb-6">Login</h1>
           <p className="text-xl text-gray-600 mb-8">
-            Login functionality is coming soon! We're working hard to bring you a seamless experience.
+            Login functionality is coming soon! We&apos;re working hard to bring you a seamless experience.
           </p>
           <div className="bg-gray-50 rounded-xl p-8 mb-12">
             <p className="text-lg text-gray-700">
@@ -86,8 +86,8 @@ export default function LoginPage() {
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You're on the waitlist.</p>
-              <p className="text-sm text-[#49454f]">We'll be in touch soon.</p>
+              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (
             <form

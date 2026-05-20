@@ -81,7 +81,6 @@ export function AudioRecorder({
   className,
   buttonClassName,
   autoStop = false,
-  disabled = false,
 }: AudioRecorderProps) {
   const {
     isListening,
@@ -273,6 +272,7 @@ export function AudioRecorderCompact({
   onTranscriptChange,
   onError,
   className,
+  disabled,
   ...props
 }: Omit<AudioRecorderProps, 'showTranscript' | 'buttonText' | 'recordingText'>) {
   const {
@@ -351,7 +351,7 @@ export function AudioRecorderCompact({
           <Mic className="h-4 w-4" />
         )}
       </Button>
-      
+
       {isListening && (
         <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-pulse" />
       )}

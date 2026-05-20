@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { LessonNav } from "./lesson-nav"
 
 interface LessonLayoutProps {
@@ -10,7 +10,7 @@ interface LessonLayoutProps {
 
 export function LessonLayout({ children, initialStep = 1 }: LessonLayoutProps) {
   const [currentStep, setCurrentStep] = useState(initialStep)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [, setIsTransitioning] = useState(false)
 
   const handleNext = () => {
     if (currentStep < children.length) {

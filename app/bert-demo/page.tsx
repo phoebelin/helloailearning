@@ -180,7 +180,7 @@ export default function BERTDemoPage() {
             <div className="space-y-2">
               {demo.sentences.map((sentence, index) => (
                 <div key={index} className="p-3 bg-gray-50 rounded border-l-4 border-blue-500">
-                  <span className="font-medium text-gray-700">"{sentence}"</span>
+                  <span className="font-medium text-gray-700">&quot;{sentence}&quot;</span>
                 </div>
               ))}
             </div>
@@ -305,7 +305,7 @@ export default function BERTDemoPage() {
                 <li>• Handles synonyms and related concepts</li>
                 <li>• Recognizes context and relationships</li>
                 <li>• Better with complex, nuanced sentences</li>
-                <li>• <strong>Handles negation ("don't like water")</strong></li>
+                <li>• <strong>Handles negation (&quot;don&apos;t like water&quot;)</strong></li>
                 <li>• <strong>Analyzes sentiment (positive/negative)</strong></li>
                 <li>• <strong>Reduces scores for negated concepts</strong></li>
               </ul>
@@ -318,8 +318,8 @@ export default function BERTDemoPage() {
                 <li>• Misses synonyms and related terms</li>
                 <li>• No understanding of context</li>
                 <li>• Struggles with complex sentences</li>
-                <li>• <strong>Can't handle negation properly</strong></li>
-                <li>• <strong>Ignores sentiment ("don't like" = same as "like")</strong></li>
+                <li>• <strong>Can&apos;t handle negation properly</strong></li>
+                <li>• <strong>Ignores sentiment (&quot;don&apos;t like&quot; = same as &quot;like&quot;)</strong></li>
                 <li>• <strong>Counts negated words as positive evidence</strong></li>
               </ul>
             </div>
@@ -329,16 +329,16 @@ export default function BERTDemoPage() {
           <div className="mt-6 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
             <h4 className="font-semibold text-purple-800 mb-2">🎭 Sentiment Analysis Feature</h4>
             <div className="text-sm text-purple-700">
-              <p className="mb-2"><strong>Example:</strong> "Bees don't like water"</p>
+              <p className="mb-2"><strong>Example:</strong> &quot;Bees don&apos;t like water&quot;</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="font-medium">❌ Without Sentiment:</p>
-                  <p>• "water" keyword found → Ocean gets +1 point</p>
+                  <p>• &quot;water&quot; keyword found → Ocean gets +1 point</p>
                   <p>• Incorrectly predicts ocean habitat</p>
                 </div>
                 <div>
                   <p className="font-medium">✅ With Sentiment:</p>
-                  <p>• "don't like water" detected → Ocean gets -1 point</p>
+                  <p>• &quot;don&apos;t like water&quot; detected → Ocean gets -1 point</p>
                   <p>• Correctly avoids ocean prediction</p>
                 </div>
               </div>

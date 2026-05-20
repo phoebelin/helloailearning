@@ -51,8 +51,8 @@ export function Hero() {
 
       setSuccess(true)
       setStep("submitted")
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -96,7 +96,7 @@ export function Hero() {
           Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
         </p>
         <div className="flex flex-col items-center gap-2">
-          <p className="text-lg font-bold text-purple-400 font-[var(--font-inter)]">Thank you! We'll be in touch soon.</p>
+          <p className="text-lg font-bold text-purple-400 font-[var(--font-inter)]">Thank you! We&apos;ll be in touch soon.</p>
         </div>
         <div className="mt-12">
           <img 

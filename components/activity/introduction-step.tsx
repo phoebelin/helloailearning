@@ -8,10 +8,9 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { 
-  MicrophonePermissionDialog, 
-  useMicrophonePermission 
+import {
+  MicrophonePermissionDialog,
+  useMicrophonePermission
 } from './microphone-permission-dialog';
 import { StepComponentProps } from '@/types/activity';
 
@@ -33,7 +32,6 @@ export function IntroductionStep({
   onNext,
   title = 'How machines learn with Zhorai',
   description = "In this course, you'll teach Zhorai, our conversational agent, all about animals and ecosystems and understand how Zhorai learns.",
-  requireMicrophone = false,
 }: IntroductionStepProps) {
   const { 
     isDialogOpen, 

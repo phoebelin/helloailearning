@@ -99,6 +99,12 @@ html[style*="overflow:hidden"] {
   }
 }
 
+/* Conveyor belt stripe movement */
+@keyframes beltMove {
+  from { background-position: 0 0; }
+  to   { background-position: 24px 0; }
+}
+
 /* Audio recorder waveform animation */
 @keyframes wave {
   0%, 100% {

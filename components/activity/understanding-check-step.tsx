@@ -99,15 +99,11 @@ export function UnderstandingCheckStep({
     };
   }, []);
   
-  // Initialize selectedOptions from persisted checkAnswers on mount
+  // Restore previous selections on mount so the user sees what they chose,
+  // but never auto-submit — they must click Check each time.
   useEffect(() => {
     if (!hasInitialized.current && state.checkAnswers.length > 0) {
       setSelectedOptions(state.checkAnswers);
-      // If we have 2 answers, mark as submitted and correct
-      if (state.checkAnswers.length === 2) {
-        setHasSubmitted(true);
-        setIsCorrect(true);
-      }
       hasInitialized.current = true;
     }
   }, [state.checkAnswers]);

@@ -1,459 +1,380 @@
-# PRD: Pattern Learning Activity with Mori - "Find the Secret Rule"
+## Introduction / Overview
 
-## Introduction/Overview
+This is the second step-by-step interactive activity in the AI literacy platform for kids ages 8–10. It teaches how AI uses patterns to recognize things, through a "Find the Secret Rule" game with **Mori** — a friendly red fuzzy monster.
 
-This is the **second** step-by-step interactive activity in the AI literacy platform for kids ages 8-10. The activity teaches children how AI uses patterns to learn, through a "Find the Secret Rule" game with Mori—a friendly red fuzzy monster character.
+Mori is a creature-sorting machine that has learned a hidden rule for which creatures it likes (**YES**) and doesn't (**NO**). The child's job is to figure out the rule — but the only reliable way to do that is to **test creatures and watch which features Mori pays attention to**, then prove they've got it by **sorting a fresh batch correctly**.
 
 In this activity, children:
-1. Meet Mori and explore how Mori's brain works (visual metaphor showing pattern-matching areas)
-2. "Feed" Mori examples by dragging visual items into Mori's mouth
-3. Observe Mori's binary feedback (matches rule vs. doesn't match)
-4. Try to guess the secret rule Mori learned
 
-The activity solves key AI literacy gaps:
-- **Pattern Recognition**: Children learn that AI fundamentally works by finding patterns in data
-- **Hypothesis Testing**: Kids practice the scientific method—observe, hypothesize, test
-- **Active Discovery**: Rather than being told how AI works, children discover it through play
+- Meet Mori and see how Mori "pays attention" to features (the visible AI concept)
+- **Observe** a starter set of pre-labeled creatures (YES / NO)
+- **Test** creatures freely in the Lab and watch which features Mori focuses on
+- **Sort** a fresh batch into YES/NO by their current hypothesis to check it
+- Discover, by the final level, that Mori's pattern is only as good as the examples it learned from
 
-**Prerequisite**: This activity unlocks after completing Activity 1 (Ecosystem Learning with Zhorai).
+### AI literacy gaps this addresses
+
+- **Pattern Recognition:** AI recognizes things by finding patterns in features across examples — not by being told rules or "knowing" what things are.
+- **Examples underdetermine the pattern:** the same handful of examples can fit several different rules; you need varied data to tell them apart.
+- **Generalization limits:** a pattern learned from narrow examples gets confidently misapplied to new cases (the capstone insight).
+- **Hypothesis testing:** observe → hypothesize → test → revise.
+- **Active discovery:** children discover how recognition works through play rather than being told.
+
+**Prerequisite:** Unlocks after completing Activity 1 (Ecosystem Learning with Zhorai).
+
+---
 
 ## Goals
 
-1. Teach children ages 8-10 that AI learns by recognizing patterns in examples
-2. Enable hands-on discovery through a drag-and-drop "feeding" mechanic where kids experiment with giving Mori different inputs
-3. Develop hypothesis-testing skills as children form and refine guesses about the secret rule
-4. Provide variable difficulty with multiple rule types (categories, patterns, logical rules)
-5. Allow open-ended play—children can continue playing as long as they want
-6. Explain *how* the AI identified the pattern after each successful guess, reinforcing learning
-7. Complete each round within 3-5 minutes to maintain engagement for target age group
+- Teach children ages 8–10 that AI recognizes things by finding patterns in **features** across examples.
+- Make **iteration necessary** by engineering example sets where multiple rules fit the initial data, so a single guess cannot reliably win.
+- Develop hypothesis-testing skills: form a hypothesis, design a test that distinguishes competing rules, observe, revise.
+- Make the AI's pattern-matching **visible** — the child watches which features Mori attends to.
+- Land the fundamental payoff: **a learned pattern is only as good as the examples it came from, and doesn't generalize safely beyond them.**
+- Provide a level progression where each level escalates *why* one guess isn't enough.
+- Allow open-ended replay; never penalize testing.
+- Explain how Mori found (or mis-found) the pattern after each level, reinforcing the concept.
+- Each level is solvable in roughly 4–7 minutes; total time is flexible — effective learning matters more than a hard cap.
 
-## User Stories
+---
 
-1. **As a student**, I want to see inside Mori's brain so that I can understand how it looks for patterns
-2. **As a student**, I want to drag examples into Mori's mouth so that I can see what matches the secret rule
-3. **As a student**, I want clear yes/no feedback from Mori so that I can figure out the pattern
-4. **As a student**, I want to guess the rule using my voice or typing so that I feel like I'm solving a puzzle
-5. **As a student**, I want to see how Mori found the pattern after I guess correctly so that I understand how AI learns
-6. **As a student**, I want to keep playing with harder rules so that I can challenge myself
-7. **As a teacher/parent**, I want the activity to be replayable with different rules so that students can practice pattern recognition multiple times
-8. **As a teacher/parent**, I want to see what rules my child has solved so that I can track their progress
+## Core Design: the Observe → Test → Sort loop
+
+The child cycles through three phases per level.
+
+### 1. Observe
+
+Mori shows a small set of **pre-labeled creatures** — some YES, some NO. This is the child's starting data. Crucially, this starter set is *consistent with more than one rule* (see "Engineered ambiguity").
+
+### 2. Test (the Lab)
+
+The child builds or picks creatures and asks Mori to classify them. Mori answers **YES / NO** and **highlights the feature(s) it is paying attention to** (a glow/spotlight on spots, color, etc.). Testing is **free and unlimited** — it is the core learning behavior, so it is never punished. This is where the AI concept lives: the child watches Mori *attend to features*, making "recognition = finding patterns in features" concrete rather than abstract.
+
+### 3. Sort (the Challenge)
+
+When ready, the child requests a **fresh batch of ~8–10 creatures** and sorts them into **YES** and **NO** bins by their current hypothesis. Mori reveals the true labels and shows matches vs. mismatches.
+
+- **Zero mismatches → level up.**
+- **Any mismatch → back to the Lab**, with mismatches highlighted (instructive, not punitive).
+
+**Why sorting instead of naming:** naming a rule is one-shot checkable and a lucky guess wins. Sorting a whole batch means a wrong hypothesis produces *multiple* visible mismatches at once. Because each challenge batch is seeded with "trap" creatures that distinguish the tempting-but-wrong rule from the true rule, the child cannot pass without having actually tested those distinguishing cases. **Iteration is required by construction.**
+
+---
+
+## Subject matter: invented creatures
+
+Creatures are assembled from a small, controlled feature vocabulary so ambiguity can be engineered precisely (and so Mori stays clearly distinct from Zhorai's animals):
+
+
+| Feature    | Values                      |
+| ---------- | --------------------------- |
+| Body shape | round / square / triangular |
+| Color      | red / blue / green / yellow |
+| Pattern    | spots / stripes / solid     |
+| Spikes     | yes / no                    |
+| Eyes       | 1 / 2 / 3                   |
+
+
+This same feature vocabulary is intentionally reused in Module 5 (generation), creating a cross-module callback.
+
+---
+
+## Level Progression — escalating *why one guess won't do*
+
+Each level raises the bar on why a single observation is insufficient.
+
+### Level 1 — Single feature (tutorial)
+
+**Rule:** "has spikes." Clean and separable, almost no trap. Teaches the observe → test → sort loop with minimal difficulty.
+
+### Level 2 — The confound (first forced iteration)
+
+**True rule:** **blue.** But every blue YES creature in the starter set also happens to be **round**, so the tempting hypothesis is "round." A child who jumps straight to sorting mismatches on blue-squares (Mori says YES, child sorted NO) and red-rounds (the opposite). To get it right, they **must** test a blue-square and a red-round in the Lab. This is the first time a single observation is provably not enough.
+
+### Level 3 — The conjunction
+
+**True rule:** **round AND spotted.** No single feature works: there are round-solid creatures (NO), square-spotted creatures (NO), and round-spotted (YES). Every single-feature hypothesis fails on part of the batch, forcing the child to discover that it's the *combination*. Heavy testing required.
+
+### Level 4 — The proxy (capstone / generalization payoff)
+
+**Intended rule:** **spotted** — **but** in every example Mori was ever shown, the spotted creatures also happened to be **green**. So Mori actually keys on **green**, not spots, because its narrow examples couldn't tell the two apart.
+
+While testing, the child hits the contradiction: Mori says **YES to a green *solid* creature** (no spots at all) and **NO to a red *spotted* one.**
+
+**The reveal:** *Mori didn't learn "spots" — it learned "green," because every spotted creature it ever saw was also green. The pattern is only as good as the examples it came from.* This also quietly teaches that Mori doesn't "understand" spots (it latched onto a correlated feature) and teases Module 3's data-quality material without stealing it.
+
+---
 
 ## Activity Sequence
 
-### Step 1: Introduction to Mori
-**Purpose**: Introduce the new character and set up the learning objective.
+### Step 1 — Meet Mori
 
-- **Heading**: "Meet Mori!"
-- **Mori Character**: Display Mori (red fuzzy monster) with a friendly wave animation
-- **Introduction Text**: "Mori is a pattern-finding monster! Mori learned a secret rule, and you need to figure out what it is."
-- **Mori's Speech**: "Hi, I'm Mori! I learned something special. Can you figure out my secret rule?"
-- **Action Button**: "See Mori's brain" (primary button)
+- **Heading:** "Meet Mori!"
+- **Character:** Mori (red fuzzy monster) with a friendly wave/idle animation.
+- **Intro text:** "Mori is a creature-sorting monster! Mori has a secret rule about which creatures it likes. Can you figure out the rule?"
+- **Mori's speech:** "Hi, I'm Mori! Some creatures match my secret rule, and some don't. Test some out and see if you can crack it!"
+- **Button:** "How Mori thinks" → Step 2.
+- **Technical:** idle animation; text-to-speech with a voice distinct from Zhorai; transition animation.
 
-**Technical Requirements**:
-- Display Mori character with idle animation (subtle bounce/breathing)
-- Text-to-speech for Mori's introduction (use distinct voice from Zhorai)
-- Transition animation to next step
+### Step 2 — How Mori pays attention
 
-### Step 2: Explore Mori's Brain
-**Purpose**: Visual metaphor showing how pattern recognition works in AI.
+*(Reframed from v1's "brain visualization." The point is now specifically: Mori looks at **features**.)*
 
-- **Heading**: "Inside Mori's Brain"
-- **Brain Visualization**: Stylized brain graphic with highlighted "pattern-matching" regions
-  - Show interconnected nodes lighting up when patterns are detected
-  - Animate pathways connecting similar concepts
-- **Explanation Text**: "Mori's brain lights up when it sees things that match a pattern. The more examples Mori sees, the better it gets at finding patterns!"
-- **Interactive Element**: Kids can tap/click on different brain regions to see mini-animations of pattern matching
-- **Mori's Speech**: "My brain looks for things that are the same. Feed me examples to see what I learned!"
-- **Action Button**: "Start feeding Mori!" (primary button)
+- **Heading:** "How Mori Looks at Creatures"
+- **Visualization:** show a single creature with its features individually highlightable (shape, color, pattern, spikes, eyes). As each is highlighted, Mori "looks" at it.
+- **Explanation:** "Mori doesn't know what a creature *is*. It only looks at features — shape, color, pattern — and tries to find which ones matter for its rule."
+- **Interactive:** child taps features to see Mori "notice" them.
+- **Mori's speech:** "I look for patterns in features. Test me and watch what I pay attention to!"
+- **Button:** "Start testing!" → Step 3.
 
-**Technical Requirements**:
-- Animated SVG or canvas-based brain visualization
-- Glowing/pulsing effects when pattern areas are "activated"
-- Touch/click interactions on brain regions with explanatory tooltips
-- Smooth transition animation to feeding interface
+### Step 3 — Observe (starter set)
 
-### Step 3: Feeding Interface - Main Gameplay
-**Purpose**: Core gameplay loop where kids drag examples to discover the pattern.
+- **Heading:** "Here's what Mori already knows"
+- Display the pre-labeled starter creatures in **YES** and **NO** groups.
+- **Mori's speech:** "These match my rule… and these don't. What's my secret?"
+- **Note (design):** the starter set is engineered so multiple rules fit it (see Level Progression). Do **not** make the true rule uniquely determinable from the starter set alone.
+- **Button:** "Test your own creatures!" → Step 4.
 
-- **Heading**: "Feed Mori to find the secret rule!"
-- **Layout**:
-  - **Left side**: Grid of draggable example cards (images with labels)
-  - **Center**: Mori character with open mouth as drop zone
-  - **Right side**: Two piles - "Matches!" (green) and "Doesn't Match" (red)
-- **Example Cards**: 8-12 visual options relevant to the current rule
-  - Each card shows an image + word label (e.g., picture of a cat + "Cat")
-  - Cards can be dragged to Mori's mouth
-- **Mori's Response**: 
-  - **Match**: Happy animation, card flies to "Matches!" pile, Mori says "Yes! This matches my rule!"
-  - **No Match**: Thinking/confused animation, card flies to "Doesn't Match" pile, Mori says "Hmm, this doesn't match."
-- **Progress Indicator**: Show how many examples have been tested (e.g., "3/8 examples tried")
-- **Action Buttons**:
-  - "I think I know the rule!" (becomes prominent after 3+ examples tested)
-  - "Show me a hint" (optional, revealed after 5+ failed guesses)
+### Step 4 — Test (the Lab) — main gameplay
 
-**User Interaction**: 
-1. Child drags an example card to Mori's mouth
-2. Mori processes and gives binary feedback
-3. Card animates to appropriate pile
-4. Child repeats until ready to guess
+- **Heading:** "Test creatures to crack the rule!"
+- **Layout:**
+  - A **creature builder/picker** (choose feature values to assemble a creature, or pick from a tray).
+  - **Mori** in the center as the classify action.
+  - Running **YES** and **NO** columns of everything tested so far.
+- **Mori's response per test:**
+  - **YES:** happy animation; **highlights the feature(s) Mori is attending to**; "Yes! This one matches."
+  - **NO:** thoughtful animation; highlights attended feature(s); "Nope, not this one."
+- **Free and unlimited testing.** No counter that implies a limit; no penalty.
+- **Buttons:**
+  - "I'm ready to sort!" (available any time after a minimum of testing) → Step 5.
+  - "Hint" (optional; appears only after multiple failed sorts — see Hints).
+- **Technical:** drag-and-drop or tap-to-build; touch-friendly (≥60×60pt targets); feature-highlight overlay on Mori's verdict; state tracking of all tested creatures; audio/visual match feedback.
 
-**Technical Requirements**:
-- Drag-and-drop library (react-dnd or @dnd-kit/core)
-- Touch-friendly drag with visual feedback (card follows finger/cursor)
-- Drop zone detection on Mori's mouth area
-- Animated transitions for cards moving to result piles
-- Sound effects for match/no-match feedback
-- State tracking for which examples have been tested
+**Open design risk to test:** the feature-highlight may give away too much on confound levels (could trivialize Level 2). May need to make the highlight slightly ambiguous, delayed, or "Mori's best guess at what mattered" rather than ground truth.
 
-### Step 4: Guess the Rule
-**Purpose**: Child attempts to articulate what pattern Mori learned.
+### Step 5 — Sort (the Challenge)
 
-- **Heading**: "What's Mori's secret rule?"
-- **Summary Display**: Show the two piles side by side
-  - "Matches!" pile with all matching examples
-  - "Doesn't Match" pile with all non-matching examples
-- **Input Methods**:
-  - "Press and speak" button for voice input
-  - Text input field as fallback
-  - Placeholder text: "The rule is..."
-- **Example Prompts**: Show 2-3 example guesses for first-time players
-  - "Things that are red"
-  - "Animals with four legs"
-  - "Words that start with B"
-- **Mori's Encouragement**: "Look at what matches and what doesn't. What do they have in common?"
-- **Action Button**: "Check my guess!"
+- **Heading:** "Sort these the way Mori would"
+- Mori presents a **fresh batch of ~8–10 creatures** (seeded with trap cards that distinguish competing rules).
+- Child drags each into **YES** or **NO** bins.
+- **Button:** "Check my sorting!"
+- On submit, Mori reveals true labels:
+  - **Zero mismatches →** Step 6a (level complete).
+  - **Any mismatch →** Step 6b (highlight mismatches, return to Lab).
+- **Technical:** drag-and-drop into two bins; clear per-card correct/incorrect reveal; mismatch highlighting.
 
-**Technical Requirements**:
-- Speech-to-text for voice input (reuse existing speech hook)
-- Text input with keyboard support
-- NLP/semantic matching to evaluate if guess is correct
-  - Should match meaning, not exact wording (e.g., "red things" = "things that are red")
-  - Use embedding similarity or keyword matching
-- Handle edge cases: partial matches, close guesses
+### Step 6a — Level complete (correct sort)
 
-### Step 5: Feedback - Correct Guess
-**Purpose**: Celebrate success and explain how AI pattern matching works.
+- **Heading:** "You cracked it!"
+- **Celebration:** confetti, Mori happy dance.
+- **Rule reveal:** "Mori's rule was: **[RULE]**."
+- **"How Mori Found the Pattern" panel:** visually highlight the defining feature(s) across the YES examples; connect to the concept ("Mori found which features matter by comparing examples — that's how AI recognizes things").
+  - **Level 4 special panel:** the proxy reveal — show that every spotted example was also green, so Mori learned *green*. Explicit line: "Mori's pattern was only as good as the examples it saw."
+- **Stats:** creatures tested; number of sort attempts. *(Framed positively — testing is good.)*
+- **Buttons:** "Next level!" (primary) · "I'm done for now" (secondary).
 
-- **Heading**: "You got it!"
-- **Celebration**: Confetti animation, Mori doing happy dance
-- **Rule Reveal**: "Mori's rule was: [RULE]"
-- **Explanation Panel**: "How Mori Found the Pattern"
-  - Show visual breakdown: "Mori noticed that [CAT, DOG, HORSE] all have..."
-  - Highlight the common feature(s) that define the pattern
-  - Connect back to brain visualization: "This is how AI learns - by finding what's the same!"
-- **Stats Display**:
-  - "You tested X examples"
-  - "You got it in Y guesses"
-- **Action Buttons**:
-  - "Try a harder rule!" (primary)
-  - "I'm done for now" (secondary)
+### Step 6b — Not quite (incorrect sort)
 
-**User Interaction**: Child can review the explanation, then choose to continue or exit.
+- **Mori's response:** gentle, encouraging; "Close! Look where we disagreed."
+- **Show the mismatches** explicitly (the creatures where child ≠ Mori). These are the most informative cases.
+- **Encouragement:** "Try testing creatures like the ones we disagreed on."
+- **Return to Lab** (Step 4). Hypothesis can be revised and re-sorted freely.
 
-**Technical Requirements**:
-- Celebration animation (confetti, Mori dance)
-- Dynamic explanation text based on the specific rule
-- Track and display attempt statistics
-- Difficulty progression logic for next rule
+### Step 7 — Session summary (optional exit)
 
-### Step 5b: Feedback - Incorrect Guess
-**Purpose**: Encourage retry with helpful hints.
+- **Heading:** "Great work, pattern detective!"
+- **Stats:** levels solved this session; total solved; highest level reached.
+- **Mori's closing:** "You found patterns the way an AI does — by testing and comparing, not by being told!"
+- **Learning recap:** "AI recognizes things by finding patterns in features across examples. And remember Level 4 — a pattern is only as good as the examples it learned from!"
+- **Buttons:** "Keep playing" · "Back to activities."
 
-- **Mori's Response**: Gentle shake animation, thoughtful expression
-- **Feedback Text**: "Not quite! Let's think about this..."
-- **Hint System** (progressive):
-  - **1st wrong guess**: "Look more closely at the [Matches] pile. What do they have in common?"
-  - **2nd wrong guess**: "Try thinking about [category hint: color/size/type/sound]"
-  - **3rd+ wrong guess**: "Here's a big hint: Think about [specific hint]"
-- **Action**: Return to feeding interface or guess again
-- **Show Hint Button**: Becomes visible after 3 wrong guesses
+---
 
-**Technical Requirements**:
-- Track guess attempts per rule
-- Progressive hint system based on attempt count
-- Semantic matching with partial credit detection ("close" vs "wrong")
+## Scoring & open-ended play
 
-### Step 6: Difficulty Progression
-**Purpose**: Keep gameplay engaging with increasingly complex rules.
+- **Win a level:** one clean sort (zero mismatches).
+- **No penalty** for testing or for failed sorts; a failed sort routes back to the Lab with mismatches highlighted.
+- **Optional light gamification:** award *bonus* stars for solving with fewer tests (rewards efficient hypothesizing), but **never subtract** for testing — the incentive must always point toward more investigation.
+- Child may replay any unlocked level and continue indefinitely.
 
-**Rule Difficulty Tiers**:
+---
 
-**Level 1 - Simple Categories** (Beginner):
-- "Things that are red"
-- "Animals"
-- "Things you can eat"
-- "Things that are round"
+## Hints (progressive, never the answer)
 
-**Level 2 - Patterns** (Intermediate):
-- "Words that start with the letter B"
-- "Things that come in pairs"
-- "Rhyming words"
-- "Things bigger than a cat"
+- Hints appear only after **multiple failed sorts** at a level.
+- Hints point at *where to look / what to test*, not the rule:
+  - 1st: "Look closely at the creatures where you and Mori disagreed."
+  - 2nd: "Try testing two creatures that are the same except for one feature."
+  - 3rd: "Watch which feature Mori highlights when it changes its answer."
+- **Hints must not give the rule directly** (resolves an open question from v1: the connection is always left to the child).
 
-**Level 3 - Logical Rules** (Advanced):
-- "Animals that can fly"
-- "Things that are alive AND can move"
-- "Fruits OR vegetables"
-- "Things you find in a kitchen but not a bedroom"
-
-**Progression Logic**:
-- Start at Level 1
-- After 2 correct guesses at current level, unlock next level
-- Children can choose to replay any unlocked level
-- Track highest level achieved
-
-### Step 7: Session Summary (Optional Exit)
-**Purpose**: Wrap up play session with progress summary.
-
-- **Heading**: "Great job, pattern detective!"
-- **Session Stats**:
-  - Rules solved this session: X
-  - Total rules solved: Y
-  - Highest difficulty reached: Level Z
-- **Mori's Closing**: "You're getting really good at finding patterns, just like an AI!"
-- **Learning Recap**: "Remember: AI learns by looking at lots of examples and finding what's the same. You did the same thing today!"
-- **Action Buttons**:
-  - "Play more" (returns to feeding interface with new rule)
-  - "Back to activities" (returns to activity hub)
+---
 
 ## Functional Requirements
 
-### 1. App Reorganization for Multiple Activities
+### 1. App reorganization for multiple activities
 
-1.1. The app must implement a linear curriculum system where Activity 2 is locked until Activity 1 is completed
+1.1. Linear curriculum: Activity 2 locked until Activity 1 complete. 1.2. Track completion in persistent storage (localStorage). 1.3. Activity-specific folders: `components/activities/zhorai/`, `components/activities/mori/`, `components/activities/shared/`. 1.4. Activity-agnostic state management, extensible to future activities. 1.5. Locked activities show a lock icon and "Complete [previous activity] to unlock."
 
-1.2. The app must track activity completion status in localStorage or persistent storage
+### 2. Character & feature-attention visualization
 
-1.3. The app must reorganize activity components into activity-specific folders:
-   - `components/activities/zhorai/` - Ecosystem learning activity components
-   - `components/activities/mori/` - Pattern learning activity components
-   - `components/activities/shared/` - Shared components (speech input, progress bar, etc.)
+2.1. Mori with animated expressions (happy, thinking, confused, excited). 2.2. A **feature-attention** visualization (replaces v1 "brain regions"): shows Mori attending to specific creature features. 2.3. On each classification, Mori highlights the feature(s) it is attending to. 2.4. Mori has a distinct TTS voice from Zhorai.
 
-1.4. The app must create activity-agnostic context/state management that can be extended for new activities
+### 3. Creature builder & testing system
 
-1.5. The app must display locked activities with a lock icon and "Complete [Previous Activity] to unlock" message
+3.1. Child can assemble a creature by selecting feature values (and/or pick from a tray). 3.2. Touch-friendly targets (≥60×60pt drag targets, ≥44×44pt tap). 3.3. Testing is unlimited and never penalized; no UI implying a test limit. 3.4. Each verdict shows YES/NO **plus** attended-feature highlight. 3.5. Tested creatures accumulate in visible YES/NO columns. 3.6. Audio + visual feedback for YES/NO.
 
-### 2. Character & Brain Visualization
+### 4. Sort/challenge system
 
-2.1. The app must display Mori character with animated expressions (happy, thinking, confused, excited)
+4.1. Generate a fresh batch of ~8–10 creatures per challenge. 4.2. Batches must be **seeded with trap creatures** that distinguish the true rule from the tempting wrong rule(s) at that level. 4.3. Child sorts into YES/NO bins via drag-and-drop. 4.4. On submit, reveal true labels with clear per-creature correct/incorrect. 4.5. Zero mismatches → level up; any mismatch → return to Lab with mismatches highlighted.
 
-2.2. The app must render an interactive brain visualization showing pattern-matching regions
+### 5. Rule & content system (engineered ambiguity)
 
-2.3. Brain regions must light up and animate when tapped/clicked
+5.1. Support the four-level progression: single feature → confound → conjunction → proxy. 5.2. **Starter sets must be consistent with more than one rule** (ambiguity is required, not incidental). 5.3. Each rule defines: the true rule; the tempting wrong rule(s); the starter set; and the trap creatures needed in challenge batches. 5.4. Creature features drawn from the controlled vocabulary (shape, color, pattern, spikes, eyes). 5.5. Content authored so the true rule is **only** discoverable by testing the distinguishing cases.
 
-2.4. Mori must have a distinct voice (different from Zhorai) for text-to-speech responses
+### 6. Progress & progression
 
-### 3. Drag-and-Drop Feeding System
+6.1. Track levels solved per session and total. 6.2. Track highest level reached. 6.3. Save progress to localStorage. 6.4. Allow indefinite play (no forced end). 6.5. Levels unlock sequentially; solved levels are replayable.
 
-3.1. The app must display 8-12 draggable example cards per rule
+### 7. Explanation & reinforcement
 
-3.2. Example cards must be touch-friendly (minimum 60x60pt drag targets)
+7.1. After each clean sort, show "How Mori Found the Pattern," highlighting the defining feature(s). 7.2. Level 4 must show the **proxy reveal** (spotted-correlated-with-green) and state the generalization lesson explicitly. 7.3. Explanations connect the activity to real AI pattern recognition. 7.4. Session summary on exit, including the generalization takeaway.
 
-3.3. Mori's mouth must act as a valid drop zone with visual hover state
+---
 
-3.4. Cards must animate smoothly from Mori to the appropriate result pile
+## Non-Goals (out of scope)
 
-3.5. The app must provide audio and visual feedback for match vs. no-match
+- **No rule creation by children** in this version.
+- **No multiplayer.** (The "solve with a friend" twist is a future enhancement, not core.)
+- **No timed challenges.**
+- **No free-form creature drawing** — creatures are composed from the fixed feature vocabulary.
+- **No NOT-conditions or complex boolean logic** beyond the single conjunction in Level 3.
+- **No adaptive difficulty** — progression is fixed and sequential.
+- **No natural-language rule guessing / NLP evaluation.** *(Removed from v1: correctness is now demonstrated by sorting, not by articulating the rule in words. This also eliminates the v1 semantic-matching complexity.)*
 
-3.6. The app must prevent re-testing the same example twice
-
-3.7. The app must track which examples have been tested and display progress
-
-### 4. Rule System & Content
-
-4.1. The app must support three difficulty levels of rules:
-   - Level 1: Simple categories (colors, types, basic properties)
-   - Level 2: Patterns (letter patterns, rhymes, comparisons)
-   - Level 3: Logical rules (AND/OR conditions, context-based)
-
-4.2. Each difficulty level must have at least 5 unique rules
-
-4.3. Rules must not repeat within a single play session (until exhausted)
-
-4.4. Each rule must have a curated set of examples (4-6 matches, 4-6 non-matches)
-
-4.5. Example images must be child-friendly and clearly represent the concept
-
-### 5. Guess Evaluation
-
-5.1. The app must accept voice input for guesses (reuse existing speech recognition)
-
-5.2. The app must accept text input as fallback
-
-5.3. The app must use semantic matching to evaluate guesses:
-   - Exact match: "red things" and the rule is "things that are red"
-   - Semantic match: "stuff that's red" should match "things that are red"
-   - Partial match: Recognize close guesses and provide targeted feedback
-
-5.4. The app must provide progressive hints after failed guesses
-
-5.5. The app must not penalize minor grammar/spelling differences
-
-### 6. Progress & Difficulty Progression
-
-6.1. The app must track rules solved per session
-
-6.2. The app must track total rules solved across all sessions
-
-6.3. The app must unlock higher difficulty levels after 2 successful solves at current level
-
-6.4. The app must save progress to localStorage
-
-6.5. The app must allow children to continue playing indefinitely (no forced end)
-
-### 7. Explanation & Learning Reinforcement
-
-7.1. After each correct guess, the app must display a "How Mori Found the Pattern" explanation
-
-7.2. The explanation must visually highlight the common features of matching examples
-
-7.3. The explanation must connect the activity to real AI pattern recognition
-
-7.4. The app must provide a session summary when the child chooses to exit
-
-## Non-Goals (Out of Scope)
-
-1. **No Custom Rule Creation**: Children cannot create their own rules for this version
-2. **No Multiplayer**: Single-player experience only
-3. **No Timed Challenges**: No time pressure—children can take as long as needed
-4. **No External Image Upload**: All example images are pre-curated
-5. **No Complex Logic**: Rules won't use NOT conditions or complex boolean logic in Level 3
-6. **No Adaptive Difficulty**: Difficulty progression is fixed (2 solves per level), not dynamically adjusted based on performance
+---
 
 ## Design Considerations
 
-### Visual Design
-- **Mori Character**: Red fuzzy monster with yellow horns, big smile with buck teeth, curly tail with star
-- **Color Scheme**: 
-  - Primary: Warm red-orange tones (matching Mori)
-  - Match feedback: Green (#4CAF50)
-  - No-match feedback: Orange/red (#FF6B6B)
-  - Background: Warm cream or soft gradient
-- **Brain Visualization**: Stylized, friendly (not anatomical), with glowing neural pathways
-- **Cards**: Rounded corners, subtle shadows, clear illustrations with word labels
+### Visual design
 
-### Animation & Feedback
-- **Mori Expressions**: Smooth transitions between emotional states
-- **Drag Feedback**: Card lifts and follows cursor/finger with slight rotation
-- **Drop Animation**: Satisfying "gulp" animation when Mori "eats" the example
-- **Result Animation**: Card flies in arc to result pile with bounce
-- **Celebration**: Confetti burst, Mori jump/dance animation
+- **Mori:** red fuzzy monster, yellow horns, big buck-tooth smile, curly star-tipped tail.
+- **Color scheme:** warm red-orange (Mori); YES = green (`#4CAF50`); NO = orange/red (`#FF6B6B`); warm cream/soft-gradient background.
+- **Creatures:** clean, iconic, with each feature unambiguously readable (shape, color, pattern, spikes, eye-count must all be visually distinct).
+- **Feature highlight:** clear glow/spotlight on the attended feature when Mori gives a verdict.
+
+### Animation & feedback
+
+- Smooth Mori expression transitions.
+- Drag feedback: creature lifts and follows finger/cursor with slight rotation.
+- Verdict animation: creature moves to the YES/NO column with a satisfying motion.
+- Celebration: confetti + Mori dance on a clean sort.
 
 ### Audio
-- **Mori's Voice**: Distinct from Zhorai—perhaps higher-pitched, more playful
-- **Sound Effects**:
-  - Drag start: Soft pickup sound
-  - Drop/gulp: Satisfying chomp sound
-  - Match: Happy chime
-  - No match: Gentle "hmm" sound
-  - Correct guess: Celebration fanfare
-  - Wrong guess: Encouraging "try again" tone
 
-### Responsive Design
-- Must work on iPad (landscape and portrait) and iPhone (portrait)
-- Touch targets minimum 44x44pt, drag targets minimum 60x60pt
-- Cards should resize based on screen size (fewer visible on phone, more on tablet)
+- Mori's voice distinct from Zhorai (playful).
+- SFX: pickup, verdict chime (YES) / soft "hmm" (NO), celebration on level complete, gentle "look again" on a mismatch.
+
+### Responsive design
+
+- iPad (landscape/portrait) and iPhone (portrait).
+- Tap targets ≥44×44pt; drag targets ≥60×60pt.
+- Layout adapts (fewer creatures visible at once on phone).
+
+---
 
 ## Technical Considerations
 
-### Drag-and-Drop Implementation
-- **Recommended**: `@dnd-kit/core` for React—excellent touch support, accessibility
-- **Alternative**: `react-beautiful-dnd` or native HTML5 drag-drop with touch polyfill
-- Must support both mouse and touch input seamlessly
+### Drag-and-drop
 
-### Rule Matching / NLP
-- **Approach 1**: Keyword + synonym matching (simpler, faster)
-  - Define keywords for each rule: "red" → ["red", "crimson", "scarlet"]
-  - Check if user guess contains required keywords
-- **Approach 2**: Embedding similarity (more flexible)
-  - Use existing word embeddings from Zhorai activity
-  - Compare semantic similarity between guess and rule description
-- **Recommendation**: Start with keyword matching; add embedding similarity for edge cases
+- Recommended: `@dnd-kit/core` (strong touch + accessibility support).
+- Must support mouse and touch seamlessly.
 
-### Content Management
-- Store rules and examples in structured JSON:
-```typescript
-interface Rule {
+### Content model (revised for engineered ambiguity)
+
+ts
+
+```ts
+type Shape = 'round' | 'square' | 'triangular';
+type Color = 'red' | 'blue' | 'green' | 'yellow';
+type Pattern = 'spots' | 'stripes' | 'solid';
+
+interface Creature {
   id: string;
-  level: 1 | 2 | 3;
-  description: string; // "Things that are red"
-  keywords: string[]; // ["red", "crimson"]
-  explanation: string; // "These all share the color red!"
-  examples: Example[];
+  shape: Shape;
+  color: Color;
+  pattern: Pattern;
+  spikes: boolean;
+  eyes: 1 | 2 | 3;
 }
 
-interface Example {
+interface Level {
   id: string;
-  label: string;
-  imageUrl: string;
-  matches: boolean;
+  index: 1 | 2 | 3 | 4;
+  // The rule Mori actually applies (predicate over a creature):
+  trueRule: (c: Creature) => boolean;
+  trueRuleLabel: string;            // e.g. "blue"
+  temptingWrongRules: string[];     // e.g. ["round"] — for hint/explanation logic
+  starterSet: Creature[];           // consistent with >1 rule by construction
+  // Trap creatures that distinguish trueRule from temptingWrongRules,
+  // guaranteed to appear in challenge batches:
+  requiredTraps: Creature[];
+  explanation: string;              // "How Mori Found the Pattern"
+  // Level 4 only: the correlated proxy feature actually learned
+  proxyFeature?: string;            // e.g. "green"
 }
 ```
 
-### State Management
-- Create `MoriActivityContext` separate from Zhorai's context
-- Share common utilities (speech, progress tracking) via shared hooks
-- Consider creating `ActivityProgressContext` for cross-activity state (what's unlocked, total progress)
+- Challenge-batch generator must include `requiredTraps` plus filler, shuffled.
+- A content-authoring check should verify that `starterSet` is genuinely ambiguous (multiple simple rules fit it) and that `requiredTraps` separate the true rule from each tempting wrong rule.
 
-### Code Organization
+### Feature-attention visualization
+
+- On each verdict, compute which feature(s) the rule depends on for *this* creature and highlight them. For Level 4, highlight the **proxy** feature (green), since that's what Mori "actually" uses — this is what makes the contradiction visible.
+
+### State management
+
+- `MoriActivityContext` separate from Zhorai's.
+- Shared utilities (speech, progress) via shared hooks.
+- `ActivityProgressContext` for cross-activity unlock/progress state.
+
+### Code organization
+
 ```
 components/
   activities/
     shared/
       progress-bar.tsx
-      speech-input.tsx
       celebration-animation.tsx
     zhorai/
-      (move existing activity components here)
+      (existing components)
     mori/
-      introduction-step.tsx
-      brain-visualization.tsx
-      feeding-interface.tsx
-      guess-input.tsx
-      feedback-display.tsx
+      meet-mori-step.tsx
+      feature-attention.tsx        // replaces brain-visualization
+      observe-step.tsx             // starter set
+      lab-interface.tsx            // test / creature builder
+      sort-challenge.tsx           // batch sorting
+      level-complete.tsx
       session-summary.tsx
-
 lib/
   context/
-    activity-progress-context.tsx  // NEW: tracks which activities are unlocked
-    zhorai-activity-context.tsx    // RENAMED from activity-context.tsx
-    mori-activity-context.tsx      // NEW
-
-lib/
+    activity-progress-context.tsx
+    zhorai-activity-context.tsx
+    mori-activity-context.tsx
   data/
-    mori-rules.ts  // Rule definitions and examples
+    mori-levels.ts                 // the four levels, starter sets, traps
 ```
-
-## Success Metrics
-
-1. **Completion Rate**: ≥60% of children who start a round successfully guess the rule
-2. **Engagement**: Average of 3+ rules attempted per session
-3. **Progression**: ≥50% of players unlock Level 2 within first 3 sessions
-4. **Learning Transfer**: Children can explain "AI learns from patterns" when asked
-5. **Replayability**: ≥40% of children return to play additional sessions
-6. **Fun Factor**: ≥4.0/5.0 rating if feedback is collected
-
-## Open Questions
-
-1. **Rule Content**: Need to finalize the full list of 15+ rules across all difficulty levels with curated example sets. Should we create a separate content document?
-
-2. **Semantic Matching Accuracy**: How flexible should guess matching be? Should "animals" match "creatures" or "living things"?
-
-3. **Hint System Depth**: Should hints eventually give away the answer, or always require the child to make the connection?
-
-4. **Visual Assets**: Do we need to commission custom illustrations for example cards, or use existing icon libraries?
-
-5. **Voice for Mori**: Should we use a different TTS voice, or record custom audio clips for Mori?
-
-6. **Accessibility**: How do we make drag-and-drop accessible for screen readers or motor impairments? Consider alternative input methods.
-
-7. **Localization**: Same question as Activity 1—English only for now, or plan for multilingual?
 
 ---
 
-**PRD Version**: 1.0  
-**Created**: January 19, 2026  
-**Author**: AI Assistant  
-**Status**: Draft - Pending Review  
-**Depends On**: 0001-prd-ecosystem-learning-activity.md (Activity 1 must be completed first)
+## Success Metrics
+
+- **Iteration actually happens:** median tests-before-first-sort ≥ a threshold on Levels 2–4 (i.e., children are testing, not one-shot guessing). *This is the metric that proves the v1 problem is fixed.*
+- **Completion:** ≥60% of children who start a level eventually sort it correctly.
+- **Engagement:** average ≥3 levels attempted per session.
+- **Progression:** ≥50% reach Level 3 within first 3 sessions.
+- **Concept transfer (the real test):** children can explain, in their own words, that (a) AI finds patterns in features from examples, and (b) a pattern can be wrong if the examples were narrow/biased (the Level 4 idea).
+- **Replayability:** ≥40% return for additional sessions.
+- **Fun:** ≥4.0/5.0 if feedback is collected.
 

@@ -225,23 +225,31 @@ function TestActivityStepsContent() {
   } = useActivity();
 
   // Convert context step to page step index
-  // Use state.stepIndex from context, but map it to our page step index
   const contextStepIndex = state.stepIndex;
   const currentStepIndex = stepToIndexMap[state.currentStep] ?? contextStepIndex;
-  
-  const [maxStepReached, setMaxStepReached] = useState(currentStepIndex);
-  const [visibleStepIndex, setVisibleStepIndex] = useState(currentStepIndex);
 
-  // Initialize visibleStepIndex on mount with current step
-  useEffect(() => {
-    const initialIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
-    setVisibleStepIndex(initialIndex);
-  }, []); // Only run on mount
+  // Persist maxStepReached to localStorage so returning users resume at their saved position.
+  // We load it once on mount (lazy initializer) and never initialise from context step, so
+  // the user can only reach a step they've previously unlocked — not skip ahead.
+  const [maxStepReached, setMaxStepReachedState] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const saved = localStorage.getItem('zhorai-max-step');
+      return saved ? Math.max(0, parseInt(saved, 10)) : 0;
+    } catch {
+      return 0;
+    }
+  });
 
-  // Sync maxStepReached with visible step (what's actually scrolled to)
-  useEffect(() => {
-    setMaxStepReached(prev => Math.max(prev, visibleStepIndex));
-  }, [visibleStepIndex]);
+  const setMaxStepReached = useCallback((updater: number | ((prev: number) => number)) => {
+    setMaxStepReachedState(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      try { localStorage.setItem('zhorai-max-step', String(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+  const [visibleStepIndex, setVisibleStepIndex] = useState(maxStepReached);
 
   // Refs for each step to enable auto-scrolling
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -262,43 +270,23 @@ function TestActivityStepsContent() {
   const isNavigatingProgrammaticallyRef = useRef(false);
   const hasRestoredScrollPositionRef = useRef(false);
 
-  // Restore scroll position on initial page load from saved state
+  // On mount: scroll to the furthest step the user has previously reached.
+  // Uses maxStepReached from localStorage so they resume right where they left off.
   useEffect(() => {
-    // Only restore once on initial mount
-    if (hasRestoredScrollPositionRef.current) return;
-    
-    const savedStepIndex = stepToIndexMap[state.currentStep] ?? state.stepIndex;
-    
-    // Mark that we're restoring programmatically to prevent Intersection Observer interference
-    isNavigatingProgrammaticallyRef.current = true;
-    
-    // Ensure maxStepReached is at least the saved step so it's rendered
-    if (savedStepIndex > 0) {
-      setMaxStepReached(prev => Math.max(prev, savedStepIndex));
-      
-      // Wait for DOM to render, then scroll to saved position
-      const timeoutId = setTimeout(() => {
-        const stepRef = stepRefs[savedStepIndex]?.current;
-        if (stepRef) {
-          stepRef.scrollIntoView({ 
-            behavior: 'auto', // Use 'auto' for instant scroll on page load
-            block: 'start' 
-          });
-          setVisibleStepIndex(savedStepIndex);
-        }
-        hasRestoredScrollPositionRef.current = true;
-        // Reset the flag after restoration is complete
-        setTimeout(() => {
-          isNavigatingProgrammaticallyRef.current = false;
-        }, 500);
-      }, 100);
-      
-      return () => clearTimeout(timeoutId);
-    } else {
+    if (maxStepReached === 0) {
       hasRestoredScrollPositionRef.current = true;
-      isNavigatingProgrammaticallyRef.current = false;
+      return;
     }
-  }, [state.currentStep, state.stepIndex, stepRefs]);
+    isNavigatingProgrammaticallyRef.current = true;
+    const id = setTimeout(() => {
+      stepRefs[maxStepReached]?.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
+      setVisibleStepIndex(maxStepReached);
+      hasRestoredScrollPositionRef.current = true;
+      setTimeout(() => { isNavigatingProgrammaticallyRef.current = false; }, 500);
+    }, 100);
+    return () => clearTimeout(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Only auto-scroll when step changes programmatically (via buttons), not during manual scrolling
   useEffect(() => {
@@ -622,7 +610,7 @@ function TestActivityStepsContent() {
                        variant="ghost"
                        size="sm"
                        onClick={handleHeaderNext}
-                       disabled={visibleStepIndex >= totalSteps - 1}
+                       disabled={visibleStepIndex >= maxStepReached}
                        className="text-sm"
                      >
                        Next
@@ -663,7 +651,7 @@ function TestActivityStepsContent() {
       )}
 
       {/* Step 1: Ecosystem Selection */}
-      {currentStepIndex >= 1 && (
+      {maxStepReached >= 1 && (
         <div ref={step1Ref} data-step="ecosystem-selection" className="min-h-screen flex items-center justify-center py-12" style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}>
           <EcosystemSelectionStep
             onNext={() => handleNext(1)}
@@ -755,7 +743,12 @@ function TestActivityStepsContent() {
         selectedEcosystem={selectedEcosystem}
         selectedAnimal={selectedAnimal}
         sentences={sentences}
-        onResetProgress={resetActivity}
+        onResetProgress={() => {
+          try { localStorage.removeItem('zhorai-max-step'); } catch {}
+          setMaxStepReached(0);
+          setVisibleStepIndex(0);
+          resetActivity();
+        }}
       />
     </div>
   );

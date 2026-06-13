@@ -3,11 +3,21 @@
 import Image from 'next/image';
 import { Nav } from '@/components/nav';
 import { Button } from '@/components/ui/button';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { isActivityCompleted } from '@/lib/utils/activity-tracking';
 
 export default function CoursesPage() {
   const router = useRouter();
+  const [moriComplete, setMoriComplete] = useState(false);
+
+  useEffect(() => {
+    setMoriComplete(isActivityCompleted('find-the-secret-rule'));
+    const handler = () => setMoriComplete(isActivityCompleted('find-the-secret-rule'));
+    window.addEventListener('activity-completed', handler);
+    return () => window.removeEventListener('activity-completed', handler);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden" id="courses-page">
@@ -103,16 +113,17 @@ export default function CoursesPage() {
               <p className="text-sm font-semibold text-black text-center" style={{ lineHeight: '1.7142857142857142em' }}>
                 Chapter 2
               </p>
-              
+
               {/* How machines use patterns with Mori Tile */}
               <button
                 onClick={() => router.push('/lessons/chapter-2')}
-                className="flex flex-col items-center justify-between gap-0 bg-white border border-black rounded-xl cursor-pointer transition-shadow hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
+                className="flex flex-col items-center justify-between gap-0 border border-black rounded-xl transition-shadow bg-white cursor-pointer hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
                 style={{
                   width: '261px',
                   height: '285px',
                   padding: '24px',
                   borderRadius: '12px',
+                  position: 'relative',
                 }}
               >
                 <Image
@@ -122,13 +133,70 @@ export default function CoursesPage() {
                   height={179}
                   className="object-contain"
                 />
-                <p 
+                <p
                   className="text-sm font-semibold text-black text-center whitespace-pre-line"
                   style={{ lineHeight: '1.7142857142857142em' }}
                 >
                   How machines{'\n'}use patterns with Mori
                 </p>
               </button>
+            </div>
+
+            {/* Chapter 3 Section */}
+            <div className="flex flex-col gap-6">
+              <p className="text-sm font-semibold text-black text-center" style={{ lineHeight: '1.7142857142857142em' }}>
+                Chapter 3
+              </p>
+
+              {moriComplete ? (
+                <button
+                  onClick={() => router.push('/lessons/chapter-3')}
+                  className="flex flex-col items-center justify-between gap-0 border border-black rounded-xl transition-shadow bg-white cursor-pointer hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
+                  style={{
+                    width: '261px',
+                    height: '285px',
+                    padding: '24px 12px',
+                    borderRadius: '12px',
+                    position: 'relative',
+                  }}
+                >
+                  <Image
+                    src="/images/pippy.png"
+                    alt="Pippy"
+                    width={140}
+                    height={125}
+                    className="object-contain"
+                  />
+                  <p
+                    className="text-sm font-semibold text-black text-center whitespace-pre-line"
+                    style={{ lineHeight: '1.7142857142857142em' }}
+                  >
+                    How machines update{'\n'}understanding with Pippy
+                  </p>
+                </button>
+              ) : (
+                <div
+                  className="flex flex-col items-center justify-center gap-3 border border-gray-200 rounded-xl bg-gray-50 cursor-not-allowed"
+                  style={{
+                    width: '261px',
+                    height: '285px',
+                    padding: '24px',
+                    borderRadius: '12px',
+                  }}
+                >
+                  <Lock className="w-8 h-8 text-gray-300" />
+                  <Image
+                    src="/images/pippy.png"
+                    alt="Pippy"
+                    width={200}
+                    height={179}
+                    className="object-contain opacity-30"
+                  />
+                  <p className="text-xs text-gray-400 text-center">
+                    Complete <span className="font-semibold">How machines use patterns with Mori</span> to unlock
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

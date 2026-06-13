@@ -8,6 +8,10 @@
 
 # testing
 /coverage
+/test-results
+
+# local virtualenvs
+/.venv-bg
 
 # next.js
 /.next/

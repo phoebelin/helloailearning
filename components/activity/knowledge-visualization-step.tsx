@@ -284,10 +284,14 @@ export function KnowledgeVisualizationStep({
       // Get fresh values from refs (avoid stale closures)
       const { speak: currentSpeak, isSupported: currentSupported, isGoogleCloudAvailable: currentGoogleCloudAvailable, isGoogleCloudChecked: currentGoogleCloudChecked } = hookValuesRef.current;
       
-      if (currentSupported && currentGoogleCloudChecked && currentSpeak) {
-        // ADD DEBUG LOG TO CHECK AVAILABILITY AT SPEAK TIME
-        console.log('Knowledge Visualization: Before calling speak() - isGoogleCloudAvailable:', currentGoogleCloudAvailable);
-        console.log('Knowledge Visualization: Calling speak()...');
+      // Attempt speech whenever it's supported. We intentionally do NOT require
+      // currentGoogleCloudChecked here: that flag only indicates whether the Google Cloud
+      // *preference* check has resolved. Gating on it meant that if the async check lost a
+      // race with this timer, we'd silently skip speech AND mark the ecosystem spoken —
+      // so Zhorai went mute for that ecosystem forever. speak() handles its own Google
+      // Cloud / Web Speech fallback, and onError below degrades gracefully to the mindmap.
+      if (currentSupported && currentSpeak) {
+        console.log('Knowledge Visualization: Calling speak() - isGoogleCloudAvailable:', currentGoogleCloudAvailable, 'checked:', currentGoogleCloudChecked);
         currentSpeak(message, {
           onStart: () => {
             // Mark as spoken when speech actually starts

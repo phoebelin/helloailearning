@@ -165,7 +165,7 @@ export default function ProjectsPage() {
               
               {/* Project Card */}
               <button
-                onClick={() => router.push('/test-activity-steps')}
+                onClick={() => router.push('/lessons/how-machines-learn')}
                 className="flex flex-col items-center gap-2.5 bg-white border border-black rounded-xl cursor-pointer transition-shadow hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
                 style={{
                   width: '261px',

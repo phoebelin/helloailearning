@@ -83,7 +83,7 @@ export default function CoursesPage() {
               
               {/* How machines learn with Zhorai Tile */}
               <button
-                onClick={() => router.push('/test-activity-steps')}
+                onClick={() => router.push('/lessons/how-machines-learn')}
                 className="flex flex-col items-center gap-2.5 bg-white border border-black rounded-xl cursor-pointer transition-shadow hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
                 style={{
                   width: '261px',
@@ -116,7 +116,7 @@ export default function CoursesPage() {
 
               {/* How machines use patterns with Mori Tile */}
               <button
-                onClick={() => router.push('/lessons/chapter-2')}
+                onClick={() => router.push('/lessons/how-machines-use-patterns')}
                 className="flex flex-col items-center justify-between gap-0 border border-black rounded-xl transition-shadow bg-white cursor-pointer hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
                 style={{
                   width: '261px',
@@ -150,7 +150,7 @@ export default function CoursesPage() {
 
               {moriComplete ? (
                 <button
-                  onClick={() => router.push('/lessons/chapter-3')}
+                  onClick={() => router.push('/lessons/how-machines-update-understanding')}
                   className="flex flex-col items-center justify-between gap-0 border border-black rounded-xl transition-shadow bg-white cursor-pointer hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
                   style={{
                     width: '261px',

@@ -102,6 +102,13 @@ remove that stub — any page importing the ML code (`lib/ml/*`) will break the 
   implement task-by-task. Existing PRDs and task lists are in `tasks/`.
 - **QA** the `qa-agent` skill drives an activity end-to-end, finds/fixes bugs, and writes
   a dated report (see `qa-report-*.md`, `README_QA.md`). Run it after building/changing a flow.
+- **PR review:** every PR is reviewed by Claude and left for the maintainer (@phoebelin) to
+  merge — **nothing is auto-merged.** When reviewing: check correctness and the conventions
+  above, keep the on-device/COPPA principles in mind, and flag the PR's scope —
+  **milestone** (route/activity additions; anything touching auth, accounts, consent,
+  moderation, data, or payments; build/CI/config or core shared infra; or large/multi-area
+  changes → needs careful human review) vs **low-risk** (small, localized bug fixes). When
+  unsure, treat it as milestone.
 
 ## Conventions
 

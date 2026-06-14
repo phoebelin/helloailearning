@@ -175,7 +175,7 @@ export function MindmapVisualization({
 }: MindmapVisualizationProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [positions, setPositions] = useState<Map<string, NodePosition>>(new Map());
-  const [hoveredNode, setHoveredNode] = useState<MindmapNode | null>(null);
+  const [, setHoveredNode] = useState<MindmapNode | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState>({
     visible: false,
     x: 0,
@@ -364,7 +364,7 @@ export function MindmapVisualization({
             fontWeight: 'bold',
           }}
         >
-          "{tooltip.content}"
+          &quot;{tooltip.content}&quot;
         </div>
       )}
     </div>

@@ -75,12 +75,14 @@ Naming is layered — keep them straight: **codename** (Mori) · **route**
 **display title** ("Find the Secret Rule"). The completion id is independent of the
 route, so route renames don't affect saved progress or lesson gating.
 
-**Zhorai caveats** (it's the design reference, but its code has known rough edges, left
+**Zhorai caveat** (it's the design reference, but its code has known rough edges, left
 intentionally for now): step components in `components/activity/` use raw `<button>`s and
-`onNext` prop-drilling rather than the cleaner context-only pattern; and the activity
-imports `@xenova/transformers`, which crashes on **server-side render** (direct URL load /
-hard refresh → 500). It renders fine via client-side navigation (the courses card uses
-`router.push`). Fixing the SSR crash needs a browser-only dynamic import (`ssr: false`).
+`onNext` prop-drilling rather than the cleaner context-only pattern.
+
+**On-device ML gotcha:** `@xenova/transformers` auto-selects the native `onnxruntime-node`
+backend under Node, which crashes SSR / `next build`. `next.config.mjs` stubs it out
+(`onnxruntime-node: false`) so inference runs browser-only via the WASM backend. Don't
+remove that stub — any page importing the ML code (`lib/ml/*`) will break the build without it.
 
 ## Design principles (from the PRD — apply to curriculum work too)
 

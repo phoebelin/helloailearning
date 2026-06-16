@@ -11,10 +11,15 @@ import { isActivityCompleted } from '@/lib/utils/activity-tracking';
 export default function CoursesPage() {
   const router = useRouter();
   const [moriComplete, setMoriComplete] = useState(false);
+  const [pippyComplete, setPippyComplete] = useState(false);
 
   useEffect(() => {
     setMoriComplete(isActivityCompleted('find-the-secret-rule'));
-    const handler = () => setMoriComplete(isActivityCompleted('find-the-secret-rule'));
+    setPippyComplete(isActivityCompleted('update-understanding-pippy'));
+    const handler = () => {
+      setMoriComplete(isActivityCompleted('find-the-secret-rule'));
+      setPippyComplete(isActivityCompleted('update-understanding-pippy'));
+    };
     window.addEventListener('activity-completed', handler);
     return () => window.removeEventListener('activity-completed', handler);
   }, []);
@@ -194,6 +199,63 @@ export default function CoursesPage() {
                   />
                   <p className="text-xs text-gray-400 text-center">
                     Complete <span className="font-semibold">How machines use patterns with Mori</span> to unlock
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Chapter 4 Section */}
+            <div className="flex flex-col gap-6">
+              <p className="text-sm font-semibold text-black text-center" style={{ lineHeight: '1.7142857142857142em' }}>
+                Chapter 4
+              </p>
+
+              {pippyComplete ? (
+                <button
+                  onClick={() => router.push('/lessons/how-machines-chase-goals')}
+                  className="flex flex-col items-center justify-between gap-0 border border-black rounded-xl transition-shadow bg-white cursor-pointer hover:shadow-[0px_1px_5px_0px_rgba(0,0,0,1)]"
+                  style={{
+                    width: '261px',
+                    height: '285px',
+                    padding: '24px 12px',
+                    borderRadius: '12px',
+                    position: 'relative',
+                  }}
+                >
+                  <Image
+                    src="/images/coda.png"
+                    alt="Coda"
+                    width={140}
+                    height={125}
+                    className="object-contain"
+                  />
+                  <p
+                    className="text-sm font-semibold text-black text-center whitespace-pre-line"
+                    style={{ lineHeight: '1.7142857142857142em' }}
+                  >
+                    How machines chase{'\n'}goals with Coda
+                  </p>
+                </button>
+              ) : (
+                <div
+                  className="flex flex-col items-center justify-center gap-3 border border-gray-200 rounded-xl bg-gray-50 cursor-not-allowed"
+                  style={{
+                    width: '261px',
+                    height: '285px',
+                    padding: '24px',
+                    borderRadius: '12px',
+                  }}
+                >
+                  <Lock className="w-8 h-8 text-gray-300" />
+                  <Image
+                    src="/images/coda.png"
+                    alt="Coda"
+                    width={200}
+                    height={179}
+                    className="object-contain opacity-30"
+                  />
+                  <p className="text-xs text-gray-400 text-center">
+                    Complete <span className="font-semibold">How machines update understanding with Pippy</span> to unlock
                   </p>
                 </div>
               )}

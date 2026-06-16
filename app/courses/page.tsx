@@ -43,8 +43,8 @@ export default function CoursesPage() {
         {/* Course Content */}
         <div className="flex flex-col" style={{ gap: '24px' }}>
           {/* Basics of AI Course Card */}
-          <div className="flex items-center justify-between gap-2.5 w-full">
-            <div className="flex items-center gap-6" style={{ width: '703px' }}>
+          <div className="flex items-center justify-between gap-2.5 w-full flex-wrap">
+            <div className="flex items-center gap-6" style={{ minWidth: '280px', maxWidth: '703px', flex: '1' }}>
               <Image
                 src="/images/basics-ai-icon.png"
                 alt="Basics of AI"
@@ -74,9 +74,9 @@ export default function CoursesPage() {
           </div>
 
           {/* Chapter 1 Section */}
-          <div 
-            className="flex flex-row gap-6 p-10 rounded-xl w-full"
-            style={{ 
+          <div
+            className="flex flex-row flex-wrap gap-6 p-6 rounded-xl w-full"
+            style={{
               backgroundColor: '#E5E0EF',
               borderRadius: '12px',
             }}

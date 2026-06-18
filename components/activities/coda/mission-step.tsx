@@ -3,6 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { CodaStepProps } from '@/types/coda-activity';
 import { useCodaActivity } from '@/lib/context/coda-activity-context';
+import { MissionCard } from './mission-card';
+import { GridWorld } from './grid-world';
 
 export function MissionStep({ onNext }: CodaStepProps) {
   const { currentLevel } = useCodaActivity();
@@ -10,20 +12,25 @@ export function MissionStep({ onNext }: CodaStepProps) {
   if (!currentLevel) return null;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
-      <p className="text-sm font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
-        {currentLevel.title} — Your mission
-      </p>
-      <h1 className="text-4xl font-bold mb-6">{currentLevel.missionText}</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 gap-8">
+      {/* Mission card — the child's side */}
+      <MissionCard
+        missionText={currentLevel.missionText}
+        levelTitle={currentLevel.title}
+      />
 
-      <div
-        className="max-w-md rounded-2xl p-6 mb-10 text-left"
-        style={{ backgroundColor: '#f3efff' }}
-      >
-        <p className="text-gray-700 text-sm leading-relaxed">
-          Coda doesn&apos;t know this mission. It only knows points. On the next screen,
-          you&apos;ll decide what Coda earns points for — and that decision is the only
-          way to tell it what you want.
+      {/* Grid with ghost path — no coins yet */}
+      <div className="flex flex-col items-center gap-3">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+          The world — dashed line shows your goal
+        </p>
+        <GridWorld
+          grid={currentLevel.grid}
+          ghostPath={currentLevel.intendedPath}
+        />
+        <p className="text-xs text-gray-400 max-w-xs text-center leading-relaxed">
+          Coda can&rsquo;t see the dashed path. It only sees coins. On the next screen,
+          you&rsquo;ll decide what Coda earns points for.
         </p>
       </div>
 
@@ -32,7 +39,7 @@ export function MissionStep({ onNext }: CodaStepProps) {
         className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
         style={{ borderRadius: '12px' }}
       >
-        Set Coda&apos;s reward
+        Set Coda&rsquo;s reward
       </Button>
     </div>
   );

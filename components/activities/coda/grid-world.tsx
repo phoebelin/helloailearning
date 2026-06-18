@@ -1,0 +1,179 @@
+'use client';
+
+import { TileType, Coord, CoinPlacement } from '@/types/coda-activity';
+
+const TILE_STYLE: Record<TileType, { bg: string; border: string; text?: string; emoji?: string }> = {
+  empty:  { bg: '#f0eef9', border: '#d4cef5' },
+  wall:   { bg: '#2d2d2d', border: '#1a1a1a' },
+  start:  { bg: '#4ade80', border: '#22c55e', text: 'Start' },
+  exit:   { bg: '#967FD8', border: '#7c5fc4', text: 'Exit' },
+  scenic: { bg: '#bbf7d0', border: '#86efac', emoji: '🌿' },
+  hazard: { bg: '#fca5a5', border: '#f87171', emoji: '⚡' },
+};
+
+export interface GridWorldProps {
+  grid: TileType[][];
+  coins?: CoinPlacement[];
+  /** Dashed ghost path overlay (the intended destination route). */
+  ghostPath?: Coord[];
+  /** Solid actual-run trail (from a RunResult). */
+  runPath?: Coord[];
+  onTileClick?: (coord: Coord) => void;
+  /** Size in px of each tile. Defaults to 64. */
+  tileSize?: number;
+  className?: string;
+}
+
+export function GridWorld({
+  grid,
+  coins = [],
+  ghostPath = [],
+  runPath = [],
+  onTileClick,
+  tileSize = 64,
+  className = '',
+}: GridWorldProps) {
+  const rows = grid.length;
+  const cols = grid[0]?.length ?? 0;
+
+  const ghostSet = new Set(ghostPath.map(c => `${c.x},${c.y}`));
+  const runSet = new Set(runPath.map(c => `${c.x},${c.y}`));
+  const coinMap = new Map(coins.map(c => [`${c.at.x},${c.at.y}`, c]));
+
+  return (
+    <div
+      className={className}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, ${tileSize}px)`,
+        gridTemplateRows: `repeat(${rows}, ${tileSize}px)`,
+        gap: '4px',
+      }}
+    >
+      {Array.from({ length: rows }).flatMap((_, y) =>
+        Array.from({ length: cols }).map((_, x) => {
+          const type = grid[y][x];
+          const key = `${x},${y}`;
+          const style = TILE_STYLE[type];
+          const isGhost = ghostSet.has(key);
+          const isRun = runSet.has(key);
+          const coin = coinMap.get(key);
+          const isClickable = !!onTileClick && type !== 'wall';
+
+          return (
+            <div
+              key={key}
+              role={isClickable ? 'button' : undefined}
+              tabIndex={isClickable ? 0 : undefined}
+              onClick={isClickable ? () => onTileClick({ x, y }) : undefined}
+              onKeyDown={
+                isClickable
+                  ? e => { if (e.key === 'Enter' || e.key === ' ') onTileClick({ x, y }); }
+                  : undefined
+              }
+              style={{
+                width: tileSize,
+                height: tileSize,
+                backgroundColor: style.bg,
+                border: `2px solid ${isRun ? '#1d4ed8' : isGhost ? '#967FD8' : style.border}`,
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                cursor: isClickable ? 'pointer' : 'default',
+                boxSizing: 'border-box',
+                transition: 'border-color 0.15s, box-shadow 0.15s',
+              }}
+              className={isClickable ? 'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]' : ''}
+            >
+              {/* Run trail fill */}
+              {isRun && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundColor: 'rgba(29, 78, 216, 0.12)',
+                    borderRadius: '6px',
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
+
+              {/* Ghost path fill (only if not also a run tile) */}
+              {isGhost && !isRun && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundColor: 'rgba(150, 127, 216, 0.12)',
+                    borderRadius: '6px',
+                    border: '2px dashed rgba(150, 127, 216, 0.5)',
+                    boxSizing: 'border-box',
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
+
+              {/* Tile label (Start / Exit / scenic emoji / hazard emoji) */}
+              {style.text && (
+                <span
+                  style={{
+                    fontSize: tileSize < 56 ? '9px' : '11px',
+                    fontWeight: 700,
+                    color: '#fff',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.4)',
+                    zIndex: 1,
+                    lineHeight: 1,
+                    textAlign: 'center',
+                  }}
+                >
+                  {style.text}
+                </span>
+              )}
+              {style.emoji && !style.text && (
+                <span style={{ fontSize: tileSize < 48 ? '12px' : '16px', zIndex: 1 }}>
+                  {style.emoji}
+                </span>
+              )}
+
+              {/* Coin token */}
+              {coin && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 2,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: Math.round(tileSize * 0.58),
+                      height: Math.round(tileSize * 0.58),
+                      borderRadius: '50%',
+                      backgroundColor: '#FCD34D',
+                      border: '2.5px solid #F59E0B',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: tileSize < 56 ? '9px' : '11px',
+                      fontWeight: 800,
+                      color: '#78350F',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    {coin.value}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}

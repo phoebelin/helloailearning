@@ -72,9 +72,7 @@ export interface CodaLevel {
 export type CodaStep =
   | 'meet-coda'
   | 'mission'
-  | 'set-reward'
-  | 'run'
-  | 'receipt'
+  | 'play'
   | 'level-complete'
   | 'session-summary';
 

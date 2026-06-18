@@ -34,9 +34,7 @@ const CodaActivityContext = createContext<CodaActivityContextType | undefined>(u
 const STEP_SEQUENCE: CodaStep[] = [
   'meet-coda',
   'mission',
-  'set-reward',
-  'run',
-  'receipt',
+  'play',
   'level-complete',
   'session-summary',
 ];
@@ -165,8 +163,7 @@ export function CodaActivityProvider({ children }: { children: ReactNode }) {
         lastRun: result,
         firstRun: prev.firstRun ?? result,
         runCountThisLevel: prev.runCountThisLevel + 1,
-        currentStep: 'receipt',
-        stepIndex: STEP_SEQUENCE.indexOf('receipt'),
+        // The play step stays on its own surface — receipt appears in-place.
       };
     });
 
@@ -219,8 +216,8 @@ export function CodaActivityProvider({ children }: { children: ReactNode }) {
         levelsCompletedThisSession: [...prev.levelsCompletedThisSession, prev.currentLevelIndex],
         totalLevelsCompleted: prev.totalLevelsCompleted + 1,
         highestLevelReached: Math.max(prev.highestLevelReached, levelNum),
-        currentStep: 'mission',
-        stepIndex: STEP_SEQUENCE.indexOf('mission'),
+        currentStep: 'play',
+        stepIndex: STEP_SEQUENCE.indexOf('play'),
       };
     });
   }, []);

@@ -53,6 +53,10 @@ function Chapter3Content() {
 
   const currentContextIndex = STEP_TO_INDEX[state.currentStep] ?? 0;
 
+  // Increments each time the user submits a fix attempt, forcing CheckBatchStep
+  // to remount so its didRun guard resets and runCheckBatch() fires again.
+  const [checkKey, setCheckKey] = useState(0);
+
   const [maxReached, setMaxReachedState] = useState<number>(() => {
     if (typeof window === 'undefined') return 0;
     try {
@@ -235,6 +239,11 @@ function Chapter3Content() {
 
   const handleStepNext = useCallback(
     (fromIndex: number) => {
+      if (fromIndex === 3) {
+        // Each fix submission remounts CheckBatchStep so the check re-runs on the
+        // updated workingNest (the didRun guard inside resets on unmount).
+        setCheckKey(k => k + 1);
+      }
       if (fromIndex === 5) {
         // "Next level!" after level-complete loops back to observe-mistake (section 1)
         scrollTo(1);
@@ -369,7 +378,7 @@ function Chapter3Content() {
               style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}
             >
               <CheckBatchStep
-                key={state.currentLevelIndex}
+                key={`${state.currentLevelIndex}-${checkKey}`}
                 onPass={() => handleStepNext(4)}
                 onFail={() => scrollTo(3)}
               />

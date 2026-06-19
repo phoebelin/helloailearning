@@ -56,6 +56,8 @@ export interface GridWorldProps {
   className?: string;
   /** When true, non-wall tiles become drop zones (requires DndContext ancestor). */
   droppable?: boolean;
+  /** Current position of Coda character image on the grid. */
+  codaPos?: Coord;
 }
 
 export function GridWorld({
@@ -67,6 +69,7 @@ export function GridWorld({
   tileSize = 64,
   className = '',
   droppable = false,
+  codaPos,
 }: GridWorldProps) {
   const rows = grid.length;
   const cols = grid[0]?.length ?? 0;
@@ -95,6 +98,7 @@ export function GridWorld({
           const coin = coinMap.get(key);
           const isClickable = !!onTileClick && type !== 'wall';
           const isDroppable = droppable && type !== 'wall';
+          const isCoda = !!codaPos && codaPos.x === x && codaPos.y === y;
 
           const tileStyle: React.CSSProperties = {
             width: tileSize,
@@ -198,6 +202,33 @@ export function GridWorld({
                   >
                     {coin.value}
                   </div>
+                </div>
+              )}
+
+              {/* Coda character */}
+              {isCoda && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/coda.png"
+                    alt="Coda"
+                    style={{
+                      width: Math.round(tileSize * 0.78),
+                      height: Math.round(tileSize * 0.78),
+                      objectFit: 'contain',
+                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.25))',
+                    }}
+                  />
                 </div>
               )}
             </>

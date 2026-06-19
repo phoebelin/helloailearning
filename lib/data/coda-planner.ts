@@ -80,10 +80,24 @@ export function runAgent(grid: TileType[][], reward: RewardConfig, maxSteps: num
   const scenicBonus = reward.scenicBonus ?? 0;
   const hazardPenalty = reward.hazardPenalty ?? 0;
 
+  // Scenic tiles award their bonus only once per visit (like oneTime coins).
+  // Bits are allocated above the coin-bit range so the same `collected` mask tracks both.
+  const scenicBit = new Map<string, number>(); // coordKey → bit index
+  if (scenicBonus !== 0) {
+    let bitIdx = oneTimeCoins.length;
+    for (let sy = 0; sy < height; sy++) {
+      for (let sx = 0; sx < (grid[sy]?.length ?? 0); sx++) {
+        if (grid[sy][sx] === 'scenic') {
+          scenicBit.set(coordKey({ x: sx, y: sy }), bitIdx++);
+        }
+      }
+    }
+  }
+
   const inBounds = (x: number, y: number) => x >= 0 && x < width && y >= 0 && y < height;
   const tileAt = (x: number, y: number): TileType => grid[y][x];
 
-  /** Net point change for entering (nx, ny), and the collected-coin mask after entering. */
+  /** Net point change for entering (nx, ny), and the collected/visited mask after entering. */
   function scoreEntering(nx: number, ny: number, collected: number): { delta: number; collected: number } {
     let delta = -stepCost;
     let newCollected = collected;
@@ -106,7 +120,11 @@ export function runAgent(grid: TileType[][], reward: RewardConfig, maxSteps: num
     }
 
     if (tileAt(nx, ny) === 'scenic') {
-      delta += scenicBonus;
+      const bit = scenicBit.get(coordKey({ x: nx, y: ny }));
+      if (bit !== undefined && (collected & (1 << bit)) === 0) {
+        delta += scenicBonus;
+        newCollected |= 1 << bit;
+      }
     }
 
     return { delta, collected: newCollected };
@@ -202,6 +220,7 @@ function computeBreakdown(
   }
 
   const collectedOneTime = new Set<string>();
+  const visitedScenicKeys = new Set<string>();
   const totals = new Map<string, number>();
   const add = (label: string, points: number) => {
     if (points === 0) return;
@@ -230,7 +249,11 @@ function computeBreakdown(
     }
 
     if (tileAt(cur.x, cur.y) === 'scenic' && scenicBonus !== 0) {
-      add('Scenic bonus', scenicBonus);
+      const sk = coordKey(cur);
+      if (!visitedScenicKeys.has(sk)) {
+        visitedScenicKeys.add(sk);
+        add('Scenic bonus', scenicBonus);
+      }
     }
   }
 

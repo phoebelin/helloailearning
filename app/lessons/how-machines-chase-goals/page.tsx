@@ -7,37 +7,31 @@ import { useRouter } from 'next/navigation';
 import { CodaActivityProvider, useCodaActivity } from '@/lib/context/coda-activity-context';
 import { CodaStep } from '@/types/coda-activity';
 
-import { MeetCodaStep }        from '@/components/activities/coda/meet-coda-step';
-import { MissionStep }         from '@/components/activities/coda/mission-step';
-import { SetRewardStep }       from '@/components/activities/coda/set-reward-step';
-import { RunStep }             from '@/components/activities/coda/run-step';
-import { ReceiptStep }         from '@/components/activities/coda/receipt-step';
-import { LevelComplete }       from '@/components/activities/coda/level-complete';
-import { SessionSummaryStep }  from '@/components/activities/coda/session-summary-step';
+import { MeetCodaStep }       from '@/components/activities/coda/meet-coda-step';
+import { MissionStep }        from '@/components/activities/coda/mission-step';
+import { PlayStep }           from '@/components/activities/coda/play-step';
+import { LevelComplete }      from '@/components/activities/coda/level-complete';
+import { SessionSummaryStep } from '@/components/activities/coda/session-summary-step';
 
 // ---------- Step ↔ scroll-section mapping ----------
-// 7 logical steps, but level-complete and session-summary share the last section.
+// 4 sections: meet-coda → mission → play → (level-complete / session-summary)
 
 const STEP_TO_INDEX: Partial<Record<CodaStep, number>> = {
-  'meet-coda':        0,
-  'mission':          1,
-  'set-reward':       2,
-  'run':              3,
-  'receipt':          4,
-  'level-complete':   5,
-  'session-summary':  5,
+  'meet-coda':       0,
+  'mission':         1,
+  'play':            2,
+  'level-complete':  3,
+  'session-summary': 3,
 };
 
 const INDEX_TO_STEP: Record<number, CodaStep> = {
   0: 'meet-coda',
   1: 'mission',
-  2: 'set-reward',
-  3: 'run',
-  4: 'receipt',
-  5: 'level-complete',
+  2: 'play',
+  3: 'level-complete',
 };
 
-const TOTAL_SECTIONS = 6;
+const TOTAL_SECTIONS = 4;
 
 // ---------- Inner component (needs context) ----------
 
@@ -71,17 +65,11 @@ function GoalPursuitContent() {
   const s1 = useRef<HTMLDivElement>(null);
   const s2 = useRef<HTMLDivElement>(null);
   const s3 = useRef<HTMLDivElement>(null);
-  const s4 = useRef<HTMLDivElement>(null);
-  const s5 = useRef<HTMLDivElement>(null);
-  const sectionRefs = [s0, s1, s2, s3, s4, s5];
+  const sectionRefs = [s0, s1, s2, s3];
   const isProgrammaticRef = useRef(false);
   const scrollTimeoutRef  = useRef<NodeJS.Timeout | null>(null);
-  // Distinguishes the initial mount (currentContextIndex=0 because context always starts
-  // at meet-coda) from a genuine user-triggered reset via "Keep playing".
   const hasMountedRef = useRef(false);
 
-  // On initial mount: scroll to the saved maxReached position so the user resumes
-  // where they left off. Skip any reset logic — the context hasn't changed yet.
   useEffect(() => {
     hasMountedRef.current = true;
     if (maxReached > 0) {
@@ -95,12 +83,9 @@ function GoalPursuitContent() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync scroll when the context step advances (user completes a step) or resets.
-  // Skips the first render so the initial currentContextIndex=0 doesn't wipe saved progress.
   useEffect(() => {
     if (!hasMountedRef.current) return;
 
-    // Genuine reset: user clicked "Keep playing" → resetActivity() → currentStep='meet-coda'.
     if (currentContextIndex === 0) {
       try { localStorage.removeItem('coda-max-step'); } catch {}
       setMaxReached(0);
@@ -121,7 +106,6 @@ function GoalPursuitContent() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentContextIndex]);
 
-  // Track manual scroll
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -136,7 +120,6 @@ function GoalPursuitContent() {
     };
   }, []);
 
-  // IntersectionObserver — update visible section from manual scroll
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     const id = setTimeout(() => {
@@ -149,7 +132,6 @@ function GoalPursuitContent() {
                 setVisibleIndex(index);
                 setMaxReached(prev => Math.max(prev, index));
                 const step = INDEX_TO_STEP[index];
-                // Don't override session-summary with level-complete: both share the last section.
                 if (step && step !== state.currentStep &&
                     !(state.currentStep === 'session-summary' && step === 'level-complete')) {
                   goToStep(step);
@@ -188,9 +170,9 @@ function GoalPursuitContent() {
 
   const handleStepNext = useCallback(
     (fromIndex: number) => {
-      // Level-complete "Continue" always loops back to the mission (section 1) for the new level.
-      if (fromIndex === 5) {
-        scrollTo(1);
+      // Level-complete "Continue" loops back to play (section 2) for the new level.
+      if (fromIndex === 3) {
+        scrollTo(2);
       } else {
         scrollTo(fromIndex + 1);
       }
@@ -220,7 +202,7 @@ function GoalPursuitContent() {
                 Previous
               </Button>
 
-              <div className="flex items-center" style={{ width: '432px', gap: '8px' }}>
+              <div className="flex items-center" style={{ width: '288px', gap: '8px' }}>
                 {Array.from({ length: TOTAL_SECTIONS }).map((_, i) => (
                   <div
                     key={i}
@@ -292,50 +274,28 @@ function GoalPursuitContent() {
             </div>
           )}
 
-          {/* Section 2: Set the reward */}
+          {/* Section 2: Play (in-place: coins + run + receipt) */}
           {maxReached >= 2 && (
             <div
               ref={sectionRefs[2]}
               className="min-h-screen flex items-center justify-center py-12"
               style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}
             >
-              <SetRewardStep onNext={() => handleStepNext(2)} />
+              <PlayStep onNext={() => handleStepNext(2)} />
             </div>
           )}
 
-          {/* Section 3: Run */}
+          {/* Section 3: Level Complete OR Session Summary */}
           {maxReached >= 3 && (
             <div
               ref={sectionRefs[3]}
               className="min-h-screen flex items-center justify-center py-12"
               style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}
             >
-              <RunStep onNext={() => handleStepNext(3)} />
-            </div>
-          )}
-
-          {/* Section 4: Receipt */}
-          {maxReached >= 4 && (
-            <div
-              ref={sectionRefs[4]}
-              className="min-h-screen flex items-center justify-center py-12"
-              style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}
-            >
-              <ReceiptStep onNext={() => handleStepNext(4)} />
-            </div>
-          )}
-
-          {/* Section 5: Level Complete OR Session Summary */}
-          {maxReached >= 5 && (
-            <div
-              ref={sectionRefs[5]}
-              className="min-h-screen flex items-center justify-center py-12"
-              style={{ scrollSnapAlign: 'start', scrollMarginTop: '80px' }}
-            >
               {state.currentStep === 'session-summary' ? (
                 <SessionSummaryStep onNext={() => {}} />
               ) : (
-                <LevelComplete onNext={() => handleStepNext(5)} />
+                <LevelComplete onNext={() => handleStepNext(3)} />
               )}
             </div>
           )}

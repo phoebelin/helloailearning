@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import { TileType, Coord, CoinPlacement } from '@/types/coda-activity';
 
 const TILE_STYLE: Record<TileType, { bg: string; border: string; text?: string; emoji?: string }> = {
@@ -10,6 +12,36 @@ const TILE_STYLE: Record<TileType, { bg: string; border: string; text?: string; 
   scenic: { bg: '#bbf7d0', border: '#86efac', emoji: '🌿' },
   hazard: { bg: '#fca5a5', border: '#f87171', emoji: '⚡' },
 };
+
+// Only mount this component inside a DndContext (when droppable=true on GridWorld).
+function DroppableTile({
+  x,
+  y,
+  children,
+  style,
+  className,
+  ...rest
+}: React.HTMLAttributes<HTMLDivElement> & { x: number; y: number }) {
+  const { isOver, setNodeRef } = useDroppable({
+    id: `tile-${x}-${y}`,
+    data: { coord: { x, y } },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        ...style,
+        outline: isOver ? '2px solid rgba(245,158,11,0.8)' : undefined,
+        outlineOffset: '-2px',
+      }}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}
 
 export interface GridWorldProps {
   grid: TileType[][];
@@ -22,6 +54,8 @@ export interface GridWorldProps {
   /** Size in px of each tile. Defaults to 64. */
   tileSize?: number;
   className?: string;
+  /** When true, non-wall tiles become drop zones (requires DndContext ancestor). */
+  droppable?: boolean;
 }
 
 export function GridWorld({
@@ -32,6 +66,7 @@ export function GridWorld({
   onTileClick,
   tileSize = 64,
   className = '',
+  droppable = false,
 }: GridWorldProps) {
   const rows = grid.length;
   const cols = grid[0]?.length ?? 0;
@@ -59,34 +94,29 @@ export function GridWorld({
           const isRun = runSet.has(key);
           const coin = coinMap.get(key);
           const isClickable = !!onTileClick && type !== 'wall';
+          const isDroppable = droppable && type !== 'wall';
 
-          return (
-            <div
-              key={key}
-              role={isClickable ? 'button' : undefined}
-              tabIndex={isClickable ? 0 : undefined}
-              onClick={isClickable ? () => onTileClick({ x, y }) : undefined}
-              onKeyDown={
-                isClickable
-                  ? e => { if (e.key === 'Enter' || e.key === ' ') onTileClick({ x, y }); }
-                  : undefined
-              }
-              style={{
-                width: tileSize,
-                height: tileSize,
-                backgroundColor: style.bg,
-                border: `2px solid ${isRun ? '#1d4ed8' : isGhost ? '#967FD8' : style.border}`,
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                cursor: isClickable ? 'pointer' : 'default',
-                boxSizing: 'border-box',
-                transition: 'border-color 0.15s, box-shadow 0.15s',
-              }}
-              className={isClickable ? 'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]' : ''}
-            >
+          const tileStyle: React.CSSProperties = {
+            width: tileSize,
+            height: tileSize,
+            backgroundColor: style.bg,
+            border: `2px solid ${isRun ? '#1d4ed8' : isGhost ? '#967FD8' : style.border}`,
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+            cursor: isClickable ? 'pointer' : 'default',
+            boxSizing: 'border-box',
+            transition: 'border-color 0.15s, box-shadow 0.15s',
+          };
+
+          const tileClassName = isClickable
+            ? 'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]'
+            : '';
+
+          const tileContent = (
+            <>
               {/* Run trail fill */}
               {isRun && (
                 <div
@@ -170,6 +200,48 @@ export function GridWorld({
                   </div>
                 </div>
               )}
+            </>
+          );
+
+          if (isDroppable) {
+            return (
+              <DroppableTile
+                key={key}
+                x={x}
+                y={y}
+                role={isClickable ? 'button' : undefined}
+                tabIndex={isClickable ? 0 : undefined}
+                onClick={isClickable ? () => onTileClick!({ x, y }) : undefined}
+                onKeyDown={
+                  isClickable
+                    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+                        if (e.key === 'Enter' || e.key === ' ') onTileClick!({ x, y });
+                      }
+                    : undefined
+                }
+                style={tileStyle}
+                className={tileClassName}
+              >
+                {tileContent}
+              </DroppableTile>
+            );
+          }
+
+          return (
+            <div
+              key={key}
+              role={isClickable ? 'button' : undefined}
+              tabIndex={isClickable ? 0 : undefined}
+              onClick={isClickable ? () => onTileClick!({ x, y }) : undefined}
+              onKeyDown={
+                isClickable
+                  ? e => { if (e.key === 'Enter' || e.key === ' ') onTileClick!({ x, y }); }
+                  : undefined
+              }
+              style={tileStyle}
+              className={tileClassName}
+            >
+              {tileContent}
             </div>
           );
         })

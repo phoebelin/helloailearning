@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -37,10 +37,34 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const [activeDragValue, setActiveDragValue] = useState<number | null>(null);
+  const [codaAnimPos, setCodaAnimPos] = useState<Coord | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
+
+  const startCoord = useMemo(() => {
+    if (!currentLevel) return null;
+    for (let y = 0; y < currentLevel.grid.length; y++) {
+      for (let x = 0; x < currentLevel.grid[y].length; x++) {
+        if (currentLevel.grid[y][x] === 'start') return { x, y };
+      }
+    }
+    return null;
+  }, [currentLevel]);
+
+  useEffect(() => {
+    if (!state.lastRun) {
+      setCodaAnimPos(null);
+      return;
+    }
+    const path = state.lastRun.path;
+    if (!path || path.length === 0) return;
+    const timers = path.map((pos, i) =>
+      setTimeout(() => setCodaAnimPos(pos), i * 350)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [state.lastRun]);
 
   if (!currentLevel) return null;
 
@@ -146,6 +170,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
               runPath={hasRun ? (state.lastRun?.path ?? []) : []}
               onTileClick={!hasRun ? handleTileClick : undefined}
               droppable={!hasRun}
+              codaPos={hasRun ? (codaAnimPos ?? undefined) : (startCoord ?? undefined)}
             />
             {!hasRun && coins.length === 0 && (
               <p className="text-xs text-gray-400 italic text-center">

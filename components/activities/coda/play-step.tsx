@@ -16,6 +16,7 @@ import { useCodaActivity } from '@/lib/context/coda-activity-context';
 import { thoughtBubbleView } from '@/lib/data/coda-planner';
 import { GridWorld } from './grid-world';
 import { CoinTray } from './coin-tray';
+import { RewardSliders } from './reward-sliders';
 import { MissionCard } from './mission-card';
 import { ReceiptPanel } from './receipt-panel';
 
@@ -172,48 +173,94 @@ export function PlayStep({ onNext }: CodaStepProps) {
               droppable={!hasRun}
               codaPos={hasRun ? (codaAnimPos ?? undefined) : (startCoord ?? undefined)}
             />
-            {!hasRun && coins.length === 0 && (
+            {!hasRun && currentLevel.rewardInputMode === 'coins' && coins.length === 0 && (
               <p className="text-xs text-gray-400 italic text-center">
                 No coins placed — Coda has nothing to chase.
               </p>
             )}
           </div>
 
-          {/* Right: coin tray (pre-run) or receipt (post-run) */}
+          {/* Right: reward controls (pre-run) or receipt (post-run) */}
           <div className="flex flex-col gap-4 flex-1 min-w-0">
             {!hasRun ? (
               <>
-                <CoinTray
-                  selectedValue={selectedValue}
-                  onSelectValue={setSelectedValue}
-                  disabled={false}
-                />
+                {currentLevel.rewardInputMode === 'sliders' ? (
+                  <>
+                    <RewardSliders disabled={false} />
 
-                {/* Thought bubble */}
-                {coins.length > 0 && (
-                  <div
-                    className="rounded-xl p-4 text-left"
-                    style={{ backgroundColor: '#f3efff' }}
-                  >
-                    <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
-                      Coda&rsquo;s thought bubble
-                    </p>
-                    <ul className="text-sm text-gray-700 space-y-1">
-                      {thoughtBubble.coins.map(c => (
-                        <li key={c.id} className="flex justify-between">
-                          <span className="text-gray-500">
-                            at ({c.at.x}, {c.at.y})
-                          </span>
-                          <span className="font-semibold text-[#967FD8]">
-                            {c.value > 0 ? '+' : ''}{c.value} pts
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="text-xs text-gray-400 mt-2 italic">
-                      Coda sees points, not your mission.
-                    </p>
-                  </div>
+                    {/* Slider thought bubble */}
+                    {(thoughtBubble.scenicBonus !== undefined ||
+                      thoughtBubble.stepCost !== undefined ||
+                      thoughtBubble.hazardPenalty !== undefined) && (
+                      <div
+                        className="rounded-xl p-4 text-left"
+                        style={{ backgroundColor: '#f3efff' }}
+                      >
+                        <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
+                          Coda&rsquo;s thought bubble
+                        </p>
+                        <ul className="text-sm text-gray-700 space-y-1">
+                          <li className="flex justify-between">
+                            <span className="text-gray-500">🌿 Scenic bonus</span>
+                            <span className="font-semibold text-[#967FD8]">
+                              {(thoughtBubble.scenicBonus ?? 0) > 0 ? '+' : ''}
+                              {thoughtBubble.scenicBonus ?? 0} pts
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span className="text-gray-500">👟 Step cost</span>
+                            <span className="font-semibold text-[#967FD8]">
+                              -{thoughtBubble.stepCost ?? 0} pts
+                            </span>
+                          </li>
+                          <li className="flex justify-between">
+                            <span className="text-gray-500">⚠️ Hazard penalty</span>
+                            <span className="font-semibold text-[#967FD8]">
+                              -{thoughtBubble.hazardPenalty ?? 0} pts
+                            </span>
+                          </li>
+                        </ul>
+                        <p className="text-xs text-gray-400 mt-2 italic">
+                          Coda sees these numbers, not your mission.
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <CoinTray
+                      selectedValue={selectedValue}
+                      onSelectValue={setSelectedValue}
+                      disabled={false}
+                    />
+
+                    {/* Coin thought bubble */}
+                    {coins.length > 0 && (
+                      <div
+                        className="rounded-xl p-4 text-left"
+                        style={{ backgroundColor: '#f3efff' }}
+                      >
+                        <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
+                          Coda&rsquo;s thought bubble
+                        </p>
+                        <ul className="text-sm text-gray-700 space-y-1">
+                          {thoughtBubble.coins.map(c => (
+                            <li key={c.id} className="flex justify-between">
+                              <span className="text-gray-500">
+                                at ({c.at.x}, {c.at.y})
+                              </span>
+                              <span className="font-semibold text-[#967FD8]">
+                                {c.value > 0 ? '+' : ''}{c.value} pts
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-xs text-gray-400 mt-2 italic">
+                          Coda sees points, not your mission.
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
 
                 <Button

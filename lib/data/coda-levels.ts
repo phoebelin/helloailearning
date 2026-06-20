@@ -7,6 +7,8 @@ import { CodaLevel, RunResult, TileType } from '@/types/coda-activity';
 
 const E: TileType = 'empty';
 const W: TileType = 'wall';
+const S: TileType = 'scenic';
+const H: TileType = 'hazard';
 
 // 4x4 maze. Start top-left, exit bottom-right; the only route is along the
 // top row then down the right column (the middle is walled off).
@@ -88,16 +90,65 @@ const LEVEL_2: CodaLevel = {
     "Coda didn't cheat — looping earned more points than finishing did. You left points lying around that Coda could collect over and over. A single big reward at the exit is worth more than a trail of small ones.",
 };
 
-export const CODA_LEVELS: CodaLevel[] = [LEVEL_1, LEVEL_2];
+// Level 3: "Tiny changes, totally different agent"
+//
+// Grid (5 cols × 4 rows):
+//   y=0  wall – wall – wall – wall – exit         ← exit at top-right corner
+//   y=1  hazard – wall – wall – wall – empty      ← hazard directly above start
+//   y=2  start – scenic – scenic – scenic – empty ← safe scenic route goes right
+//   y=3  wall – wall – wall – wall – empty        ← walls close off shortcuts
+//
+// Three regimes the child can discover with the sliders:
+//   Blunder (all zeros): hazard(0pts) ties scenic(0pts); UP is tried before RIGHT
+//            in the direction order, so the hazard wins the tie → hitHazard.
+//   Freeze  (stepCost≥5): every move costs -5; staying = 0 > -5 → frozen.
+//   Safe    (hazardPenalty≥5): UP=hazard(−penalty) < RIGHT=scenic(0) → RIGHT wins,
+//            scenic route leads to exit → reachedTarget.
+//
+// scenicBonus also repairs the blunder: RIGHT=scenic(+bonus) > UP=hazard(0) → reachedTarget.
+const LEVEL_3_GRID: TileType[][] = [
+  [W,       W,  W,  W,  'exit'],  // y=0
+  [H,       W,  W,  W,  E    ],   // y=1: hazard at (0,1), directly above start
+  ['start', S,  S,  S,  E    ],   // y=2: start, then scenic route rightward
+  [W,       W,  W,  W,  E    ],   // y=3
+];
+
+const LEVEL_3: CodaLevel = {
+  id: 'level-3',
+  index: 3,
+  title: 'Level 3',
+  missionText: 'Reach the exit — but the shortcut goes through a hazard. Make Coda take the long safe path instead.',
+  grid: LEVEL_3_GRID,
+  // Safe scenic detour: right from start through the three scenic tiles, then up to exit.
+  intendedPath: [
+    { x: 0, y: 2 },
+    { x: 1, y: 2 },
+    { x: 2, y: 2 },
+    { x: 3, y: 2 },
+    { x: 4, y: 2 },
+    { x: 4, y: 1 },
+    { x: 4, y: 0 },
+  ],
+  rewardInputMode: 'sliders',
+  // All sliders at 0: hazard is invisible to Coda — it blunders straight into it.
+  startingReward: { coins: [], stepCost: 0, scenicBonus: 0, hazardPenalty: 0 },
+  naiveReward: { coins: [], stepCost: 0, scenicBonus: 0, hazardPenalty: 0 },
+  naiveExpectedState: 'hitHazard', // takes shortcut, walks into hazard
+  // Fix: raise hazardPenalty so the hazard shortcut costs more than the safe route (0 pts).
+  intendedRewardExample: { coins: [], stepCost: 0, scenicBonus: 0, hazardPenalty: 20 },
+  takeaway:
+    "Tiny change, totally different agent. Before you added the hazard penalty, Coda walked right into danger — it didn't know the hazard was there, only that the exit was beyond it. One number in the reward function flipped its entire path.",
+};
+
+export const CODA_LEVELS: CodaLevel[] = [LEVEL_1, LEVEL_2, LEVEL_3];
 
 export function getLevelByIndex(index: number): CodaLevel | undefined {
   return CODA_LEVELS[index];
 }
 
 /**
- * Whether a run matches a level's target. For Level 1, the target is simply
- * "reach the exit" — later levels (2-3) layer on additional path properties
- * (e.g. "without looping", "the long way, avoiding hazards").
+ * Whether a run matches a level's target.
+ * All levels: reaching the exit tile is the win condition.
  */
 export function matchesTarget(runResult: RunResult, _level: CodaLevel): boolean {
   return runResult.settledState === 'reachedTarget';

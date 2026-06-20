@@ -179,9 +179,10 @@ export function CodaActivityProvider({ children }: { children: ReactNode }) {
       return {
         ...prev,
         workingReward: { ...level.startingReward, coins: [...level.startingReward.coins] },
+        // Only clear lastRun so the receipt panel hides and coin placement reappears.
+        // firstRun and runCountThisLevel persist across re-tunes so the level-complete
+        // "what changed" panel can compare first vs final attempt regardless of re-tunes.
         lastRun: null,
-        firstRun: null,
-        runCountThisLevel: 0,
       };
     });
   }, []);

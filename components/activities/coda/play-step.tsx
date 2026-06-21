@@ -15,6 +15,7 @@ import { CodaStepProps, Coord, CoinPlacement } from '@/types/coda-activity';
 import { useCodaActivity } from '@/lib/context/coda-activity-context';
 import { thoughtBubbleView } from '@/lib/data/coda-planner';
 import { GridWorld } from './grid-world';
+import { CodaExpression } from './coda-character';
 import { CoinTray } from './coin-tray';
 import { RewardSliders } from './reward-sliders';
 import { MissionCard } from './mission-card';
@@ -39,6 +40,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
   const [selectedValue, setSelectedValue] = useState<number | null>(null);
   const [activeDragValue, setActiveDragValue] = useState<number | null>(null);
   const [codaAnimPos, setCodaAnimPos] = useState<Coord | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -57,14 +59,20 @@ export function PlayStep({ onNext }: CodaStepProps) {
   useEffect(() => {
     if (!state.lastRun) {
       setCodaAnimPos(null);
+      setIsAnimating(false);
       return;
     }
     const path = state.lastRun.path;
     if (!path || path.length === 0) return;
-    const timers = path.map((pos, i) =>
+    setIsAnimating(true);
+    const posTimers = path.map((pos, i) =>
       setTimeout(() => setCodaAnimPos(pos), i * 350)
     );
-    return () => timers.forEach(clearTimeout);
+    const doneTimer = setTimeout(() => setIsAnimating(false), path.length * 350 + 150);
+    return () => {
+      posTimers.forEach(clearTimeout);
+      clearTimeout(doneTimer);
+    };
   }, [state.lastRun]);
 
   if (!currentLevel) return null;
@@ -119,6 +127,16 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
   const thoughtBubble = thoughtBubbleView(state.workingReward);
 
+  function getCodaExpression(): CodaExpression {
+    if (!hasRun) return 'idle';
+    if (isAnimating) return 'moving';
+    const settled = state.lastRun?.settledState;
+    if (settled === 'reachedTarget') return 'happy';
+    if (settled === 'frozen') return 'frozen';
+    return 'confused';
+  }
+  const codaExpression = getCodaExpression();
+
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="min-h-screen flex flex-col items-center justify-center p-8 gap-6">
@@ -172,6 +190,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
               onTileClick={!hasRun ? handleTileClick : undefined}
               droppable={!hasRun}
               codaPos={hasRun ? (codaAnimPos ?? undefined) : (startCoord ?? undefined)}
+              codaExpression={codaExpression}
             />
             {!hasRun && currentLevel.rewardInputMode === 'coins' && coins.length === 0 && (
               <p className="text-xs text-gray-400 italic text-center">

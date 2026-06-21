@@ -48,7 +48,7 @@ test('coda — meet-coda: loads with 4-segment progress bar', async ({ }) => {
     // Progress bar: exactly 4 segments
     const bars = page.locator('div.h-3');
     await expect(bars).toHaveCount(4);
-    await expect(page.getByRole('button', { name: /See the mission/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Give Coda a goal/i })).toBeVisible();
     expect(errors).toHaveLength(0);
   } finally { await browser.close(); }
 });
@@ -62,7 +62,7 @@ test('coda — mission step: grid + ghost path + CTA', async ({ }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   try {
     await go(page, 'http://localhost:3000/lessons/how-machines-chase-goals');
-    await page.getByRole('button', { name: /See the mission/i }).click();
+    await page.getByRole('button', { name: /Give Coda a goal/i }).click();
     await page.waitForTimeout(900);
     await page.screenshot({ path: `${DIR}/03-mission.png`, fullPage: false });
     await expect(page.getByText('Reach the exit')).toBeVisible();
@@ -81,7 +81,7 @@ test('coda — play step: mission card + grid + coin tray + run button', async (
   await page.setViewportSize({ width: 1280, height: 900 });
   try {
     await go(page, 'http://localhost:3000/lessons/how-machines-chase-goals');
-    await page.getByRole('button', { name: /See the mission/i }).click();
+    await page.getByRole('button', { name: /Give Coda a goal/i }).click();
     await page.waitForTimeout(900);
     await page.getByRole('button', { name: /Set Coda/i }).click();
     await page.waitForTimeout(900);
@@ -105,7 +105,7 @@ test('coda — play step: run/receipt/re-tune all in-place', async ({ }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   try {
     await go(page, 'http://localhost:3000/lessons/how-machines-chase-goals');
-    await page.getByRole('button', { name: /See the mission/i }).click();
+    await page.getByRole('button', { name: /Give Coda a goal/i }).click();
     await page.waitForTimeout(900);
     await page.getByRole('button', { name: /Set Coda/i }).click();
     await page.waitForTimeout(900);
@@ -139,7 +139,7 @@ test('coda — play step: coin on exit → success CTA', async ({ }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   try {
     await go(page, 'http://localhost:3000/lessons/how-machines-chase-goals');
-    await page.getByRole('button', { name: /See the mission/i }).click();
+    await page.getByRole('button', { name: /Give Coda a goal/i }).click();
     await page.waitForTimeout(900);
     await page.getByRole('button', { name: /Set Coda/i }).click();
     await page.waitForTimeout(900);

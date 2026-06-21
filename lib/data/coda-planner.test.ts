@@ -50,6 +50,29 @@ describe('coda-planner', () => {
       }
     });
 
+    it('does not backtrack before reaching the exit when a coin sits on it', () => {
+      // Regression: planner used to pick "up" over "down-to-exit" when both scored
+      // equally because "up" is earlier in the DIRECTIONS order, producing a loop
+      // like (3,2)→(3,1)→(3,2)→(3,3) instead of the direct (3,2)→(3,3).
+      const grid: TileType[][] = [
+        ['start', E, E, E],
+        [E, W, W, E],
+        [E, W, E, E],
+        [E, E, E, 'exit'],
+      ];
+      const result = runAgent(grid, {
+        coins: [{ id: 'exit-coin', at: { x: 3, y: 3 }, value: 10, oneTime: true }],
+      });
+      expect(result.settledState).toBe('reachedTarget');
+      // Path must be strictly monotone toward the exit — no position repeated.
+      const seen = new Set<string>();
+      for (const { x, y } of result.path) {
+        const key = `${x},${y}`;
+        expect(seen.has(key)).toBe(false);
+        seen.add(key);
+      }
+    });
+
     it('freezes when every move is net-negative', () => {
       const grid: TileType[][] = [
         ['start', E, E],

@@ -129,6 +129,16 @@ function GoalPursuitContent() {
           entries => {
             entries.forEach(entry => {
               if (entry.isIntersecting && entry.intersectionRatio > 0.5 && !isProgrammaticRef.current) {
+                // Section 3 (level-complete / session-summary) must only be
+                // reached via the "Continue" button in the play step. If a drag
+                // gesture or accidental scroll snaps the container forward while
+                // the play step is still active, scroll straight back.
+                if (index === 3 && state.currentStep === 'play') {
+                  isProgrammaticRef.current = true;
+                  sectionRefs[2]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setTimeout(() => { isProgrammaticRef.current = false; }, 600);
+                  return;
+                }
                 setVisibleIndex(index);
                 setMaxReached(prev => Math.max(prev, index));
                 const step = INDEX_TO_STEP[index];

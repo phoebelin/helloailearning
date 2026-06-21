@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { TileType, Coord, CoinPlacement } from '@/types/coda-activity';
+import { CodaCharacter, CodaExpression } from './coda-character';
 
 const TILE_STYLE: Record<TileType, { bg: string; border: string; text?: string; emoji?: string }> = {
   empty:  { bg: '#f0eef9', border: '#d4cef5' },
@@ -58,6 +59,8 @@ export interface GridWorldProps {
   droppable?: boolean;
   /** Current position of Coda character image on the grid. */
   codaPos?: Coord;
+  /** Visual expression state for Coda character. */
+  codaExpression?: CodaExpression;
 }
 
 export function GridWorld({
@@ -70,6 +73,7 @@ export function GridWorld({
   className = '',
   droppable = false,
   codaPos,
+  codaExpression = 'idle',
 }: GridWorldProps) {
   const rows = grid.length;
   const cols = grid[0]?.length ?? 0;
@@ -218,16 +222,9 @@ export function GridWorld({
                     pointerEvents: 'none',
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/coda.png"
-                    alt="Coda"
-                    style={{
-                      width: Math.round(tileSize * 0.78),
-                      height: Math.round(tileSize * 0.78),
-                      objectFit: 'contain',
-                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.25))',
-                    }}
+                  <CodaCharacter
+                    expression={codaExpression}
+                    size={Math.round(tileSize * 0.78)}
                   />
                 </div>
               )}

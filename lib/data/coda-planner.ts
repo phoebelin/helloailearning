@@ -180,7 +180,17 @@ export function runAgent(grid: TileType[][], reward: RewardConfig, maxSteps: num
 
     let best = candidates[0];
     for (const c of candidates.slice(1)) {
-      if (c.score > best.score) best = c;
+      if (c.score > best.score) {
+        best = c;
+      } else if (
+        // Among equally-scored exit paths, prefer the shorter one so Coda
+        // doesn't backtrack before settling at the exit.
+        c.score === best.score &&
+        c.terminal === 'exit' && best.terminal === 'exit' &&
+        c.path.length < best.path.length
+      ) {
+        best = c;
+      }
     }
 
     memo.set(key, best);

@@ -37,16 +37,16 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-center">
       <Image
         src="/images/coda.png"
         alt="Coda"
-        width={200}
-        height={200}
-        className="mb-6 object-contain"
+        width={160}
+        height={160}
+        className="mb-4 sm:mb-6 object-contain sm:w-[200px] sm:h-[200px]"
         priority
       />
-      <h1 className="text-4xl font-bold mb-4">Meet Coda!</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-4">Meet Coda!</h1>
 
       <p className="text-gray-600 max-w-md mb-3 text-lg leading-relaxed">
         Coda is an AI that chases points — it can&apos;t see goals, missions, or maps.
@@ -70,7 +70,7 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
       <div className="flex flex-col items-center gap-3 w-full max-w-xs">
         <Button
           onClick={onNext}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 w-full"
+          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
           style={{ borderRadius: '12px' }}
         >
           Give Coda a goal

@@ -13,7 +13,7 @@ interface MissionCardProps {
 export function MissionCard({ missionText, levelTitle }: MissionCardProps) {
   return (
     <div
-      className="rounded-2xl w-full max-w-sm"
+      className="rounded-2xl w-full"
       style={{
         background: 'linear-gradient(135deg, #967FD8 0%, #7c5fc4 100%)',
         padding: '20px 24px',

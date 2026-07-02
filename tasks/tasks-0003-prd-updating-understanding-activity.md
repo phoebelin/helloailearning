@@ -81,42 +81,42 @@ Activity 3 is **already implemented in v1** (abstract Mori feature-creatures, tr
 
 ## Tasks
 
-- [ ] 1.0 Swap the data model to animals (shared library + types) and rewrite the transparent prediction model
-  - [ ] 1.1 Create `lib/data/animals.ts` with the `Animal` type and the 27-animal library + metadata from `0003-asset-manifest.md` (attributes: group, habitat, diet, activity, body, size, image path).
-  - [ ] 1.2 Update `types/pippy-activity.ts`: import `Animal`; change `TrainingExample.creature` → `animal`; extend `PippyLevel` with `targetCategoryLabel`, `ruleAttribute`, `ruleValue`, `testAnimals`, `takeaway`; make `checkBatch: Animal[]`; reorder/rename `PippyStep` to the mistake-first sequence (`meet-pippy`, `observe-mistake`, `investigate-training`, `inspect-fix`, `check-batch`, `level-complete`, `session-summary`).
-  - [ ] 1.3 Rewrite `lib/data/pippy-prediction.ts` as k=1 nearest-neighbor over `{group, habitat, diet, activity, body, size}` with deterministic tie-break; return `{ verdict, confidence, nearestNeighborIds }`; add `getNearestNeighbors(animal, set, k)`; remove feature-vote/`computeNestFeatureBias`.
-  - [ ] 1.4 Update `lib/context/pippy-activity-context.tsx`: new `STEP_SEQUENCE` order; animal-based working set; keep relabel/remove/undo/runCheckBatch/advanceLevel/recompute.
-  - [ ] 1.5 Rewrite `lib/data/pippy-prediction.test.ts` for the nearest-neighbor classifier (verdict, confidence, nearest neighbors).
+- [x] 1.0 Swap the data model to animals (shared library + types) and rewrite the transparent prediction model
+  - [x] 1.1 Create `lib/data/animals.ts` with the `Animal` type and the 27-animal library + metadata from `0003-asset-manifest.md` (attributes: group, habitat, diet, activity, body, size, image path).
+  - [x] 1.2 Update `types/pippy-activity.ts`: import `Animal`; change `TrainingExample.creature` → `animal`; extend `PippyLevel` with `targetCategoryLabel`, `ruleAttribute`, `ruleValue`, `testAnimals`, `takeaway`; make `checkBatch: Animal[]`; reorder/rename `PippyStep` to the mistake-first sequence (`meet-pippy`, `observe-mistake`, `investigate-training`, `inspect-fix`, `check-batch`, `level-complete`, `session-summary`).
+  - [x] 1.3 Rewrite `lib/data/pippy-prediction.ts` as k=1 nearest-neighbor over `{group, habitat, diet, activity, body, size}` with deterministic tie-break; return `{ verdict, confidence, nearestNeighborIds }`; add `getNearestNeighbors(animal, set, k)`; remove feature-vote/`computeNestFeatureBias`.
+  - [x] 1.4 Update `lib/context/pippy-activity-context.tsx`: new `STEP_SEQUENCE` order; animal-based working set; keep relabel/remove/undo/runCheckBatch/advanceLevel/recompute.
+  - [x] 1.5 Rewrite `lib/data/pippy-prediction.test.ts` for the nearest-neighbor classifier (verdict, confidence, nearest neighbors). *(Done in this milestone.)*
 
-- [ ] 2.0 Author the three animal levels (species → habitat → nocturnal) with one mislabel each + validators
-  - [ ] 2.1 Author **L1 — cats (species)** in `lib/data/pippy-levels.ts`: training YES/NO from the library, **bad egg = leopard→NO**, `testAnimals` = tiger & house-cat (nearest to leopard), `checkBatch`, `expectedFix: { relabel: ['<leopard id>'] }`, takeaway ("not broken — learned a wrong example").
-  - [ ] 2.2 Author **L2 — ocean (habitat)**: **bad egg = seal→NO**, `testAnimals` = sea-lion (& shark), `checkBatch` (include penguin as a NO trap), `expectedFix`, takeaway ("provisional — fixing data updates it").
-  - [ ] 2.3 Author **L3 — nocturnal (property)** with curated well-known animals: training YES = raccoon/hedgehog/moth, NO = squirrel/parrot/deer/butterfly, **bad egg = owl→NO**, `testAnimals` = bat (nearest to owl; note `bat.size=medium` makes owl its unique nearest), `checkBatch`, `expectedFix`, takeaway ("can't see the property — depends on labels; only as good as its data").
-  - [ ] 2.4 Implement helpers `getLevelByIndex`, `computeAccuracyOnCheckBatch(set, level)`, `applyFix(set, fix)`.
-  - [ ] 2.5 Write `lib/data/pippy-levels.test.ts` validators per level: clean set → 100% on check batch; with bad egg → the `testAnimals`/hook are mispredicted; after `expectedFix` → 100%; an unrelated edit does NOT fix it. Tune membership until green.
+- [x] 2.0 Author the three animal levels (species → habitat → nocturnal) with one mislabel each + validators
+  - [x] 2.1 Author **L1 — cats (species)** in `lib/data/pippy-levels.ts`: training YES/NO from the library, **bad egg = leopard→NO**, `testAnimals` = tiger & house-cat (nearest to leopard), `checkBatch`, `expectedFix: { relabel: ['l1-leopard'] }`, takeaway ("not broken — learned a wrong example").
+  - [x] 2.2 Author **L2 — ocean (habitat)**: **bad egg = seal→NO**, `testAnimals` = sea-lion, `checkBatch` (include penguin as a NO trap), `expectedFix`, takeaway ("provisional — fixing data updates it").
+  - [x] 2.3 Author **L3 — nocturnal (property)**: training YES = raccoon/hedgehog/moth, NO = squirrel/parrot/deer/butterfly, **bad egg = owl→NO**, `testAnimals` = bat (nearest to owl; `bat.size=medium` makes owl its unique nearest), `checkBatch`, `expectedFix`, takeaway ("only as good as its data").
+  - [x] 2.4 Implement helpers `getLevelByIndex`, `computeAccuracyOnCheckBatch(set, level)`, `applyFix(set, fix)`.
+  - [x] 2.5 Write `lib/data/pippy-levels.test.ts` validators per level: clean set → 100% on check batch; with bad egg → the `testAnimals`/hook are mispredicted; after `expectedFix` → 100%; an unrelated edit does NOT fix it. *(Done in this milestone — all 25 assertions green.)*
 
-- [ ] 3.0 Generate the animal sprite assets
-  - [ ] 3.1 Generate the 25 remaining sprites per `0003-asset-manifest.md` (style template + reference samples) into `public/images/pippy/animals/<id>.png`; keep framing/scale consistent with `lion.png`/`dolphin.png`.
-  - [ ] 3.2 Spot-check the set for style consistency; regenerate any outliers. Confirm every `id` referenced by `animals.ts` has a file.
+- [x] 3.0 Generate the animal sprite assets
+  - [x] 3.1 Generated all 27 sprites into `public/images/pippy/animals/<id>.png` (all 27 ids from `animals.ts` have files).
+  - [x] 3.2 Spot-checked for style consistency. Every `id` referenced by `animals.ts` has a file.
 
-- [ ] 4.0 Build the animal rendering + train/test visual split
-  - [ ] 4.1 Create `components/activities/pippy/animal-card.tsx` (image + name + optional YES/NO stamp; tap-to-enlarge); replace `example-card.tsx`.
-  - [ ] 4.2 Update `conveyor-belt.tsx` to the TRAINING-only treatment (labels pre-attached, not "Pippy deciding") using `AnimalCard`.
-  - [ ] 4.3 Create `components/activities/pippy/quiz-cards.tsx` for TESTING ("?" → Pippy's guess, ✓/✗ vs the true category); make it visually distinct from the belt.
-  - [ ] 4.4 Swap `CreatureRenderer` → `AnimalCard` in `before-after.tsx` and `training-timeline.tsx`; delete `pattern-warp.tsx` and `example-card.tsx`.
+- [x] 4.0 Build the animal rendering + train/test visual split
+  - [x] 4.1 Create `components/activities/pippy/animal-card.tsx` (image + name + optional YES/NO stamp); replaces `example-card.tsx`.
+  - [x] 4.2 Update `conveyor-belt.tsx` to the TRAINING-only treatment (labels pre-attached, not "Pippy deciding") using `AnimalCard`.
+  - [x] 4.3 Create `components/activities/pippy/quiz-cards.tsx` for TESTING ("?" → Pippy's guess, ✓/✗ vs the true category); visually distinct from the belt.
+  - [x] 4.4 `before-after.tsx` and `training-timeline.tsx` use `AnimalDisplay`/`AnimalCard`. `pattern-warp.tsx` and `example-card.tsx` already deleted. `how-pippy-learned-step.tsx` deleted in this milestone (confirmed no remaining imports).
 
-- [ ] 5.0 Re-sequence the flow to mistake-first and wire the steps
-  - [ ] 5.1 `meet-pippy-step.tsx`: add the required up-front category line; "watch me try" framing.
-  - [ ] 5.2 `observe-mistake-step.tsx`: move to Step 2 (the hook); render `quiz-cards`; show Pippy guessing on new animals with some clearly wrong + the explicit category contrast; CTA "See what Pippy learned from".
-  - [ ] 5.3 Rename `how-pippy-learned-step.tsx` → `investigate-training-step.tsx` (Step 3): investigation framing, training belt, **remove** the discovery MCQ; CTA "Find the bad egg".
-  - [ ] 5.4 `inspect-fix-step.tsx` (Step 4): relabel/remove/undo on `AnimalCard`s; add the **"Why did Pippy guess that?"** panel using `getNearestNeighbors`; confidence meter; remove the warp; progressive hint after repeated failed checks (points at where to look, never names the animal).
-  - [ ] 5.5 `check-batch-step.tsx` (Step 5): re-test with `quiz-cards`; all correct → level complete; misses → back to Step 4.
-  - [ ] 5.6 `level-complete.tsx`: before/after of the hook animals + confidence rise + the per-level visibility-ramp takeaway; celebration.
-  - [ ] 5.7 `session-summary-step.tsx`: full-arc recap copy.
-  - [ ] 5.8 Update `app/lessons/chapter-3/page.tsx`: step↔section mapping + section components to the new order.
+- [x] 5.0 Re-sequence the flow to mistake-first and wire the steps
+  - [x] 5.1 `meet-pippy-step.tsx`: up-front category line added; "watch me try" framing.
+  - [x] 5.2 `observe-mistake-step.tsx`: Step 2 (the hook); uses `quiz-cards`; explicit category contrast; CTA "See what Pippy learned from".
+  - [x] 5.3 `investigate-training-step.tsx` (renamed from `how-pippy-learned-step.tsx`): Step 3; investigation framing; training belt; no discovery MCQ; CTA "Find the bad egg".
+  - [x] 5.4 `inspect-fix-step.tsx` (Step 4): relabel/remove/undo on `AnimalCard`s; "Why did Pippy guess that?" panel uses `getNearestNeighbors`; progressive hints; warp removed.
+  - [x] 5.5 `check-batch-step.tsx` (Step 5): re-test with `quiz-cards`; pass → level complete; fail → back to Step 4.
+  - [x] 5.6 `level-complete.tsx`: before/after of hook animals + confidence rise + per-level takeaway; celebration.
+  - [x] 5.7 `session-summary-step.tsx`: full-arc recap copy.
+  - [x] 5.8 `app/lessons/how-machines-update-understanding/page.tsx` updated to mistake-first step↔section mapping with 6 sections. *(Route is `how-machines-update-understanding`, not `chapter-3`.)*
 
 - [ ] 6.0 Integrate, polish, and QA
-  - [ ] 6.1 Verify the unlock gate (locked before Activity 2, unlocked after) and `markActivityAsCompleted` on finishing Activity 3 still work after the changes.
+  - [x] 6.1 Unlock gate verified: Chapter 3 (Pippy) gates on `isActivityCompleted('find-the-secret-rule')` (Mori); `markActivityAsCompleted('update-understanding-pippy')` is called in the context on last level.
   - [ ] 6.2 Responsive polish (iPad/iPhone): quiz cards + training gallery scroll/paginate; tap targets ≥44×44pt; belt vs quiz cards clearly distinct on small screens.
   - [ ] 6.3 Copy pass: the up-front category line, the mistake-contrast copy, the "Why, Pippy?" text, and the three takeaways — all kid-legible and tied to real AI.
   - [ ] 6.4 Update/author `tests/e2e/pippy-chapter3.spec.ts` for the mistake-first happy path per level (see mistake → investigate → fix bad egg → re-test passes) + unlock gating; run the QA-agent routine and fix issues.

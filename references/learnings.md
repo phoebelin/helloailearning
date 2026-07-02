@@ -33,3 +33,27 @@
 **Workaround/fix applied:** Use `setViewportSize({ width: 1280, height: 900 })` and click through CTA buttons ("Give Coda a goal" → "Set Coda's reward") to navigate sections. React event handlers fire and `scrollTo()` sets `maxReached` in-state, rendering subsequent sections.
 
 **Prevention for next run:** Always use click-through navigation for scroll-snap sections. Never rely on localStorage pre-seeding for SSR React state.
+
+---
+
+## 2026-06-22 — Playwright browser mismatch (chromium_headless_shell-1223 missing)
+
+**Symptom:** `npx playwright test --project=chromium` fails with "Executable doesn't exist at /opt/pw-browsers/chromium_headless_shell-1223/..."
+
+**Root cause:** Default playwright.config.ts uses the installed playwright version which expects chromium-1223, but only chromium-1194 is installed in this environment.
+
+**Workaround/fix applied:** Use `--config=playwright.verify.config.ts` which hard-codes `executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome'`.
+
+**Prevention for next run:** Always run with `--config=playwright.verify.config.ts` in this environment.
+
+---
+
+## 2026-06-22 — localStorage seeding for activity-completed checks
+
+**Symptom:** Seeding `{ 'update-understanding-pippy': true }` into localStorage key `activity-completions` does not change the courses page gate behavior.
+
+**Root cause:** `lib/utils/activity-tracking.ts` uses key `completed-activities` (not `activity-completions`) and expects array format `[{ id: string, completedAt: number }]`, not a map.
+
+**Workaround/fix applied:** Use `localStorage.setItem('completed-activities', JSON.stringify([{ id: 'update-understanding-pippy', completedAt: Date.now() }]))` to simulate completion.
+
+**Prevention for next run:** Always use the `makeCompletedActivities(ids)` helper or check `lib/utils/activity-tracking.ts` for the exact key/format before seeding.

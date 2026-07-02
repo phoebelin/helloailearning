@@ -43,7 +43,7 @@ export function LevelComplete({ onNext }: CodaStepProps) {
       {/* Confetti fires once per level-complete (key forces remount per level) */}
       <Celebration key={`celebration-${state.currentLevelIndex}`} active duration={3000} />
 
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-center">
         <div className="text-5xl mb-3 animate-bounce">🎉</div>
         <Image
           src="/images/coda.png"
@@ -52,7 +52,7 @@ export function LevelComplete({ onNext }: CodaStepProps) {
           height={100}
           className="mb-4 object-contain"
         />
-        <h1 className="text-4xl font-bold mb-6">Coda reached the goal!</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6">Coda reached the goal!</h1>
 
         {/* What-changed comparison panel */}
         {showComparison ? (
@@ -60,7 +60,8 @@ export function LevelComplete({ onNext }: CodaStepProps) {
             <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4">
               What changed
             </p>
-            <div className="flex flex-row gap-4 items-start justify-center">
+            {/* Stack on mobile, side-by-side on sm+ */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start justify-center">
               {/* First attempt */}
               <div className="flex flex-col items-center gap-2">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
@@ -83,7 +84,7 @@ export function LevelComplete({ onNext }: CodaStepProps) {
                 </p>
               </div>
 
-              <div className="text-2xl text-gray-300 self-center mt-12">→</div>
+              <div className="text-2xl text-gray-300 sm:self-center sm:mt-12 rotate-90 sm:rotate-0">→</div>
 
               {/* Winning run */}
               <div className="flex flex-col items-center gap-2">
@@ -142,7 +143,7 @@ export function LevelComplete({ onNext }: CodaStepProps) {
         <div className="flex flex-col gap-3 w-full max-w-xs">
           <Button
             onClick={handleContinue}
-            className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+            className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
             style={{ borderRadius: '12px' }}
           >
             {isLastLevel ? 'See your results →' : 'Next level! →'}

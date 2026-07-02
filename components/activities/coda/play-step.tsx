@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -41,9 +42,34 @@ export function PlayStep({ onNext }: CodaStepProps) {
   const [activeDragValue, setActiveDragValue] = useState<number | null>(null);
   const [codaAnimPos, setCodaAnimPos] = useState<Coord | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [tileSize, setTileSize] = useState(64);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
+  // Compute tile size from the grid container's actual width so the grid
+  // never overflows on narrow screens (phones/small tablets).
+  const cols = currentLevel?.grid[0]?.length ?? 4;
+  const updateTileSize = useCallback(() => {
+    const el = gridContainerRef.current;
+    if (!el) return;
+    const available = el.clientWidth;
+    const gapTotal = 4 * (cols - 1);
+    const computed = Math.floor((available - gapTotal) / cols);
+    setTileSize(Math.max(44, Math.min(computed, 80)));
+  }, [cols]);
+
+  useEffect(() => {
+    updateTileSize();
+    if (!gridContainerRef.current) return;
+    const observer = new ResizeObserver(updateTileSize);
+    observer.observe(gridContainerRef.current);
+    return () => observer.disconnect();
+  }, [updateTileSize]);
+
+  // Mouse: activate after 8 px movement; Touch: activate after 200 ms hold.
+  // This prevents touch drags from fighting page scroll.
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
   );
 
   const startCoord = useMemo(() => {
@@ -139,17 +165,17 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 gap-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 gap-6">
         {/* Mission reminder (contrast: child's side) */}
         <div className="w-full max-w-2xl">
           <MissionCard missionText={currentLevel.missionText} />
         </div>
 
         {/* Main play surface */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start justify-center w-full max-w-2xl">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center w-full max-w-2xl">
 
-          {/* Left: grid */}
-          <div className="flex flex-col items-center gap-3 flex-shrink-0">
+          {/* Grid — measured container drives responsive tile size */}
+          <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full lg:w-auto lg:flex-shrink-0">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">
               {hasRun ? "Where Coda went" : "Drag coins onto the grid"}
             </p>
@@ -191,6 +217,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
               droppable={!hasRun}
               codaPos={hasRun ? (codaAnimPos ?? undefined) : (startCoord ?? undefined)}
               codaExpression={codaExpression}
+              tileSize={tileSize}
             />
             {!hasRun && currentLevel.rewardInputMode === 'coins' && coins.length === 0 && (
               <p className="text-xs text-gray-400 italic text-center">
@@ -199,8 +226,8 @@ export function PlayStep({ onNext }: CodaStepProps) {
             )}
           </div>
 
-          {/* Right: reward controls (pre-run) or receipt (post-run) */}
-          <div className="flex flex-col gap-4 flex-1 min-w-0">
+          {/* Reward controls (pre-run) or receipt (post-run) */}
+          <div className="flex flex-col gap-4 w-full lg:flex-1 lg:min-w-0">
             {!hasRun ? (
               <>
                 {currentLevel.rewardInputMode === 'sliders' ? (
@@ -284,7 +311,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
                 <Button
                   onClick={handleRun}
-                  className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 w-full"
+                  className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
                   style={{ borderRadius: '12px' }}
                 >
                   Run Coda →
@@ -303,7 +330,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                 {matchesCurrentTarget ? (
                   <Button
                     onClick={onNext}
-                    className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 w-full"
+                    className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
                     style={{ borderRadius: '12px' }}
                   >
                     Coda made it! Continue →
@@ -312,7 +339,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                   <>
                     <Button
                       onClick={handleRetune}
-                      className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 w-full"
+                      className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
                       style={{ borderRadius: '12px' }}
                     >
                       Re-tune the reward

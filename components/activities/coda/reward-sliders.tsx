@@ -26,18 +26,21 @@ function SliderRow({ label, value, min, max, step = 1, hint, onChange, disabled 
           {displayValue}
         </span>
       </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={e => onChange(Number(e.target.value))}
-        disabled={disabled}
-        className="w-full h-2 rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ accentColor: '#967FD8' }}
-        aria-label={label}
-      />
+      {/* py-2 enlarges the touch target to ≥44px vertically */}
+      <div className="py-2">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={e => onChange(Number(e.target.value))}
+          disabled={disabled}
+          className="w-full h-3 rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ accentColor: '#967FD8' }}
+          aria-label={label}
+        />
+      </div>
       <div className="flex justify-between text-xs text-gray-400">
         <span>{min}</span>
         {hint && <span className="italic text-center flex-1 px-2">{hint}</span>}

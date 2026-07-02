@@ -14,9 +14,9 @@ export function SessionSummaryStep({ onNext }: CodaStepProps) {
   const levelsSolvedThisSession = state.levelsCompletedThisSession.length;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-center">
       <p className="text-5xl mb-4">🤖</p>
-      <h1 className="text-4xl font-bold mb-4">Great work, reward designer!</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-4">Great work, reward designer!</h1>
 
       <div
         className="max-w-sm rounded-2xl p-6 mb-6 text-left"
@@ -44,7 +44,7 @@ export function SessionSummaryStep({ onNext }: CodaStepProps) {
       <div className="flex flex-col gap-3 w-full max-w-xs mt-2">
         <Button
           onClick={resetActivity}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Keep playing

@@ -145,7 +145,7 @@ export function QuizCards({
             const finalDelay = (animals.length - 1) * revealDelayMs + 600;
             setTimeout(() => onAllRevealed?.(), finalDelay);
           }}
-          className="px-6 py-2 rounded-xl bg-[#967FD8] text-white font-semibold hover:bg-[#7c68b8] transition-colors text-sm"
+          className="px-6 py-2 rounded-xl bg-[#967FD8] text-white font-semibold hover:bg-[#7c68b8] transition-colors text-sm min-h-[44px]"
         >
           See Pippy&rsquo;s guesses ▶
         </button>

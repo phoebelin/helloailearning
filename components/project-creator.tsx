@@ -1,10 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
+import { TextInput } from "@astryxdesign/core/TextInput"
 
 export function ProjectCreator() {
+  const [topic, setTopic] = useState("Plants")
   return (
     <div className="bg-[#e8def8] rounded-lg p-8 space-y-6">
       <div className="flex flex-wrap gap-4 items-center">
@@ -31,7 +33,14 @@ export function ProjectCreator() {
           </SelectContent>
         </Select>
         <span>and</span>
-        <Input className="w-[180px] bg-white" placeholder="Plants" />
+        <TextInput
+          label="Topic"
+          isLabelHidden
+          value={topic}
+          onChange={setTopic}
+          className="w-[180px] bg-white"
+          placeholder="Plants"
+        />
       </div>
       <Button className="bg-black text-white hover:bg-black/90">Generate ideas</Button>
     </div>

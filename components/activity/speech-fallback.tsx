@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { Keyboard, AlertCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { TextInput } from '@astryxdesign/core/TextInput';
 import { cn } from '@/lib/utils';
 import { isSpeechRecognitionSupported, getBrowserInfo } from '@/lib/utils/speech-utils';
 
@@ -100,23 +100,16 @@ export function SpeechFallback({
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="space-y-2">
-          <div className="relative">
-            <Input
-              type="text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder}
-              maxLength={maxLength}
-              className={cn(
-                'pr-12',
-                error && 'border-destructive focus-visible:ring-destructive'
-              )}
-              aria-invalid={!!error}
-              aria-describedby={error ? 'input-error' : undefined}
-            />
-            <Keyboard className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          </div>
+          <TextInput
+            label="Your answer"
+            isLabelHidden
+            type="text"
+            value={text}
+            onChange={(value) => setText(value.slice(0, maxLength))}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            status={error ? { type: 'error', message: error } : undefined}
+          />
 
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
@@ -138,13 +131,6 @@ export function SpeechFallback({
             </span>
           </div>
         </div>
-
-        {error && (
-          <p id="input-error" className="text-sm text-destructive flex items-center gap-1">
-            <AlertCircle className="h-4 w-4" />
-            {error}
-          </p>
-        )}
 
         <Button
           type="submit"

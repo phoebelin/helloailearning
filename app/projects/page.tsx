@@ -1,14 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { Nav } from '@/components/nav';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { TextInput } from '@astryxdesign/core/TextInput';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 
 export default function ProjectsPage() {
   const router = useRouter();
+  const [topic, setTopic] = useState('Plants');
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden" id="projects-page">
@@ -86,8 +88,11 @@ export default function ProjectsPage() {
                 </span>
                 
                 {/* Topic Input */}
-                <Input 
-                  defaultValue="Plants"
+                <TextInput
+                  label="Topic"
+                  isLabelHidden
+                  value={topic}
+                  onChange={setTopic}
                   className="w-[180px] bg-white"
                   placeholder="Plants"
                 />

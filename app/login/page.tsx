@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { Nav } from "@/components/nav"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { TextInput } from "@astryxdesign/core/TextInput"
 
 type FormStep = "email" | "name" | "submitted"
 
@@ -94,37 +94,43 @@ export default function LoginPage() {
               onSubmit={step === "email" ? handleEmailContinue : handleNameSubmit}
               className="flex flex-col items-center gap-2"
             >
-              <div className="relative w-full max-w-md mx-auto">
-                {step === "email" ? (
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value)
-                      setError(null)
-                    }}
-                    required
-                    className="w-full h-14 pr-28 text-base rounded-xl pl-4 border-gray-300 focus-visible:border-purple-300 focus-visible:ring-1 focus-visible:ring-purple-300"
-                    autoFocus
-                  />
-                ) : (
-                  <Input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value)
-                      setError(null)
-                    }}
-                    required
-                    className="w-full h-14 pr-28 text-base rounded-xl pl-4 border-gray-300 focus-visible:border-purple-300 focus-visible:ring-1 focus-visible:ring-purple-300"
-                    autoFocus
-                  />
-                )}
+              <div className="flex items-start gap-2 w-full max-w-md mx-auto">
+                <div className="flex-1">
+                  {step === "email" ? (
+                    <TextInput
+                      label="Email"
+                      isLabelHidden
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(value) => {
+                        setEmail(value)
+                        setError(null)
+                      }}
+                      isRequired
+                      hasAutoFocus
+                      size="lg"
+                    />
+                  ) : (
+                    <TextInput
+                      label="Name"
+                      isLabelHidden
+                      type="text"
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={(value) => {
+                        setName(value)
+                        setError(null)
+                      }}
+                      isRequired
+                      hasAutoFocus
+                      size="lg"
+                    />
+                  )}
+                </div>
                 <Button
                   type="submit"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-black text-white hover:bg-black/90 px-5 h-10 rounded-xl text-sm font-medium"
+                  className="bg-black text-white hover:bg-black/90 px-5 h-10 rounded-xl text-sm font-medium mt-0.5"
                   disabled={isLoading}
                 >
                   {isLoading ? "Submitting..." : step === "email" ? "Continue" : "Submit"}

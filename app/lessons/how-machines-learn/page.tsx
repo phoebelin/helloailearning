@@ -428,8 +428,8 @@ function HowMachinesLearnContent() {
                        onClick={handleHeaderPrevious}
                        disabled={visibleStepIndex === 0}
                        className="text-sm"
+                       icon={<ChevronLeft className="w-4 h-4" />}
                      >
-                       <ChevronLeft className="w-4 h-4 mr-1" />
                        Previous
                      </Button>
               
@@ -457,9 +457,9 @@ function HowMachinesLearnContent() {
                        onClick={handleHeaderNext}
                        disabled={visibleStepIndex >= maxStepReached}
                        className="text-sm"
+                       endContent={<ChevronRight className="w-4 h-4" />}
                      >
                        Next
-                       <ChevronRight className="w-4 h-4 ml-1" />
                      </Button>
             </div>
             

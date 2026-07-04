@@ -75,6 +75,12 @@ export interface ButtonProps
   asChild?: boolean
   /** Explicit a11y label; falls back to aria-label, then text extracted from children. */
   label?: string
+  /** Leading icon (Astryx `icon` slot) — prefer this over an inline icon in children. */
+  icon?: React.ReactNode
+  /** Trailing icon/badge (Astryx `endContent` slot). */
+  endContent?: React.ReactNode
+  /** Render as a square icon-only button (Astryx `isIconOnly`); also implied by size="icon". */
+  isIconOnly?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -88,6 +94,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       label,
       type,
+      icon,
+      endContent,
+      isIconOnly,
       ...props
     },
     ref
@@ -105,7 +114,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       )
     }
 
-    const isIcon = size === "icon"
+    const iconOnly = isIconOnly ?? size === "icon"
     const ariaLabel = (props as { "aria-label"?: string })["aria-label"]
     const resolvedLabel = label ?? ariaLabel ?? extractText(children) ?? ""
 
@@ -114,15 +123,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         variant={VARIANT_MAP[variant ?? "default"]}
         size={SIZE_MAP[size ?? "default"]}
-        isIconOnly={isIcon}
-        icon={isIcon ? children : undefined}
+        isIconOnly={iconOnly}
+        icon={icon ?? (iconOnly ? children : undefined)}
+        endContent={endContent}
         isDisabled={disabled}
         type={type ?? "button"}
         label={resolvedLabel}
         className={className}
         {...props}
       >
-        {isIcon ? undefined : children}
+        {iconOnly ? undefined : children}
       </AstryxButton>
     )
   }

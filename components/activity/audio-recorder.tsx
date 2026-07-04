@@ -189,19 +189,13 @@ export function AudioRecorder({
           onClick={handleToggleRecording}
           className={cn("relative transition-all duration-200", buttonClassName)}
           aria-label={isListening ? 'Stop recording' : 'Start recording'}
+          icon={isListening ? <StopCircle className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
         >
           {/* Pulsing ring animation when listening */}
           {isListening && (
             <span className="absolute -inset-1 rounded-md bg-current opacity-20 animate-ping" />
           )}
-          
-          {/* Icon */}
-          {isListening ? (
-            <StopCircle className="h-5 w-5" />
-          ) : (
-            <Mic className="h-5 w-5" />
-          )}
-          
+
           {/* Button text */}
           <span>{isListening ? recordingText : buttonText}</span>
         </Button>
@@ -321,6 +315,7 @@ export function AudioRecorderCompact({
         disabled
         className={className}
         title="Speech recognition not supported"
+        aria-label="Speech recognition not supported"
       >
         <MicOff className="h-4 w-4" />
       </Button>
@@ -331,7 +326,7 @@ export function AudioRecorderCompact({
     <div className={cn('relative', className)}>
       <Button
         type="button"
-        variant={props.variant ?? 'outline-solid'}
+        variant={props.variant ?? 'outline'}
         size="icon"
         onClick={handleToggleRecording}
         disabled={disabled}

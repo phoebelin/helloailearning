@@ -207,8 +207,8 @@ function GoalPursuitContent() {
                 onClick={() => scrollTo(visibleIndex - 1)}
                 disabled={visibleIndex === 0}
                 className="text-sm"
+                icon={<ChevronLeft className="w-4 h-4" />}
               >
-                <ChevronLeft className="w-4 h-4 mr-1" />
                 Previous
               </Button>
 
@@ -232,9 +232,9 @@ function GoalPursuitContent() {
                 onClick={() => scrollTo(visibleIndex + 1)}
                 disabled={visibleIndex >= maxReached}
                 className="text-sm"
+                endContent={<ChevronRight className="w-4 h-4" />}
               >
                 Next
-                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
 

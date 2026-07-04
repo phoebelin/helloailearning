@@ -154,7 +154,7 @@ export function AnimalSelectionStep({
                     aria-checked={isSelected}
                     role="checkbox"
                   >
-                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 flex items-center justify-center shrink-0">
                       {isSelected ? (
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect x="3" y="3" width="18" height="18" rx="2" fill="#967FD8"/>
@@ -176,7 +176,7 @@ export function AnimalSelectionStep({
             </div>
 
             {/* Zhorai Character */}
-            <div className="w-[205px] h-[222px] flex-shrink-0">
+            <div className="w-[205px] h-[222px] shrink-0">
               <ZhoraiCharacter />
             </div>
           </div>

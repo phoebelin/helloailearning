@@ -300,7 +300,7 @@ export function MindmapVisualization({
         <div
           className={cn(
             'rounded-full border-2 flex items-center justify-center',
-            'font-medium shadow-sm transition-all duration-200',
+            'font-medium shadow-xs transition-all duration-200',
             'hover:scale-110 hover:shadow-md cursor-pointer',
             getNodeSizeClasses(node.size),
             getNodeColorClasses(node.color)

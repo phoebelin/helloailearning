@@ -110,7 +110,7 @@ export function ReflectionStep({
               </p>
               <button
                 onClick={handleSpeakQuestion1}
-                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
@@ -150,7 +150,7 @@ export function ReflectionStep({
                   }
                 }}
                 variant="default"
-                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 !h-auto"
+                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 h-auto!"
               />
             </div>
 
@@ -172,7 +172,7 @@ export function ReflectionStep({
               </p>
               <button
                 onClick={handleSpeakQuestion2}
-                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
@@ -212,7 +212,7 @@ export function ReflectionStep({
                   }
                 }}
                 variant="default"
-                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 !h-auto"
+                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 h-auto!"
               />
             </div>
 
@@ -240,8 +240,8 @@ export function ReflectionStep({
         </div>
 
         {/* Zhorai character on left side, close to containers */}
-        <div className="absolute -left-[220px] top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-          <div className="w-[205px] h-[222px] flex-shrink-0">
+        <div className="absolute left-[-220px] top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+          <div className="w-[205px] h-[222px] shrink-0">
             <Image
               src="/images/zhorai-character.png"
               alt="Zhorai"

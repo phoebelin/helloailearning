@@ -16,7 +16,7 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
   const visibleStepIndex = currentStep - 1 // Convert to 0-based index
 
   return (
-    <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
+    <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-xs">
       <div className="max-w-[1200px] mx-auto px-[60px] py-6">
         <div className="flex items-center justify-between">
           {/* Left spacer for balance */}

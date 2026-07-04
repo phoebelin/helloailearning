@@ -62,7 +62,7 @@ export function IntroductionStep({
   return (
     <div className="flex flex-col items-start gap-6 py-20 px-4 max-w-[682px] mx-auto">
       {/* Zhorai Character - Using Figma asset */}
-      <div className="w-[379px] h-[411px] flex-shrink-0">
+      <div className="w-[379px] h-[411px] shrink-0">
         <Image
           src="/images/zhorai.png"
           alt="Zhorai, your AI learning companion"

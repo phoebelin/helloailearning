@@ -92,7 +92,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
             setEditedSentence(e.target.value);
             setEditError(null);
           }}
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
           rows={3}
         />
         {editError && <p className="text-sm text-red-600 mb-4">{editError}</p>}
@@ -540,7 +540,7 @@ export function SentenceInputStep({
             </div>
 
             {/* Zhorai character */}
-            <div className="flex-shrink-0 w-[139px] h-[151px] relative">
+            <div className="shrink-0 w-[139px] h-[151px] relative">
               <Image
                 src="/images/zhorai.png"
                 alt="Zhorai"

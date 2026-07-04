@@ -73,7 +73,7 @@ function AnimalThumbnail({ animal, size }: { animal: Animal; size: number }) {
       alt={animal.name}
       width={size}
       height={size}
-      className="object-contain flex-shrink-0"
+      className="object-contain shrink-0"
       onError={() => setFailed(true)}
     />
   );

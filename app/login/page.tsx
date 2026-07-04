@@ -86,7 +86,7 @@ export default function LoginPage() {
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-lg font-bold text-green-600 font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
               <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (

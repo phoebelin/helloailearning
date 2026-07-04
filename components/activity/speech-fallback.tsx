@@ -85,7 +85,7 @@ export function SpeechFallback({
       {showMessage && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/20 p-4">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
             <div className="text-sm space-y-1">
               <p className="font-medium text-blue-900 dark:text-blue-100">
                 Speech recognition is not available
@@ -171,7 +171,7 @@ export function SpeechUnavailableAlert({ className }: { className?: string }) {
   return (
     <div className={cn('rounded-lg border border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950/20 p-4', className)}>
       <div className="flex items-start gap-3">
-        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
         <div className="space-y-2 text-sm">
           <p className="font-medium text-yellow-900 dark:text-yellow-100">
             Speech recognition is not available
@@ -308,7 +308,7 @@ export function SpeechUnavailableBanner({
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-1">
-            <Info className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
+            <Info className="h-5 w-5 text-yellow-600 dark:text-yellow-400 shrink-0" />
             <p className="text-sm text-yellow-900 dark:text-yellow-100">
               <strong>Speech recognition is unavailable.</strong> You can complete this activity by typing your answers instead.
             </p>
@@ -319,7 +319,7 @@ export function SpeechUnavailableBanner({
               variant="ghost"
               size="sm"
               onClick={handleDismiss}
-              className="text-yellow-900 dark:text-yellow-100 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 flex-shrink-0"
+              className="text-yellow-900 dark:text-yellow-100 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 shrink-0"
             >
               Dismiss
             </Button>

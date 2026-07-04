@@ -133,7 +133,7 @@ export function MicrophonePermissionDialog({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs">
       <div className="relative w-full max-w-md mx-4 bg-background rounded-lg shadow-lg border">
         {/* Close button */}
         <button
@@ -161,7 +161,7 @@ export function MicrophonePermissionDialog({
           {/* Header */}
           <div className="flex items-start gap-4 mb-4">
             <div className={cn(
-              'flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
+              'shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
               permissionState === 'granted' ? 'bg-green-100 text-green-600' :
               permissionState === 'denied' ? 'bg-red-100 text-red-600' :
               permissionState === 'unavailable' ? 'bg-yellow-100 text-yellow-600' :
@@ -229,7 +229,7 @@ export function MicrophonePermissionDialog({
             <div className="space-y-4">
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
                 <div className="flex items-start gap-2 mb-3">
-                  <HelpCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                  <HelpCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
                   <p className="text-sm font-medium text-destructive">
                     How to enable microphone access:
                   </p>

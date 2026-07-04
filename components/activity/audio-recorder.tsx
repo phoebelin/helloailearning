@@ -35,7 +35,7 @@ export interface AudioRecorderProps {
   /** Language for speech recognition */
   lang?: string;
   /** Button variant style */
-  variant?: 'default' | 'outline' | 'secondary';
+  variant?: 'default' | 'outline-solid' | 'secondary';
   /** Button size */
   size?: 'default' | 'sm' | 'lg';
   /** Additional className for container */
@@ -238,7 +238,7 @@ export function AudioRecorder({
         <div
           className={cn(
             'min-h-[80px] rounded-lg border bg-background p-4 transition-all duration-200',
-            isListening && 'border-primary shadow-sm',
+            isListening && 'border-primary shadow-xs',
             hasTranscript ? 'text-foreground' : 'text-muted-foreground'
           )}
         >
@@ -331,7 +331,7 @@ export function AudioRecorderCompact({
     <div className={cn('relative', className)}>
       <Button
         type="button"
-        variant={props.variant ?? 'outline'}
+        variant={props.variant ?? 'outline-solid'}
         size="icon"
         onClick={handleToggleRecording}
         disabled={disabled}

@@ -42,7 +42,7 @@ function OptionButton({
       onClick={onClick}
       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all min-w-[60px] ${
         selected
-          ? 'border-[#967FD8] text-[#5b21b6] shadow-sm'
+          ? 'border-[#967FD8] text-[#5b21b6] shadow-xs'
           : 'border-gray-200 text-gray-600 hover:border-[#967FD8] hover:text-[#967FD8]'
       }`}
       style={selected && color ? { backgroundColor: color + '33' } : undefined}

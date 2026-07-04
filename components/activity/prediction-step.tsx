@@ -250,7 +250,7 @@ export function PredictionStep({
       {/* Action Section - Button and Example */}
       <div className="flex flex-row items-start gap-6 mb-8">
         {/* Press and Speak Button - Fixed width container */}
-        <div className="flex-shrink-0 w-[180px]">
+        <div className="shrink-0 w-[180px]">
           <AudioRecorder
             showTranscript={false}
             buttonText="Press and speak"
@@ -272,7 +272,7 @@ export function PredictionStep({
         </div>
         
         {/* Example Question or Transcript - Fixed width, not affected by button state */}
-        <div className="flex-shrink-0 w-[400px] pt-3 min-h-[60px]">
+        <div className="shrink-0 w-[400px] pt-3 min-h-[60px]">
           {currentTranscript ? (
             <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">
               {currentTranscript}
@@ -297,7 +297,7 @@ export function PredictionStep({
                 alt="Zhorai"
                 width={48}
                 height={48}
-                className="rounded-full border-2 border-[#967fd8]/50 flex-shrink-0"
+                className="rounded-full border-2 border-[#967fd8]/50 shrink-0"
               />
               {/* Response Box */}
               <div className="bg-[#967fd8]/10 border border-[#967fd8]/30 rounded-lg px-6 py-4">
@@ -354,7 +354,7 @@ export function PredictionStep({
                     }
                   }}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
@@ -369,14 +369,14 @@ export function PredictionStep({
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}
-                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
                 <Button
                   onClick={onNext}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Continue
                 </Button>

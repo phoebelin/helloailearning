@@ -175,7 +175,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center w-full max-w-2xl">
 
           {/* Grid — measured container drives responsive tile size */}
-          <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full lg:w-auto lg:flex-shrink-0">
+          <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full lg:w-auto lg:shrink-0">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">
               {hasRun ? "Where Coda went" : "Drag coins onto the grid"}
             </p>

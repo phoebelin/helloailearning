@@ -30,7 +30,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
           {shown.map((ex, i) => {
             const isYes = ex.label === 'YES';
             return (
-              <div key={ex.id} className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div key={ex.id} className="flex flex-col items-center gap-1 shrink-0">
                 <div
                   className="relative rounded-lg border-2 p-1.5 flex flex-col items-center gap-0.5"
                   style={{
@@ -60,7 +60,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
             return (
               <div
                 key={ex.id}
-                className="w-6 h-6 rounded flex-shrink-0"
+                className="w-6 h-6 rounded shrink-0"
                 title={`${ex.animal.name} — ${ex.label} (step ${ex.addedAtStep})`}
                 style={{ backgroundColor: isYes ? '#86EFAC' : '#FCA5A5' }}
               />
@@ -69,7 +69,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
           {nest.length > 5 && (
             <button
               onClick={() => setExpanded(true)}
-              className="text-xs text-[#967FD8] font-semibold flex-shrink-0"
+              className="text-xs text-[#967FD8] font-semibold shrink-0"
             >
               +{nest.length - 5}
             </button>

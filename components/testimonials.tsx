@@ -81,7 +81,7 @@ export function Testimonials() {
             {duplicatedTestimonials.map((testimonial, index) => (
               <div 
                 key={index}
-                className="testimonial-card bg-white p-8 rounded-lg flex-shrink-0"
+                className="testimonial-card bg-white p-8 rounded-lg shrink-0"
                 style={{ minWidth: '500px', maxWidth: '600px', width: 'calc((100vw - 120px) / 2)' }}
               >
                 <blockquote className="text-xl mb-4">

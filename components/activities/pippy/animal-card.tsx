@@ -80,7 +80,7 @@ export function AnimalCard({
         onClick={() => setExpanded(true)}
         className={[
           'relative flex flex-col items-center gap-2 rounded-xl border-2 bg-white transition-all cursor-pointer',
-          'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]',
+          'hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-[#967FD8]',
           highlighted ? 'border-orange-400 shadow-orange-200 shadow-md' : 'border-gray-200',
         ].join(' ')}
         style={{ padding: compact ? '10px' : '14px', minWidth: compact ? 88 : 108 }}

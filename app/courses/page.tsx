@@ -50,7 +50,7 @@ export default function CoursesPage() {
                 alt="Basics of AI"
                 width={60}
                 height={60}
-                className="flex-shrink-0 object-cover"
+                className="shrink-0 object-cover"
               />
               <div>
                 <h2 className="text-2xl font-semibold text-black" style={{ lineHeight: '1.8333333333333333em' }}>

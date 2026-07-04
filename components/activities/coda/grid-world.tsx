@@ -120,7 +120,7 @@ export function GridWorld({
           };
 
           const tileClassName = isClickable
-            ? 'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]'
+            ? 'hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-[#967FD8]'
             : '';
 
           const tileContent = (

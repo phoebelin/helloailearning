@@ -1,4 +1,15 @@
-@import 'tailwindcss';
+/* Tailwind v4 + Astryx coexistence — layer order per `astryx docs migration`.
+   Astryx reset/theme load before Tailwind utilities so migrated components keep
+   design-system defaults while legacy Tailwind utilities still override locally. */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+@import '@astryxdesign/core/tailwind-theme.css';
+@import 'tailwindcss/utilities.css' layer(utilities);
 @plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));

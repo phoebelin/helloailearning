@@ -1,39 +1,38 @@
 "use client"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react"
+import { Selector } from "@astryxdesign/core/Selector"
 
 export function ProjectBrowser() {
+  const [grade, setGrade] = useState("all")
+  const [subject, setSubject] = useState("all")
+
   return (
     <div className="space-y-6">
       <div className="flex gap-4">
-        <div className="space-y-2">
-          <label className="text-sm text-[#49454f]">Grade level</label>
-          <Select defaultValue="all">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select grade" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="6th">6th Grade</SelectItem>
-              <SelectItem value="7th">7th Grade</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm text-[#49454f]">Subject</label>
-          <Select defaultValue="all">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select subject" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="science">Science</SelectItem>
-              <SelectItem value="math">Math</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Selector
+          label="Grade level"
+          value={grade}
+          onChange={setGrade}
+          options={[
+            { value: "all", label: "All" },
+            { value: "6th", label: "6th Grade" },
+            { value: "7th", label: "7th Grade" },
+          ]}
+          className="w-[180px]"
+        />
+        <Selector
+          label="Subject"
+          value={subject}
+          onChange={setSubject}
+          options={[
+            { value: "all", label: "All" },
+            { value: "science", label: "Science" },
+            { value: "math", label: "Math" },
+          ]}
+          className="w-[180px]"
+        />
       </div>
     </div>
   )
 }
-

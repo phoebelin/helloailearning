@@ -5,12 +5,16 @@ import { Nav } from '@/components/nav';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { TextInput } from '@astryxdesign/core/TextInput';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Selector } from '@astryxdesign/core/Selector';
 import { useRouter } from 'next/navigation';
 
 export default function ProjectsPage() {
   const router = useRouter();
   const [topic, setTopic] = useState('Plants');
+  const [grade, setGrade] = useState('6th graders');
+  const [subject, setSubject] = useState('Science');
+  const [filterGrade, setFilterGrade] = useState('All');
+  const [filterSubject, setFilterSubject] = useState('All');
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden" id="projects-page">
@@ -56,32 +60,28 @@ export default function ProjectsPage() {
                 </span>
                 
                 {/* Grade Select */}
-                <Select defaultValue="6th graders">
-                  <SelectTrigger className="w-[180px] bg-white">
-                    <SelectValue placeholder="Select grade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="6th graders">6th graders</SelectItem>
-                    <SelectItem value="7th graders">7th graders</SelectItem>
-                    <SelectItem value="8th graders">8th graders</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Selector
+                  label="Grade"
+                  isLabelHidden
+                  value={grade}
+                  onChange={setGrade}
+                  options={['6th graders', '7th graders', '8th graders']}
+                  className="w-[180px] bg-white"
+                />
 
                 <span className="text-sm font-semibold text-black" style={{ lineHeight: '1.7142857142857142em' }}>
                   something about
                 </span>
-                
+
                 {/* Subject Select */}
-                <Select defaultValue="Science">
-                  <SelectTrigger className="w-[180px] bg-white">
-                    <SelectValue placeholder="Select subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Science">Science</SelectItem>
-                    <SelectItem value="Math">Math</SelectItem>
-                    <SelectItem value="English">English</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Selector
+                  label="Subject"
+                  isLabelHidden
+                  value={subject}
+                  onChange={setSubject}
+                  options={['Science', 'Math', 'English']}
+                  className="w-[180px] bg-white"
+                />
 
                 <span className="text-sm font-semibold text-black" style={{ lineHeight: '1.7142857142857142em' }}>
                   and
@@ -123,36 +123,22 @@ export default function ProjectsPage() {
           </div>
 
           {/* Filter Dropdowns */}
-          <div className="flex items-center gap-4">
-            <div className="space-y-2">
-              <label className="text-sm text-[#49454f]">Grade level</label>
-              <Select defaultValue="All">
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select grade" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All">All</SelectItem>
-                  <SelectItem value="3rd">3rd grade</SelectItem>
-                  <SelectItem value="4th">4th grade</SelectItem>
-                  <SelectItem value="5th">5th grade</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-end gap-4">
+            <Selector
+              label="Grade level"
+              value={filterGrade}
+              onChange={setFilterGrade}
+              options={['All', '3rd grade', '4th grade', '5th grade']}
+              className="w-[180px]"
+            />
 
-            <div className="space-y-2">
-              <label className="text-sm text-[#49454f]">Subject</label>
-              <Select defaultValue="All">
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select subject" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="All">All</SelectItem>
-                  <SelectItem value="Science">Science</SelectItem>
-                  <SelectItem value="Math">Math</SelectItem>
-                  <SelectItem value="English">English</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Selector
+              label="Subject"
+              value={filterSubject}
+              onChange={setFilterSubject}
+              options={['All', 'Science', 'Math', 'English']}
+              className="w-[180px]"
+            />
           </div>
 
           {/* Project Cards */}

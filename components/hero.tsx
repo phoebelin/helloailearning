@@ -157,7 +157,7 @@ export function Hero() {
           </div>
           <Button
             type="submit"
-            className="px-5 h-10 rounded-xl text-sm font-medium mt-0.5"
+            className="px-5 rounded-xl text-sm font-medium mt-0.5"
             disabled={isLoading}
           >
             {isLoading ? "Submitting..." : step === "email" ? "Continue" : "Submit"}

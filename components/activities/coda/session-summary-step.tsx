@@ -22,11 +22,11 @@ export function SessionSummaryStep({ onNext }: CodaStepProps) {
         className="max-w-sm rounded-2xl p-6 mb-6 text-left"
         style={{ backgroundColor: '#f3efff' }}
       >
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm text-fg-muted mb-2">
           Levels solved this session:{' '}
           <span className="font-bold text-black">{levelsSolvedThisSession} / {CODA_LEVELS.length}</span>
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-fg-muted">
           Highest level reached:{' '}
           <span className="font-bold text-black">Level {state.highestLevelReached}</span>
         </p>
@@ -36,7 +36,7 @@ export function SessionSummaryStep({ onNext }: CodaStepProps) {
         &ldquo;I only ever did what scored the most points — that was your job to shape, not mine.&rdquo;
       </p>
 
-      <p className="text-gray-500 text-sm max-w-md mb-8 leading-relaxed">
+      <p className="text-fg-muted text-sm max-w-md mb-8 leading-relaxed">
         AI systems chase whatever they&apos;re rewarded for — not what you meant.
         Designing the reward well is part of designing the AI.
       </p>

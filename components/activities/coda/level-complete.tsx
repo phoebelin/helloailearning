@@ -57,14 +57,14 @@ export function LevelComplete({ onNext }: CodaStepProps) {
         {/* What-changed comparison panel */}
         {showComparison ? (
           <div className="w-full max-w-2xl mb-6">
-            <p className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4">
+            <p className="text-sm font-bold text-fg-subtle uppercase tracking-wide mb-4">
               What changed
             </p>
             {/* Stack on mobile, side-by-side on sm+ */}
             <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start justify-center">
               {/* First attempt */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <p className="text-xs font-semibold text-fg-muted uppercase tracking-wide">
                   First try
                 </p>
                 <GridWorld
@@ -73,22 +73,22 @@ export function LevelComplete({ onNext }: CodaStepProps) {
                   runPath={state.firstRun!.path}
                   tileSize={44}
                 />
-                <p className="text-xs font-semibold text-red-500 mt-1 max-w-[130px]">
+                <p className="text-xs font-semibold text-critical mt-1 max-w-[130px]">
                   {OUTCOME_LABEL[state.firstRun!.settledState]}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-fg-subtle">
                   {state.firstRun!.totalPoints} pts total
                 </p>
-                <p className="text-xs text-gray-400 max-w-[140px] leading-relaxed">
+                <p className="text-xs text-fg-subtle max-w-[140px] leading-relaxed">
                   {summarizeReceipt(state.firstRun!).verdict}
                 </p>
               </div>
 
-              <div className="text-2xl text-gray-300 sm:self-center sm:mt-12 rotate-90 sm:rotate-0">→</div>
+              <div className="text-2xl text-fg-subtle sm:self-center sm:mt-12 rotate-90 sm:rotate-0">→</div>
 
               {/* Winning run */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <p className="text-xs font-semibold text-fg-muted uppercase tracking-wide">
                   What worked
                 </p>
                 <GridWorld
@@ -97,13 +97,13 @@ export function LevelComplete({ onNext }: CodaStepProps) {
                   runPath={state.lastRun!.path}
                   tileSize={44}
                 />
-                <p className="text-xs font-semibold text-green-600 mt-1 max-w-[130px]">
+                <p className="text-xs font-semibold text-positive mt-1 max-w-[130px]">
                   Coda reached the goal!
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-fg-subtle">
                   {state.lastRun!.totalPoints} pts total
                 </p>
-                <p className="text-xs text-gray-400 max-w-[140px] leading-relaxed">
+                <p className="text-xs text-fg-subtle max-w-[140px] leading-relaxed">
                   {summarizeReceipt(state.lastRun!).verdict}
                 </p>
               </div>
@@ -111,7 +111,7 @@ export function LevelComplete({ onNext }: CodaStepProps) {
           </div>
         ) : (
           /* Single-attempt success — no comparison needed */
-          <p className="text-gray-500 text-sm mb-6">
+          <p className="text-fg-muted text-sm mb-6">
             You nailed it on the first try!
           </p>
         )}
@@ -122,11 +122,11 @@ export function LevelComplete({ onNext }: CodaStepProps) {
           style={{ backgroundColor: '#f3efff' }}
         >
           <p className="text-sm font-bold text-[#967FD8] mb-3">What just happened</p>
-          <p className="text-gray-700 text-sm leading-relaxed">{currentLevel.takeaway}</p>
+          <p className="text-fg-muted text-sm leading-relaxed">{currentLevel.takeaway}</p>
         </div>
 
         {/* Stats */}
-        <div className="flex gap-6 mb-8 text-sm text-gray-500">
+        <div className="flex gap-6 mb-8 text-sm text-fg-muted">
           <span>
             Runs this level:{' '}
             <span className="font-semibold text-black">{state.runCountThisLevel}</span>

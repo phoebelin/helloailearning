@@ -181,7 +181,7 @@ export default function CoursesPage() {
                 </button>
               ) : (
                 <div
-                  className="flex flex-col items-center justify-center gap-3 border border-gray-200 rounded-xl bg-gray-50 cursor-not-allowed"
+                  className="flex flex-col items-center justify-center gap-3 border border-hairline rounded-xl bg-fill cursor-not-allowed"
                   style={{
                     width: '261px',
                     height: '285px',
@@ -189,7 +189,7 @@ export default function CoursesPage() {
                     borderRadius: '12px',
                   }}
                 >
-                  <Lock className="w-8 h-8 text-gray-300" />
+                  <Lock className="w-8 h-8 text-fg-subtle" />
                   <Image
                     src="/images/pippy.png"
                     alt="Pippy"
@@ -197,7 +197,7 @@ export default function CoursesPage() {
                     height={179}
                     className="object-contain opacity-30"
                   />
-                  <p className="text-xs text-gray-400 text-center">
+                  <p className="text-xs text-fg-subtle text-center">
                     Complete <span className="font-semibold">How machines use patterns with Mori</span> to unlock
                   </p>
                 </div>
@@ -238,7 +238,7 @@ export default function CoursesPage() {
                 </button>
               ) : (
                 <div
-                  className="flex flex-col items-center justify-center gap-3 border border-gray-200 rounded-xl bg-gray-50 cursor-not-allowed"
+                  className="flex flex-col items-center justify-center gap-3 border border-hairline rounded-xl bg-fill cursor-not-allowed"
                   style={{
                     width: '261px',
                     height: '285px',
@@ -246,7 +246,7 @@ export default function CoursesPage() {
                     borderRadius: '12px',
                   }}
                 >
-                  <Lock className="w-8 h-8 text-gray-300" />
+                  <Lock className="w-8 h-8 text-fg-subtle" />
                   <Image
                     src="/images/coda.png"
                     alt="Coda"
@@ -254,7 +254,7 @@ export default function CoursesPage() {
                     height={125}
                     className="object-contain opacity-30"
                   />
-                  <p className="text-xs text-gray-400 text-center">
+                  <p className="text-xs text-fg-subtle text-center">
                     Complete <span className="font-semibold">How machines update understanding with Pippy</span> to unlock
                   </p>
                 </div>

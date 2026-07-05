@@ -81,7 +81,7 @@ export default function Home() {
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-lg font-bold text-positive font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
               <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (
@@ -132,7 +132,7 @@ export default function Home() {
                 </Button>
               </div>
               {error && (
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-critical">{error}</p>
               )}
               {(step === "email" || step === "name") && (
                 <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>

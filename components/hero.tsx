@@ -64,7 +64,7 @@ export function Hero() {
         <h1 className="text-5xl font-serif mb-6">
           Anyone can learn <span className="block italic">artificial intelligence</span>
         </h1>
-        <p className="text-lg mb-6 text-gray-600">
+        <p className="text-lg mb-6 text-fg-muted">
           Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
         </p>
         <Button
@@ -92,11 +92,11 @@ export function Hero() {
         <h1 className="text-5xl font-serif mb-6">
           Anyone can learn <span className="block italic">artificial intelligence</span>
         </h1>
-        <p className="text-lg mb-6 text-gray-600">
+        <p className="text-lg mb-6 text-fg-muted">
           Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
         </p>
         <div className="flex flex-col items-center gap-2">
-          <p className="text-lg font-bold text-purple-400 font-(--font-inter)">Thank you! We&apos;ll be in touch soon.</p>
+          <p className="text-lg font-bold text-brand font-(--font-inter)">Thank you! We&apos;ll be in touch soon.</p>
         </div>
         <div className="mt-12">
           <img 
@@ -114,7 +114,7 @@ export function Hero() {
       <h1 className="text-5xl font-serif mb-6">
         Anyone can learn <span className="block italic">artificial intelligence</span>
       </h1>
-      <p className="text-lg mb-6 text-gray-600">
+      <p className="text-lg mb-6 text-fg-muted">
         Hello AI Learning is a free and engaging way for K-12 children to learn AI literacy.
       </p>
       <form
@@ -164,7 +164,7 @@ export function Hero() {
           </Button>
         </div>
         {error && (
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-critical">{error}</p>
         )}
         {(step === "email" || step === "name") && (
           <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>

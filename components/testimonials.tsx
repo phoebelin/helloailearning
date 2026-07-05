@@ -70,7 +70,7 @@ export function Testimonials() {
   const duplicatedTestimonials = [...testimonials, ...testimonials]
 
   return (
-    <section className="bg-gray-100 py-20 overflow-hidden">
+    <section className="bg-fill py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="relative">
           <div 
@@ -87,7 +87,7 @@ export function Testimonials() {
                 <blockquote className="text-xl mb-4">
                   &quot;{testimonial.quote}&quot;
                 </blockquote>
-                <cite className="text-gray-600">{testimonial.author}</cite>
+                <cite className="text-fg-muted">{testimonial.author}</cite>
               </div>
             ))}
           </div>

@@ -64,11 +64,11 @@ export default function LoginPage() {
       <main>
         <section className="text-center py-20 px-4 max-w-4xl mx-auto">
           <h1 className="text-5xl font-serif mb-6">Login</h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-fg-muted mb-8">
             Login functionality is coming soon! We&apos;re working hard to bring you a seamless experience.
           </p>
-          <div className="bg-gray-50 rounded-xl p-8 mb-12">
-            <p className="text-lg text-gray-700">
+          <div className="bg-fill rounded-xl p-8 mb-12">
+            <p className="text-lg text-fg-muted">
               In the meantime, join our waitlist to be notified when login becomes available.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-lg font-bold text-positive font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
               <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 </Button>
               </div>
               {error && (
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-critical">{error}</p>
               )}
               {(step === "email" || step === "name") && (
                 <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>

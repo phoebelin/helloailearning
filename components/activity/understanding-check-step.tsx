@@ -24,15 +24,15 @@ export interface UnderstandingCheckStepProps extends StepComponentProps {
 function getNodeColorClass(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-blue-500 border-blue-600 text-white';
+      return 'bg-info border-info text-white';
     case 'orange':
-      return 'bg-orange-500 border-orange-600 text-white';
+      return 'bg-brand border-brand text-white';
     case 'purple':
       return 'bg-[#967fd8] border-[#967fd8] text-white';
     case 'neutral':
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
     default:
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
   }
 }
 
@@ -233,7 +233,7 @@ export function UnderstandingCheckStep({
         'flex items-center gap-3 px-3 py-2 rounded-lg border cursor-pointer transition-all text-left w-full',
         isSelected
           ? hasSubmitted && !isCorrect
-            ? 'bg-yellow-100 border-yellow-400'
+            ? 'bg-caution-muted border-caution'
             : 'bg-[#F4F0FF] border-[#967FD8]'
           : 'bg-transparent border-transparent'
       )}
@@ -276,7 +276,7 @@ export function UnderstandingCheckStep({
 
         {/* Bottom Navigation Pattern - Only show when this step is visible in viewport */}
         {isVisible ? (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-6">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-hairline px-4 py-6">
             <div className="max-w-[682px] mx-auto flex justify-center items-center">
               {/* Centered content */}
               <div className="flex items-center gap-8">

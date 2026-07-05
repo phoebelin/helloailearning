@@ -93,7 +93,7 @@ export function EcosystemSelectionStep({
           
           {/* Selection feedback - positioned close to button */}
           {selected && !isRecording && (
-            <p className="text-sm text-green-600 mt-2 whitespace-nowrap">
+            <p className="text-sm text-positive mt-2 whitespace-nowrap">
               ✓ {selected} selected! Moving to next step...
             </p>
           )}

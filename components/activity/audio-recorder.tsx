@@ -348,7 +348,7 @@ export function AudioRecorderCompact({
       </Button>
 
       {isListening && (
-        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-pulse" />
+        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-critical animate-pulse" />
       )}
     </div>
   );

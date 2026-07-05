@@ -80,13 +80,13 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
         
         {/* Text input */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-fg-muted mb-2">
             Sentence about {animalNames[animal]}:
           </label>
           <textarea
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg resize-none"
+            className="w-full p-3 border border-hairline-strong rounded-lg resize-none"
             rows={3}
             placeholder="Type or record a sentence about the animal..."
           />
@@ -114,8 +114,8 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
 
         {/* Validation error */}
         {validationError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">{validationError}</p>
+          <div className="mb-4 p-3 bg-critical-muted border border-critical rounded-lg">
+            <p className="text-sm text-critical">{validationError}</p>
           </div>
         )}
 
@@ -245,7 +245,7 @@ export function SentenceListStep({
           {/* Sentences container */}
           <div className="flex flex-col gap-3">
             {sentences.length === 0 ? (
-              <div className="text-gray-500 italic text-base font-normal leading-[32px]">
+              <div className="text-fg-muted italic text-base font-normal leading-[32px]">
                 No sentences added yet. Press and speak to add your first sentence!
               </div>
             ) : (
@@ -297,11 +297,11 @@ export function SentenceListStep({
 
         {/* Current transcript display */}
         {currentTranscript && (
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <p className="text-sm text-gray-600 mb-2">You said:</p>
+          <div className="p-4 bg-fill rounded-xl border border-hairline">
+            <p className="text-sm text-fg-muted mb-2">You said:</p>
             <p className="text-base text-black">{currentTranscript}</p>
             {validationError && (
-              <p className="text-sm text-red-600 mt-2">{validationError}</p>
+              <p className="text-sm text-critical mt-2">{validationError}</p>
             )}
           </div>
         )}
@@ -365,7 +365,7 @@ export function SentenceListStep({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-semibold mb-4">Delete Sentence?</h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-fg-muted mb-6">
               Are you sure you want to delete this sentence? This action cannot be undone.
             </p>
             <div className="flex gap-3">

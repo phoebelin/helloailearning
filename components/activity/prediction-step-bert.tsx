@@ -135,13 +135,13 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl font-bold text-fg mb-4">
           Based on what you&apos;ve taught Zhorai, do you think Zhorai can guess where a {selectedAnimal} lives? Try asking!
         </h1>
         
         {/* Model Status Indicator */}
-        <div className="mb-4 p-2 bg-gray-100 rounded-lg inline-block">
-          <span className="text-sm text-gray-600">
+        <div className="mb-4 p-2 bg-fill rounded-lg inline-block">
+          <span className="text-sm text-fg-muted">
             AI Model: {modelStatus.initialized ? '✅ BERT Loaded' : '⏳ Loading...'}
           </span>
         </div>
@@ -156,13 +156,13 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
         </Button>
 
         {transcript && (
-          <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-            <p className="text-blue-800 font-medium">You said: &quot;{transcript}&quot;</p>
+          <div className="mt-4 p-4 bg-info-muted rounded-lg">
+            <p className="text-info font-medium">You said: &quot;{transcript}&quot;</p>
           </div>
         )}
 
         <div className="mt-6">
-          <p className="text-purple-600 font-medium text-lg">
+          <p className="text-brand font-medium text-lg">
             Example: &quot;Where do {selectedAnimal} live?&quot;
           </p>
         </div>
@@ -188,16 +188,16 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
           {showChart && predictionResult && (
             <div className="w-full">
               <div className="mb-4 text-center">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                <h3 className="text-xl font-semibold text-fg mb-2">
                   Zhorai&apos;s Prediction
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-fg-muted mb-4">
                   Hover over the bars to see what sentences I learned that correspond with each ecosystem
                 </p>
                 
                 {/* Method Indicator */}
-                <div className="mb-4 p-2 bg-blue-50 rounded-lg">
-                  <span className="text-sm text-blue-800">
+                <div className="mb-4 p-2 bg-info-muted rounded-lg">
+                  <span className="text-sm text-info">
                     Method: {predictionResult.method === 'bert' ? '🧠 BERT Semantic Analysis' : 
                              predictionResult.method === 'hybrid' ? '🔀 Hybrid (BERT + Keywords)' : 
                              '📝 Keyword Matching'}
@@ -212,12 +212,12 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
                 animated={true}
                 onBarHover={handleBarHover}
                 onBarLeave={handleBarLeave}
-                className="border border-gray-200 rounded-lg p-4 bg-white shadow-xs"
+                className="border border-hairline rounded-lg p-4 bg-white shadow-xs"
               />
 
               {zhoraiResponse && (
-                <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                  <p className="text-green-800 font-medium text-lg">
+                <div className="mt-6 p-4 bg-positive-muted rounded-lg">
+                  <p className="text-positive font-medium text-lg">
                     Zhorai: &quot;{zhoraiResponse}&quot;
                   </p>
                 </div>
@@ -225,7 +225,7 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
 
               {/* Debug Information */}
               {process.env.NODE_ENV === 'development' && (
-                <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs">
+                <div className="mt-4 p-4 bg-fill rounded-lg text-xs">
                   <h4 className="font-semibold mb-2">Debug Info:</h4>
                   <p>Method: {predictionResult.method}</p>
                   <p>Top Prediction: {predictionResult.topPrediction} ({Math.round(predictionResult.confidence * 100)}%)</p>
@@ -238,8 +238,8 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
 
           {isLoading && (
             <div className="flex items-center justify-center p-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-              <span className="ml-2 text-gray-600">Analyzing with AI...</span>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
+              <span className="ml-2 text-fg-muted">Analyzing with AI...</span>
             </div>
           )}
         </div>

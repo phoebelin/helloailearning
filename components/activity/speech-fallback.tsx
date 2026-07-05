@@ -83,14 +83,14 @@ export function SpeechFallback({
   return (
     <div className={cn('space-y-3', className)}>
       {showMessage && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/20 p-4">
+        <div className="rounded-lg border border-info bg-info-muted dark:border-info dark:bg-info/20 p-4">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+            <Info className="h-5 w-5 text-info dark:text-info shrink-0 mt-0.5" />
             <div className="text-sm space-y-1">
-              <p className="font-medium text-blue-900 dark:text-blue-100">
+              <p className="font-medium text-info dark:text-info">
                 Speech recognition is not available
               </p>
-              <p className="text-blue-700 dark:text-blue-300">
+              <p className="text-info dark:text-info">
                 You can type your answers instead. The activity works the same way!
               </p>
             </div>
@@ -114,17 +114,17 @@ export function SpeechFallback({
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {characterCount < minLength ? (
-                <span className="text-yellow-600 dark:text-yellow-400">
+                <span className="text-caution dark:text-caution">
                   {minLength - characterCount} more character{minLength - characterCount !== 1 ? 's' : ''} needed
                 </span>
               ) : (
-                <span className="text-green-600 dark:text-green-400">
+                <span className="text-positive dark:text-positive">
                   ✓ Ready to submit
                 </span>
               )}
             </span>
             <span className={cn(
-              characterCount > maxLength * 0.9 && 'text-yellow-600 dark:text-yellow-400',
+              characterCount > maxLength * 0.9 && 'text-caution dark:text-caution',
               characterCount >= maxLength && 'text-destructive'
             )}>
               {characterCount} / {maxLength}
@@ -155,29 +155,29 @@ export function SpeechUnavailableAlert({ className }: { className?: string }) {
   if (isSupported) return null;
 
   return (
-    <div className={cn('rounded-lg border border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-950/20 p-4', className)}>
+    <div className={cn('rounded-lg border border-caution bg-caution-muted dark:border-caution dark:bg-caution/20 p-4', className)}>
       <div className="flex items-start gap-3">
-        <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
+        <AlertCircle className="h-5 w-5 text-caution dark:text-caution shrink-0 mt-0.5" />
         <div className="space-y-2 text-sm">
-          <p className="font-medium text-yellow-900 dark:text-yellow-100">
+          <p className="font-medium text-caution dark:text-caution">
             Speech recognition is not available
           </p>
-          <p className="text-yellow-700 dark:text-yellow-300">
+          <p className="text-caution dark:text-caution">
             Your browser ({browserInfo.name}) doesn&apos;t support speech recognition, or you&apos;re not using a secure connection (HTTPS).
           </p>
           
           <div className="mt-3 space-y-1">
-            <p className="font-medium text-yellow-900 dark:text-yellow-100">
+            <p className="font-medium text-caution dark:text-caution">
               To use speech features:
             </p>
-            <ul className="list-disc list-inside space-y-1 text-yellow-700 dark:text-yellow-300 ml-2">
+            <ul className="list-disc list-inside space-y-1 text-caution dark:text-caution ml-2">
               <li>Use Chrome, Edge, or Safari browser</li>
               <li>Make sure you&apos;re on a secure HTTPS connection</li>
               <li>Check that your device has a microphone</li>
             </ul>
           </div>
 
-          <p className="text-yellow-700 dark:text-yellow-300 mt-3">
+          <p className="text-caution dark:text-caution mt-3">
             <strong>Don&apos;t worry!</strong> You can complete this activity by typing your answers instead.
           </p>
         </div>
@@ -288,12 +288,12 @@ export function SpeechUnavailableBanner({
   };
 
   return (
-    <div className={cn('bg-yellow-50 dark:bg-yellow-950/20 border-b border-yellow-200 dark:border-yellow-900', className)}>
+    <div className={cn('bg-caution-muted dark:bg-caution/20 border-b border-caution dark:border-caution', className)}>
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-1">
-            <Info className="h-5 w-5 text-yellow-600 dark:text-yellow-400 shrink-0" />
-            <p className="text-sm text-yellow-900 dark:text-yellow-100">
+            <Info className="h-5 w-5 text-caution dark:text-caution shrink-0" />
+            <p className="text-sm text-caution dark:text-caution">
               <strong>Speech recognition is unavailable.</strong> You can complete this activity by typing your answers instead.
             </p>
           </div>

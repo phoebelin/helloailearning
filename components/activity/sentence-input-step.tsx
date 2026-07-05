@@ -93,10 +93,10 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
             setEditedSentence(e.target.value);
             setEditError(null);
           }}
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
+          className="w-full p-3 border border-hairline-strong rounded-lg mb-4 focus:outline-hidden focus:ring-2 focus:ring-brand"
           rows={3}
         />
-        {editError && <p className="text-sm text-red-600 mb-4">{editError}</p>}
+        {editError && <p className="text-sm text-critical mb-4">{editError}</p>}
 
         <div className="flex gap-3 justify-end">
           <Button
@@ -380,7 +380,7 @@ export function SentenceInputStep({
         {/* Sentences container */}
         <div className="flex flex-col gap-3">
           {sentences.length === 0 && !currentTranscript ? (
-            <div className="text-gray-500 italic text-base font-normal leading-[32px]">
+            <div className="text-fg-muted italic text-base font-normal leading-[32px]">
               No sentences added yet.
             </div>
           ) : (
@@ -396,7 +396,7 @@ export function SentenceInputStep({
                     onClick={() => setEditingIndex(index)}
                     title="Click to edit sentence"
                   >
-                    <p className="text-base font-semibold leading-[32px] text-black underline decoration-dotted decoration-gray-400 underline-offset-4">
+                    <p className="text-base font-semibold leading-[32px] text-black underline decoration-dotted decoration-fg-subtle underline-offset-4">
                       {sentence.sentence}
                     </p>
                   </div>
@@ -436,7 +436,7 @@ export function SentenceInputStep({
               
               {/* Live transcript while recording */}
               {currentTranscript && (
-                <div className="flex justify-between items-center gap-3 p-3 rounded-xl bg-purple-50 border-2 border-purple-200">
+                <div className="flex justify-between items-center gap-3 p-3 rounded-xl bg-brand-muted border-2 border-brand">
                   <p className="text-base font-semibold leading-[32px] flex-1" style={{ color: '#967fd8' }}>
                     {currentTranscript}
                     <span className="animate-pulse">|</span>
@@ -449,8 +449,8 @@ export function SentenceInputStep({
               
               {/* Validation error */}
               {validationError && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200">
-                  <p className="text-sm text-red-600">{validationError}</p>
+                <div className="p-3 rounded-xl bg-critical-muted border border-critical">
+                  <p className="text-sm text-critical">{validationError}</p>
                 </div>
               )}
             </>
@@ -517,7 +517,7 @@ export function SentenceInputStep({
           {/* Mindmap and Zhorai character container */}
           <div className="relative flex items-start gap-6">
             {/* Mindmap visualization */}
-            <div className="relative w-full h-96 bg-white rounded-lg border border-gray-200 p-4 flex-1">
+            <div className="relative w-full h-96 bg-white rounded-lg border border-hairline p-4 flex-1">
               {isMobile ? (
                 <MindmapVisualizationMobile
                   data={mindmapData}

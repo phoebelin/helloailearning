@@ -28,15 +28,15 @@ export interface KnowledgeVisualizationStepProps extends StepComponentProps {
 function getNodeColorClass(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-blue-500 border-blue-600 text-white';
+      return 'bg-info border-info text-white';
     case 'orange':
-      return 'bg-orange-500 border-orange-600 text-white';
+      return 'bg-brand border-brand text-white';
     case 'purple':
       return 'bg-[#967fd8] border-[#967fd8] text-white';
     case 'neutral':
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
     default:
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
   }
 }
 
@@ -190,7 +190,7 @@ function InteractiveMindmap({
                 zIndex: 1000,
               }}
             >
-              <div className="absolute top-full mt-8 left-1/2 -translate-x-1/2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full mt-8 left-1/2 -translate-x-1/2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-hairline animate-in fade-in slide-in-from-top-2 duration-200">
                 <p className="text-sm font-bold text-center text-black">
                   &quot;{node.sourceSentences[0]}&quot;
                 </p>

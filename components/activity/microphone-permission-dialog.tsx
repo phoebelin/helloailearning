@@ -151,10 +151,10 @@ export function MicrophonePermissionDialog({
           <div className="flex items-start gap-4 mb-4">
             <div className={cn(
               'shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
-              permissionState === 'granted' ? 'bg-green-100 text-green-600' :
-              permissionState === 'denied' ? 'bg-red-100 text-red-600' :
-              permissionState === 'unavailable' ? 'bg-yellow-100 text-yellow-600' :
-              'bg-blue-100 text-blue-600'
+              permissionState === 'granted' ? 'bg-positive-muted text-positive' :
+              permissionState === 'denied' ? 'bg-critical-muted text-critical' :
+              permissionState === 'unavailable' ? 'bg-caution-muted text-caution' :
+              'bg-info-muted text-info'
             )}>
               {permissionState === 'granted' ? (
                 <CheckCircle className="w-6 h-6" />
@@ -296,7 +296,7 @@ export function MicrophonePermissionDialog({
             </div>
           ) : permissionState === 'unavailable' ? (
             <div className="space-y-4">
-              <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4">
+              <div className="bg-caution-muted dark:bg-caution/20 border border-caution dark:border-caution rounded-lg p-4">
                 <p className="text-sm text-muted-foreground mb-3">
                   Microphone access is not available. This could be because:
                 </p>
@@ -317,8 +317,8 @@ export function MicrophonePermissionDialog({
             </div>
           ) : permissionState === 'granted' ? (
             <div className="space-y-4">
-              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg p-4 text-center">
-                <p className="text-sm text-green-700 dark:text-green-400">
+              <div className="bg-positive-muted dark:bg-positive/20 border border-positive dark:border-positive rounded-lg p-4 text-center">
+                <p className="text-sm text-positive dark:text-positive">
                   ✓ You&apos;re all set! Speech recognition is now enabled.
                 </p>
               </div>

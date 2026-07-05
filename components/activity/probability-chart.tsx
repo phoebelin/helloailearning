@@ -131,7 +131,7 @@ export function ProbabilityChart({
           x={margin.left - 50}
           y={margin.top + chartHeight / 2}
           textAnchor="middle"
-          className="text-sm font-semibold fill-gray-600"
+          className="text-sm font-semibold fill-fg-muted"
           transform={`rotate(-90, ${margin.left - 50}, ${margin.top + chartHeight / 2})`}
         >
           How sure is Zhorai?
@@ -154,7 +154,7 @@ export function ProbabilityChart({
                 x={margin.left - 10}
                 y={y + 4}
                 textAnchor="end"
-                className="text-xs fill-gray-500"
+                className="text-xs fill-fg-muted"
               >
                 {Math.round(value * 100)}%
               </text>
@@ -206,7 +206,7 @@ export function ProbabilityChart({
                 textAnchor="middle"
                 className={cn(
                   'text-sm font-semibold transition-colors duration-200',
-                  isHovered ? 'fill-[#967fd8]' : 'fill-gray-700'
+                  isHovered ? 'fill-[#967fd8]' : 'fill-fg'
                 )}
               >
                 {config.name}
@@ -217,7 +217,7 @@ export function ProbabilityChart({
                 x={x + actualBarWidth / 2}
                 y={y - 8}
                 textAnchor="middle"
-                className="text-sm font-semibold fill-gray-800"
+                className="text-sm font-semibold fill-fg"
               >
                 {Math.round(prediction.probability * 100)}%
               </text>
@@ -230,22 +230,22 @@ export function ProbabilityChart({
       {/* Hover tooltip */}
       {hoveredEcosystem && (
         <div 
-          className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm pointer-events-none"
+          className="absolute z-10 bg-white border border-hairline rounded-lg shadow-lg p-4 max-w-sm pointer-events-none"
           style={{
             left: `${tooltipPosition.x}px`,
             top: `${tooltipPosition.y}px`,
             transform: 'translateX(-50%)'
           }}
         >
-          <div className="text-sm font-semibold text-gray-800 mb-2">
+          <div className="text-sm font-semibold text-fg mb-2">
             {ECOSYSTEM_CONFIG[hoveredEcosystem].name} Ecosystem
           </div>
-          <div className="text-xs text-gray-600 mb-3">
+          <div className="text-xs text-fg-muted mb-3">
             Probability: {Math.round((data.ecosystems.find(e => e.ecosystem === hoveredEcosystem)?.probability || 0) * 100)}%
           </div>
           
           {/* Influencing sentences */}
-          <div className="text-xs text-gray-700 mb-2 font-medium">
+          <div className="text-xs text-fg-muted mb-2 font-medium">
             Influencing sentences:
           </div>
           <div className="space-y-1">
@@ -253,14 +253,14 @@ export function ProbabilityChart({
               .find(e => e.ecosystem === hoveredEcosystem)
               ?.influencingSentences.slice(0, 3)
               .map((sentence, index) => (
-                <div key={index} className="text-xs text-gray-600 italic">
+                <div key={index} className="text-xs text-fg-muted italic">
                   &quot;{sentence}&quot;
                 </div>
               ))}
           </div>
           
           {/* Keywords */}
-          <div className="text-xs text-gray-700 mt-2 font-medium">
+          <div className="text-xs text-fg-muted mt-2 font-medium">
             Key words: {data.ecosystems
               .find(e => e.ecosystem === hoveredEcosystem)
               ?.keywords.slice(0, 5)

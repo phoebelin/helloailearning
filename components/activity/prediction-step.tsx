@@ -241,7 +241,7 @@ export function PredictionStep({
     <div className="max-w-[682px] mx-auto px-0 py-20">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-base font-normal text-gray-900 mb-4">
+        <h1 className="text-base font-normal text-fg mb-4">
           Based on what you&apos;ve taught Zhorai, do you think Zhorai can guess where {animalDisplayName.toLowerCase()} live? Try asking!
         </h1>
       </div>
@@ -287,7 +287,7 @@ export function PredictionStep({
 
       {/* Zhorai's Response and Chart */}
       {hasAskedQuestion && predictionResult && (
-        <div className="bg-white rounded-lg border border-gray-200 mb-8" style={{ padding: '24px' }}>
+        <div className="bg-white rounded-lg border border-hairline mb-8" style={{ padding: '24px' }}>
           {/* Zhorai's response */}
           {zhoraiResponse && (
             <div className="flex justify-start items-center gap-4 mb-6">
@@ -312,7 +312,7 @@ export function PredictionStep({
           {showChart && (
             <div ref={chartRef} className="mb-6">
               <div className="text-left mb-4">
-                <p className="text-base text-gray-900">
+                <p className="text-base text-fg">
                   {correctGuess === true && "It looks like Zhorai is right! "}
                   {correctGuess === false && "It looks like Zhorai guessed incorrectly. "}
                   Take a look at the chart below to see why Zhorai picked {predictionResult.ecosystems.find(e => e.ecosystem === predictionResult.topPrediction)?.ecosystem || 'this ecosystem'}. Hint: hover over the bars!

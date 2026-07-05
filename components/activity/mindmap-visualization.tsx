@@ -141,14 +141,14 @@ function calculateNodePositions(
 function getNodeColorClasses(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-blue-500 text-white shadow-blue-200';
+      return 'bg-info text-white shadow-blue-200';
     case 'orange':
-      return 'bg-orange-500 text-white shadow-orange-200';
+      return 'bg-brand text-white shadow-orange-200';
     case 'purple':
       return 'bg-[#967fd8] text-white shadow-purple-200';
     case 'neutral':
     default:
-      return 'bg-gray-500 text-white shadow-gray-200';
+      return 'bg-fill-disabled text-white shadow-gray-200';
   }
 }
 
@@ -320,7 +320,7 @@ export function MindmapVisualization({
   if (data.nodes.length === 0) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
-        <div className="text-center text-gray-500">
+        <div className="text-center text-fg-muted">
           <div className="text-4xl mb-2">🧠</div>
           <p>No concepts to display</p>
         </div>
@@ -355,7 +355,7 @@ export function MindmapVisualization({
       {/* Tooltip */}
       {showTooltips && tooltip.visible && (
         <div
-          className="absolute z-10 px-4 py-3 text-sm text-black bg-white rounded-lg shadow-lg pointer-events-none whitespace-pre-line border border-gray-200 font-bold"
+          className="absolute z-10 px-4 py-3 text-sm text-black bg-white rounded-lg shadow-lg pointer-events-none whitespace-pre-line border border-hairline font-bold"
           style={{
             left: tooltip.x,
             top: tooltip.y,
@@ -390,7 +390,7 @@ export function MindmapVisualizationMobile({
   if (data.nodes.length === 0) {
     return (
       <div className={cn('flex items-center justify-center p-8', className)}>
-        <div className="text-center text-gray-500">
+        <div className="text-center text-fg-muted">
           <div className="text-4xl mb-2">🧠</div>
           <p>No concepts to display</p>
         </div>

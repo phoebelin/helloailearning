@@ -217,7 +217,6 @@ export function SpeechInputWithFallback({
               variant="ghost"
               size="sm"
               onClick={() => setUseTextInput(true)}
-              className="text-muted-foreground hover:text-foreground"
             >
               <Keyboard className="h-4 w-4 mr-2" />
               Prefer to type instead?
@@ -239,7 +238,6 @@ export function SpeechInputWithFallback({
                 variant="ghost"
                 size="sm"
                 onClick={() => setUseTextInput(false)}
-                className="text-muted-foreground hover:text-foreground"
               >
                 Switch back to speech
               </Button>
@@ -305,7 +303,7 @@ export function SpeechUnavailableBanner({
               variant="ghost"
               size="sm"
               onClick={handleDismiss}
-              className="text-yellow-900 dark:text-yellow-100 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 shrink-0"
+              className="shrink-0"
             >
               Dismiss
             </Button>

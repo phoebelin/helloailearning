@@ -300,7 +300,7 @@ export function UnderstandingCheckStep({
                       <Button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
+                        className="rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Continue
                       </Button>
@@ -308,7 +308,7 @@ export function UnderstandingCheckStep({
                         type="button"
                         variant="outline"
                         onClick={handleShowExplanation}
-                        className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
+                        className="border rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Why?
                       </Button>
@@ -318,7 +318,7 @@ export function UnderstandingCheckStep({
                     <Button
                       type="button"
                       onClick={handleTryAgain}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
+                      className="rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Try again
                     </Button>
@@ -326,7 +326,7 @@ export function UnderstandingCheckStep({
                       type="button"
                       variant="outline"
                       onClick={handleShowAnswer}
-                      className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
+                      className="border rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Show answer
                     </Button>
@@ -336,7 +336,7 @@ export function UnderstandingCheckStep({
                       type="button"
                       onClick={handleSubmit}
                       disabled={selectedOptions.length === 0}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-12 py-4 text-base font-semibold leading-[17px]"
+                      className="rounded-xl px-12 py-4 text-base font-semibold leading-[17px]"
                     >
                       Check
                     </Button>

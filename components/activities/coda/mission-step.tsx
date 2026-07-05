@@ -58,7 +58,7 @@ export function MissionStep({ onNext }: CodaStepProps) {
 
       <Button
         onClick={onNext}
-        className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full max-w-xs"
+        className="text-base px-8 py-3 min-h-[44px] w-full max-w-xs"
         style={{ borderRadius: '12px' }}
       >
         Set Coda&rsquo;s reward

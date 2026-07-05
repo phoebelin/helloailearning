@@ -64,7 +64,7 @@ export default function CoursesPage() {
             
             <div className="flex items-center gap-3">
               <Button
-                className="bg-black text-white hover:bg-black/90 text-sm font-semibold"
+                className="text-sm font-semibold"
                 style={{ borderRadius: '12px', padding: '10px' }}
               >
                 Continue

@@ -230,7 +230,7 @@ export function InspectFixStep({ onCheckBatch }: InspectFixStepProps) {
         </Button>
         <Button
           onClick={onCheckBatch}
-          className="bg-black text-white hover:bg-black/90 text-sm px-6"
+          className="text-sm px-6"
           style={{ borderRadius: '12px' }}
         >
           I think it&rsquo;s fixed!

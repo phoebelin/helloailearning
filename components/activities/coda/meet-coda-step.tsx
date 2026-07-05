@@ -70,7 +70,7 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
       <div className="flex flex-col items-center gap-3 w-full max-w-xs">
         <Button
           onClick={onNext}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+          className="text-base px-8 py-3 min-h-[44px] w-full"
           style={{ borderRadius: '12px' }}
         >
           Give Coda a goal

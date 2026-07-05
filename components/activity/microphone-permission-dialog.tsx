@@ -140,7 +140,7 @@ export function MicrophonePermissionDialog({
           onClick={onClose}
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+          className="absolute top-4 right-4"
           aria-label="Close"
         >
           <X className="h-5 w-5" />

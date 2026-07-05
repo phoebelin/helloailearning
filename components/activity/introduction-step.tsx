@@ -89,7 +89,7 @@ export function IntroductionStep({
         <Button
           type="button"
           onClick={handleContinue}
-          className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+          className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
         >
           Continue
         </Button>
@@ -98,7 +98,7 @@ export function IntroductionStep({
           type="button"
           variant="outline"
           onClick={handleTestMicrophone}
-          className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+          className="border rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
         >
           Test your microphone
         </Button>

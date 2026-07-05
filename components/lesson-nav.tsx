@@ -70,7 +70,6 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
             variant="ghost"
             size="icon"
             onClick={() => router.push('/courses')}
-            className="text-gray-500 hover:text-gray-700"
             aria-label="Close lesson"
           >
             <X className="w-5 h-5" />

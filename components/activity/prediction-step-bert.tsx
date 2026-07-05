@@ -149,11 +149,8 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
         <Button
           onClick={handleSpeechInput}
           disabled={isLoading}
-          className={`px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200 ${
-            isListening 
-              ? 'bg-red-500 hover:bg-red-600 text-white' 
-              : 'bg-black hover:bg-gray-800 text-white'
-          }`}
+          variant={isListening ? 'destructive' : 'default'}
+          className="px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200"
         >
           {isListening ? '🛑 Stop Listening' : '🎤 Press and Speak'}
         </Button>
@@ -262,7 +259,7 @@ export function PredictionStep({ selectedAnimal, userSentences, onNext, onPrevio
         
         <Button
           onClick={onNext}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+          className="px-8 py-3"
         >
           Continue →
         </Button>

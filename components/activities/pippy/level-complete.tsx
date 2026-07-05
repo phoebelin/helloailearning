@@ -91,7 +91,7 @@ export function LevelComplete() {
             <>
               <Button
                 onClick={handleNext}
-                className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+                className="text-base px-8 py-3"
                 style={{ borderRadius: '12px' }}
               >
                 Next level!
@@ -108,7 +108,7 @@ export function LevelComplete() {
           ) : (
             <Button
               onClick={handleNext}
-              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+              className="text-base px-8 py-3"
               style={{ borderRadius: '12px' }}
             >
               See your summary

@@ -65,7 +65,7 @@ export function SessionSummaryStep() {
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
           onClick={resetActivity}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+          className="text-base px-8 py-3"
           style={{ borderRadius: '12px' }}
         >
           Keep playing

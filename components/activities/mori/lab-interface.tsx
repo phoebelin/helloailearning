@@ -313,7 +313,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
               <Button
                 onClick={handleTest}
                 disabled={!isComplete || isTesting}
-                className="bg-[#967FD8] text-white hover:bg-[#7c6bc7] text-sm px-6 py-2 disabled:opacity-40"
+                className="text-sm px-6 py-2 disabled:opacity-40"
                 style={{ borderRadius: '10px' }}
               >
                 Test with Mori!
@@ -387,7 +387,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
         {hasTested ? (
           <Button
             onClick={onNext}
-            className="bg-black text-white hover:bg-black/90 text-base px-10 py-3 animate-in fade-in slide-in-from-bottom-2"
+            className="text-base px-10 py-3 animate-in fade-in slide-in-from-bottom-2"
             style={{ borderRadius: '12px' }}
           >
             I&apos;m ready to sort! 🕵️

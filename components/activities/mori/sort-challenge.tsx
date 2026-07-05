@@ -302,7 +302,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
         <Button
           onClick={handleSubmit}
           disabled={!allAssigned}
-          className="bg-black text-white hover:bg-black/90 text-base px-10 py-3 disabled:opacity-40"
+          className="text-base px-10 py-3 disabled:opacity-40"
           style={{ borderRadius: '12px' }}
         >
           Check my sorting!
@@ -310,7 +310,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
       ) : passedThisAttempt ? (
         <Button
           onClick={handleNextLevel}
-          className="bg-black text-white hover:bg-black/90 text-base px-10 py-3"
+          className="text-base px-10 py-3"
           style={{ borderRadius: '12px' }}
         >
           See how Mori found the pattern →
@@ -322,7 +322,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
           </p>
           <Button
             onClick={handleTryAgain}
-            className="bg-[#967FD8] text-white hover:bg-[#7c6bc7] text-base px-10 py-3"
+            className="text-base px-10 py-3"
             style={{ borderRadius: '12px' }}
           >
             Back to the Lab

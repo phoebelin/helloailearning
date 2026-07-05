@@ -105,7 +105,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
           {currentTranscript && (
             <Button
               onClick={handleUseTranscript}
-              className="mt-2 bg-[#967fd8] text-white hover:bg-[#967fd8]/80 rounded-lg px-4 py-2 text-sm"
+              className="mt-2 rounded-lg px-4 py-2 text-sm"
             >
               Use this recording
             </Button>
@@ -123,13 +123,13 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
         <div className="flex gap-3">
           <Button
             onClick={handleSave}
-            className="bg-black text-white hover:bg-black/90 rounded-lg px-6 py-2 text-sm font-semibold"
+            className="rounded-lg px-6 py-2 text-sm font-semibold"
           >
             Save Changes
           </Button>
-          <Button
+          <Button variant="outline"
             onClick={onClose}
-            className="border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg px-6 py-2 text-sm font-semibold"
+            className="border rounded-lg px-6 py-2 text-sm font-semibold"
           >
             Cancel
           </Button>
@@ -266,7 +266,7 @@ export function SentenceListStep({
                     <Button
                       variant="ghost"
                       onClick={() => setEditingIndex(index)}
-                      className="flex items-center gap-1 text-black hover:text-blue-600"
+                      className="flex items-center gap-1"
                       tooltip="Edit sentence"
                     >
                       {/* Edit icon */}
@@ -278,7 +278,7 @@ export function SentenceListStep({
                     <Button
                       variant="ghost"
                       onClick={() => setShowDeleteConfirm(index)}
-                      className="flex items-center gap-1 text-black hover:text-red-600"
+                      className="flex items-center gap-1"
                       tooltip="Delete sentence"
                     >
                       {/* Delete icon */}
@@ -321,7 +321,7 @@ export function SentenceListStep({
             <Button
               onClick={handleAddSentence}
               disabled={isProcessing || !!validationError}
-              className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? 'Adding...' : 'Add this sentence'}
             </Button>
@@ -334,21 +334,16 @@ export function SentenceListStep({
             type="button"
             onClick={onNext}
             disabled={!canProceed}
-            className={cn(
-              "rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]",
-              canProceed 
-                ? "bg-black text-white hover:bg-black/90 cursor-pointer" 
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            )}
+            className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
           >
             See Zhorai&apos;s brain
           </Button>
 
           {onPrevious && (
-            <Button
+            <Button variant="outline"
               type="button"
               onClick={onPrevious}
-              className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+              className="border rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
             >
               Previous
             </Button>
@@ -376,13 +371,13 @@ export function SentenceListStep({
             <div className="flex gap-3">
               <Button
                 onClick={() => handleDeleteSentence(showDeleteConfirm)}
-                className="bg-red-600 text-white hover:bg-red-700 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Delete
               </Button>
-              <Button
+              <Button variant="outline"
                 onClick={() => setShowDeleteConfirm(null)}
-                className="border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="border rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Cancel
               </Button>

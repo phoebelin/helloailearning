@@ -189,7 +189,7 @@ export function AnimalSelectionStep({
                 type="button"
                 onClick={handleContinue}
                 disabled={!selected}
-                className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+                className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
               >
                 Continue
               </Button>

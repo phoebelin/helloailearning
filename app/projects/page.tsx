@@ -39,7 +39,7 @@ export default function ProjectsPage() {
               Create a new project
             </h2>
             <div className="flex items-center gap-3 opacity-0">
-              <Button className="bg-black text-white hover:bg-black/90 text-sm font-semibold" style={{ borderRadius: '12px', padding: '10px' }}>
+              <Button className="text-sm font-semibold" style={{ borderRadius: '12px', padding: '10px' }}>
                 Continue
               </Button>
             </div>
@@ -100,7 +100,7 @@ export default function ProjectsPage() {
 
               {/* Generate Ideas Button */}
               <Button 
-                className="bg-black text-white hover:bg-black/90 text-sm font-semibold self-start"
+                className="text-sm font-semibold self-start"
                 style={{ borderRadius: '12px', padding: '10px 20px' }}
               >
                 Generate ideas
@@ -116,7 +116,7 @@ export default function ProjectsPage() {
               Browse existing projects
             </h2>
             <div className="flex items-center gap-3 opacity-0">
-              <Button className="bg-black text-white hover:bg-black/90 text-sm font-semibold" style={{ borderRadius: '12px', padding: '10px' }}>
+              <Button className="text-sm font-semibold" style={{ borderRadius: '12px', padding: '10px' }}>
                 Continue
               </Button>
             </div>

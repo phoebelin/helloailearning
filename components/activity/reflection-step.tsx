@@ -112,7 +112,7 @@ export function ReflectionStep({
                 variant="ghost"
                 size="icon"
                 onClick={handleSpeakQuestion1}
-                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg"
+                className="shrink-0 p-2 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
@@ -176,7 +176,7 @@ export function ReflectionStep({
                 variant="ghost"
                 size="icon"
                 onClick={handleSpeakQuestion2}
-                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg"
+                className="shrink-0 p-2 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
@@ -235,7 +235,7 @@ export function ReflectionStep({
             <div className="flex justify-center mt-6">
               <Button
                 onClick={handleComplete}
-                className="bg-black text-white hover:bg-black/90 rounded-xl px-8 py-4 text-base font-semibold"
+                className="rounded-xl px-8 py-4 text-base font-semibold"
               >
                 Complete
               </Button>

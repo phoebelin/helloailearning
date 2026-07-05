@@ -140,7 +140,7 @@ export function AnimalCard({
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 gap-2 border-red-200 text-red-600 hover:bg-red-50"
+                className="flex-1 gap-2"
                 onClick={() => { onRemove(example.id); setExpanded(false); }}
               >
                 <X className="w-4 h-4" />

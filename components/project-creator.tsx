@@ -48,7 +48,7 @@ export function ProjectCreator() {
           placeholder="Plants"
         />
       </div>
-      <Button className="bg-black text-white hover:bg-black/90">Generate ideas</Button>
+      <Button>Generate ideas</Button>
     </div>
   )
 }

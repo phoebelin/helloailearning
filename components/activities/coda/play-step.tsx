@@ -311,7 +311,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
                 <Button
                   onClick={handleRun}
-                  className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                  className="text-base px-8 py-3 min-h-[44px] w-full"
                   style={{ borderRadius: '12px' }}
                 >
                   Run Coda →
@@ -330,7 +330,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                 {matchesCurrentTarget ? (
                   <Button
                     onClick={onNext}
-                    className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                    className="text-base px-8 py-3 min-h-[44px] w-full"
                     style={{ borderRadius: '12px' }}
                   >
                     Coda made it! Continue →
@@ -339,7 +339,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                   <>
                     <Button
                       onClick={handleRetune}
-                      className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                      className="text-base px-8 py-3 min-h-[44px] w-full"
                       style={{ borderRadius: '12px' }}
                     >
                       Re-tune the reward

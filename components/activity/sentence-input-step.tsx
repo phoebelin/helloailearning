@@ -80,7 +80,7 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-4 right-4"
           aria-label="Close modal"
         >
           <X className="w-6 h-6" />
@@ -101,13 +101,13 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
         <div className="flex gap-3 justify-end">
           <Button
             onClick={handleSave}
-            className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+            className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
           >
             Save
           </Button>
-          <Button
+          <Button variant="outline"
             onClick={onClose}
-            className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+            className="border rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
           >
             Cancel
           </Button>
@@ -406,7 +406,7 @@ export function SentenceInputStep({
                     <Button
                       variant="ghost"
                       onClick={() => setEditingIndex(index)}
-                      className="flex items-center gap-1 text-black hover:text-[#967FD8]"
+                      className="flex items-center gap-1"
                       tooltip="Edit sentence"
                     >
                       {/* Edit icon */}
@@ -421,7 +421,7 @@ export function SentenceInputStep({
                         e.stopPropagation(); // Prevent triggering the row click
                         setShowDeleteConfirm(index);
                       }}
-                      className="flex items-center gap-1 text-black hover:text-red-600"
+                      className="flex items-center gap-1"
                       tooltip="Delete sentence"
                     >
                       {/* Delete icon */}
@@ -496,12 +496,8 @@ export function SentenceInputStep({
               }
             }}
             disabled={!canProceed}
-            className={cn(
-              "rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12",
-              canProceed 
-                ? "border border-black text-black bg-white hover:bg-gray-50 cursor-pointer" 
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            )}
+            variant="outline"
+            className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
           >
             {canProceed 
               ? (showMindmap ? "Hide Zhorai's brain" : "See Zhorai's brain")
@@ -574,13 +570,13 @@ export function SentenceInputStep({
             <div className="flex gap-3 justify-end">
               <Button
                 onClick={() => handleDeleteSentence(showDeleteConfirm)}
-                className="bg-red-600 text-white hover:bg-red-700 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Delete
               </Button>
-              <Button
+              <Button variant="outline"
                 onClick={() => setShowDeleteConfirm(null)}
-                className="border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="border rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Cancel
               </Button>
@@ -595,7 +591,7 @@ export function SentenceInputStep({
           <Button
             onClick={onNext}
             disabled={!canProceed}
-            className="bg-black text-white hover:bg-gray-800 disabled:opacity-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
+            className="disabled:opacity-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
           >
             Continue
           </Button>

@@ -44,7 +44,7 @@ export function SessionSummaryStep({ onNext }: CodaStepProps) {
       <div className="flex flex-col gap-3 w-full max-w-xs mt-2">
         <Button
           onClick={resetActivity}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
+          className="text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Keep playing

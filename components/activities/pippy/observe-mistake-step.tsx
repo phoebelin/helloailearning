@@ -79,7 +79,7 @@ export function ObserveMistakeStep({ onNext }: ObserveMistakeStepProps) {
       {revealed && (
         <Button
           onClick={onNext}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+          className="text-base px-8 py-3"
           style={{ borderRadius: '12px' }}
         >
           See what Pippy learned from

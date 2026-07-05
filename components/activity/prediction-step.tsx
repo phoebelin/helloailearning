@@ -342,7 +342,7 @@ export function PredictionStep({
                 {/* When correct: Continue is primary, Teach Zhorai more is secondary */}
                 <Button
                   onClick={onNext}
-                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6"
+                  className="rounded-xl px-6 py-6"
                 >
                   Continue
                 </Button>
@@ -354,7 +354,7 @@ export function PredictionStep({
                     }
                   }}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
+                  className="border rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
@@ -369,14 +369,14 @@ export function PredictionStep({
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}
-                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
+                  className="rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
                 <Button
                   onClick={onNext}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
+                  className="border rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Continue
                 </Button>

@@ -79,7 +79,7 @@ export default function LoginPage() {
             <Button
               variant="default"
               size="lg"
-              className="bg-black text-white hover:bg-black/90 rounded-xl"
+              className="rounded-xl"
               onClick={() => setStep("email")}
             >
               Join the waitlist
@@ -130,7 +130,7 @@ export default function LoginPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="bg-black text-white hover:bg-black/90 px-5 h-10 rounded-xl text-sm font-medium mt-0.5"
+                  className="px-5 h-10 rounded-xl text-sm font-medium mt-0.5"
                   disabled={isLoading}
                 >
                   {isLoading ? "Submitting..." : step === "email" ? "Continue" : "Submit"}

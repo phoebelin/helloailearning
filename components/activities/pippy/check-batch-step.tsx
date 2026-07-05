@@ -89,7 +89,7 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
       {pass === false && (
         <Button
           onClick={onFail}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+          className="text-base px-8 py-3"
           style={{ borderRadius: '12px' }}
         >
           Back to training

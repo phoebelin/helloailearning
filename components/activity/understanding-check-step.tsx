@@ -10,6 +10,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StepComponentProps, EcosystemType, NodeColor } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface UnderstandingCheckStepProps extends StepComponentProps {
@@ -296,47 +297,49 @@ export function UnderstandingCheckStep({
                 <div className="flex gap-3">
                   {hasSubmitted && isCorrect ? (
                     <>
-                      <button
+                      <Button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                        className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Continue
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="outline"
                         onClick={handleShowExplanation}
-                        className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                        className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Why?
-                      </button>
+                      </Button>
                     </>
                 ) : hasSubmitted && !isCorrect ? (
                   <>
-                    <button
+                    <Button
                       type="button"
                       onClick={handleTryAgain}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                      className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Try again
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="outline"
                       onClick={handleShowAnswer}
-                      className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                      className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Show answer
-                    </button>
+                    </Button>
                   </>
                 ) : (
-                    <button
+                    <Button
                       type="button"
                       onClick={handleSubmit}
                       disabled={selectedOptions.length === 0}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-12 py-4 text-base font-semibold leading-[17px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-black text-white hover:bg-black/90 rounded-xl px-12 py-4 text-base font-semibold leading-[17px]"
                     >
                       Check
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

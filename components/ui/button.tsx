@@ -81,6 +81,8 @@ export interface ButtonProps
   endContent?: React.ReactNode
   /** Render as a square icon-only button (Astryx `isIconOnly`); also implied by size="icon". */
   isIconOnly?: boolean
+  /** Tooltip shown on hover (Astryx native feature — prefer over the HTML `title` attribute). */
+  tooltip?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

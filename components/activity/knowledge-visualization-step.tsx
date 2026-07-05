@@ -12,6 +12,7 @@ import { StepComponentProps, EcosystemType, MindmapNode, NodeColor, NodeType } f
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface KnowledgeVisualizationStepProps extends StepComponentProps {
@@ -409,25 +410,26 @@ export function KnowledgeVisualizationStep({
         {/* Action Buttons - only show after mindmap appears */}
         {showMindmap && (
           <div className="flex flex-row items-center gap-3 animate-in fade-in duration-500">
-            <button
+            <Button
               type="button"
               onClick={onNext}
-              className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+              className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
             >
               Continue
-            </button>
-            
-            <button
+            </Button>
+
+            <Button
               type="button"
+              variant="outline"
               onClick={() => {
                 // Use the same scroll behavior as the existing step navigation
                 const ecosystemStep = document.querySelector('[data-step="ecosystem-selection"]');
                 if (ecosystemStep) {
                   // Same timing and behavior as the existing useEffect in test page
                   setTimeout(() => {
-                    ecosystemStep.scrollIntoView({ 
-                      behavior: 'smooth', 
-                      block: 'start' 
+                    ecosystemStep.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
                     });
                   }, 100); // Same 100ms delay as existing navigation
                 } else {
@@ -441,10 +443,10 @@ export function KnowledgeVisualizationStep({
                   onPrevious();
                 }
               }}
-              className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+              className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
             >
               Try another ecosystem
-            </button>
+            </Button>
           </div>
         )}
       </div>

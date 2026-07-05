@@ -10,6 +10,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StepComponentProps } from '@/types/activity';
 import { cn } from '@/lib/utils';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
+import { Button } from '@/components/ui/button';
 
 export interface AnimalSelectionStepProps extends StepComponentProps {
   /** Callback when an animal is selected */
@@ -184,14 +185,14 @@ export function AnimalSelectionStep({
           {/* Continue Button and Speech Bubble */}
           <div className="flex items-center gap-4 mt-4">
             <div className="flex gap-3">
-              <button
+              <Button
                 type="button"
                 onClick={handleContinue}
                 disabled={!selected}
-                className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
               >
                 Continue
-              </button>
+              </Button>
             </div>
             {selected && (
               <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">

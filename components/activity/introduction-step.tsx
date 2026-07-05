@@ -13,6 +13,7 @@ import {
   useMicrophonePermission
 } from './microphone-permission-dialog';
 import { StepComponentProps } from '@/types/activity';
+import { Button } from '@/components/ui/button';
 
 export interface IntroductionStepProps extends StepComponentProps {
   /** Custom title (optional) */
@@ -85,21 +86,22 @@ export function IntroductionStep({
 
       {/* Action Buttons */}
       <div className="flex flex-row gap-3 z-10 relative">
-        <button
+        <Button
           type="button"
           onClick={handleContinue}
-          className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+          className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
         >
           Continue
-        </button>
-        
-        <button
+        </Button>
+
+        <Button
           type="button"
+          variant="outline"
           onClick={handleTestMicrophone}
-          className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+          className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
         >
           Test your microphone
-        </button>
+        </Button>
       </div>
 
       {/* Microphone Permission Dialog */}

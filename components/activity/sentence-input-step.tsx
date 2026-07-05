@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StepComponentProps, AnimalType, MindmapNode, Sentence, ConceptData } from '@/types/activity';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AudioRecorder } from './audio-recorder';
 import { MindmapVisualization, MindmapVisualizationMobile } from './mindmap-visualization';
@@ -75,15 +76,15 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
         style={{ transform: isOpen ? 'scale(1)' : 'scale(0.95)' }}
       >
         {/* Close button */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
           aria-label="Close modal"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+          <X className="w-6 h-6" />
+        </Button>
         
         <h3 className="text-lg font-semibold mb-4 pr-8">Edit Sentence</h3>
         <textarea
@@ -402,31 +403,33 @@ export function SentenceInputStep({
                   
                   {/* Edit and Delete buttons - show on hover when sentences exist */}
                   <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => setEditingIndex(index)}
-                      className="flex items-center gap-1 text-black hover:text-[#967FD8] transition-colors"
-                      title="Edit sentence"
+                      className="flex items-center gap-1 text-black hover:text-[#967FD8]"
+                      tooltip="Edit sentence"
                     >
                       {/* Edit icon */}
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
                       <span className="text-base font-normal leading-[32px]">Edit</span>
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering the row click
                         setShowDeleteConfirm(index);
                       }}
-                      className="flex items-center gap-1 text-black hover:text-red-600 transition-colors"
-                      title="Delete sentence"
+                      className="flex items-center gap-1 text-black hover:text-red-600"
+                      tooltip="Delete sentence"
                     >
                       {/* Delete icon */}
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                       <span className="text-base font-normal leading-[32px]">Delete</span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

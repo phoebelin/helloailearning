@@ -108,14 +108,16 @@ export function ReflectionStep({
               <p className="text-base font-normal text-black flex-1" style={{ fontSize: '16px', fontWeight: 400 }}>
                 {question1}
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleSpeakQuestion1}
-                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
                 <Volume2 className="w-5 h-5 text-gray-700" />
-              </button>
+              </Button>
             </div>
             
             <div>
@@ -170,14 +172,16 @@ export function ReflectionStep({
               <p className="text-base font-normal text-black flex-1" style={{ fontSize: '16px', fontWeight: 400 }}>
                 {question2}
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleSpeakQuestion2}
-                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 hover:bg-gray-100 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
                 <Volume2 className="w-5 h-5 text-gray-700" />
-              </button>
+              </Button>
             </div>
             
             <div>

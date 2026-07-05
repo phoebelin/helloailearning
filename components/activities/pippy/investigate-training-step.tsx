@@ -32,7 +32,7 @@ export function InvestigateTrainingStep({ onNext }: InvestigateTrainingStepProps
     <div className="flex flex-col items-center p-8 max-w-5xl mx-auto gap-6">
       <h1 className="text-3xl font-bold text-center">What Pippy Learned From</h1>
 
-      <p className="text-gray-600 text-center max-w-lg leading-relaxed text-sm">
+      <p className="text-fg-muted text-center max-w-lg leading-relaxed text-sm">
         Pippy doesn&rsquo;t really &ldquo;know&rdquo; what {currentLevel.targetCategoryLabel.toLowerCase()} are.
         It only has these labeled examples. The mistake is hiding in here.
       </p>
@@ -53,8 +53,8 @@ export function InvestigateTrainingStep({ onNext }: InvestigateTrainingStepProps
 
       {beltDone && (
         <div className="flex flex-col items-center gap-4 mt-2">
-          <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 text-sm text-gray-700 text-center max-w-md">
-            <p className="font-semibold text-yellow-700 mb-1">🥚 One of these is a bad egg!</p>
+          <div className="bg-caution-muted border border-caution rounded-xl p-4 text-sm text-fg-muted text-center max-w-md">
+            <p className="font-semibold text-caution mb-1">🥚 One of these is a bad egg!</p>
             <p>
               Somewhere in Pippy&rsquo;s training data is a mislabeled animal — an animal that was
               given the wrong YES/NO label. That one wrong label is causing all the mistakes.

@@ -28,22 +28,22 @@ export function SessionSummaryStep() {
       <div className="flex gap-8 text-center">
         <div>
           <p className="text-3xl font-bold text-[#967FD8]">{levelsSolved}</p>
-          <p className="text-sm text-gray-500">solved this session</p>
+          <p className="text-sm text-fg-muted">solved this session</p>
         </div>
         <div>
           <p className="text-3xl font-bold text-[#967FD8]">{totalSolved}</p>
-          <p className="text-sm text-gray-500">total solved</p>
+          <p className="text-sm text-fg-muted">total solved</p>
         </div>
         <div>
           <p className="text-3xl font-bold text-[#967FD8]">Level {highest}</p>
-          <p className="text-sm text-gray-500">highest reached</p>
+          <p className="text-sm text-fg-muted">highest reached</p>
         </div>
       </div>
 
       {/* Full arc recap */}
-      <div className="bg-purple-50 border border-purple-100 rounded-2xl p-5 text-left flex flex-col gap-3">
+      <div className="bg-brand-muted border border-brand rounded-2xl p-5 text-left flex flex-col gap-3">
         <p className="font-semibold text-[#967FD8]">What you discovered:</p>
-        <ul className="text-sm text-gray-700 leading-relaxed flex flex-col gap-2">
+        <ul className="text-sm text-fg-muted leading-relaxed flex flex-col gap-2">
           <li>
             <span className="font-semibold">🔧 AI isn&rsquo;t broken — it learned bad data.</span>{' '}
             When Pippy made mistakes, it wasn&rsquo;t a bug. It learned exactly what its examples taught it.

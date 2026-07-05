@@ -53,7 +53,7 @@ function AnimalQuizCard({ card, index, revealDelayMs }: {
       }}
     >
       {imgFailed ? (
-        <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-xs text-gray-500 font-medium text-center p-1">
+        <div className="w-16 h-16 rounded-lg bg-fill flex items-center justify-center text-xs text-fg-muted font-medium text-center p-1">
           {card.animal.name}
         </div>
       ) : (
@@ -67,7 +67,7 @@ function AnimalQuizCard({ card, index, revealDelayMs }: {
         />
       )}
 
-      <span className="text-xs font-medium text-gray-700 text-center leading-tight">
+      <span className="text-xs font-medium text-fg-muted text-center leading-tight">
         {card.animal.name}
       </span>
 
@@ -89,7 +89,7 @@ function AnimalQuizCard({ card, index, revealDelayMs }: {
 
       {/* ✓ / ✗ indicator */}
       {revealed && (
-        <span className={`text-xs font-semibold ${isCorrect ? 'text-green-600' : 'text-red-500'}`}>
+        <span className={`text-xs font-semibold ${isCorrect ? 'text-positive' : 'text-critical'}`}>
           {isCorrect ? '✓ Correct' : `✗ Should be ${card.expected}`}
         </span>
       )}

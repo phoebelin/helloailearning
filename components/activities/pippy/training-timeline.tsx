@@ -18,10 +18,10 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
     <div className="flex flex-col gap-2">
       <button
         onClick={() => setExpanded(e => !e)}
-        className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#967FD8] transition-colors"
+        className="flex items-center gap-2 text-sm font-medium text-fg-muted hover:text-[#967FD8] transition-colors"
       >
         <span>⏱ Training timeline</span>
-        <span className="text-xs text-gray-400">({nest.length} examples)</span>
+        <span className="text-xs text-fg-subtle">({nest.length} examples)</span>
         <span className="text-xs">{expanded ? '▲' : '▼'}</span>
       </button>
 
@@ -46,7 +46,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
                     {ex.label}
                   </span>
                 </div>
-                <span className="text-[9px] text-gray-400">#{i + 1}</span>
+                <span className="text-[9px] text-fg-subtle">#{i + 1}</span>
               </div>
             );
           })}

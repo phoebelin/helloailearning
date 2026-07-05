@@ -47,7 +47,7 @@ export function ObserveMistakeStep({ onNext }: ObserveMistakeStepProps) {
     <div className="flex flex-col items-center p-8 max-w-2xl mx-auto gap-6">
       <h1 className="text-3xl font-bold text-center">Watch Pippy Take a Quiz</h1>
 
-      <p className="text-gray-500 text-sm text-center max-w-md">
+      <p className="text-fg-muted text-sm text-center max-w-md">
         These are brand-new animals Pippy was <strong>never trained on</strong>.
         Watch what Pippy guesses for each one.
       </p>
@@ -64,13 +64,13 @@ export function ObserveMistakeStep({ onNext }: ObserveMistakeStepProps) {
       />
 
       {revealed && wrongCount > 0 && (
-        <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 text-sm text-gray-700 text-center max-w-md">
-          <p className="font-semibold text-orange-600 mb-1">
+        <div className="bg-brand-muted border border-brand rounded-xl p-4 text-sm text-fg-muted text-center max-w-md">
+          <p className="font-semibold text-brand mb-1">
             Pippy got {wrongCount} wrong!
           </p>
           <p>
             This is clearly {categoryPhrase} — but Pippy said NO. Is Pippy{' '}
-            <span className="line-through text-gray-400">broken</span>? Or did it
+            <span className="line-through text-fg-subtle">broken</span>? Or did it
             learn something wrong? Let&rsquo;s investigate.
           </p>
         </div>

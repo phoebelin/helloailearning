@@ -51,11 +51,11 @@ function WhyPanel({
     : [];
 
   return (
-    <div className="border border-purple-100 rounded-2xl p-4 bg-purple-50 flex flex-col gap-3">
+    <div className="border border-brand rounded-2xl p-4 bg-brand-muted flex flex-col gap-3">
       <p className="text-sm font-semibold text-[#967FD8]">
         Why did Pippy guess that?
       </p>
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-fg-muted">
         Tap an animal below to see which training example Pippy copied from.
         The bad egg hides among them — but you need to spot which label is wrong.
       </p>
@@ -70,20 +70,20 @@ function WhyPanel({
               'flex flex-col items-center gap-1 p-2 rounded-xl border-2 bg-white transition-all text-xs font-medium',
               animal.id === selected
                 ? 'border-[#967FD8] shadow-md'
-                : 'border-gray-200 hover:border-[#967FD8]',
+                : 'border-hairline hover:border-[#967FD8]',
             ].join(' ')}
           >
             <AnimalImageSmall animal={animal} size={40} />
-            <span className="text-gray-700">{animal.name}</span>
-            <span className="text-red-500 text-[10px]">Pippy said NO ✗</span>
+            <span className="text-fg-muted">{animal.name}</span>
+            <span className="text-critical text-[10px]">Pippy said NO ✗</span>
           </button>
         ))}
       </div>
 
       {/* Nearest neighbor reveal */}
       {selectedAnimal && neighbors.length > 0 && (
-        <div className="bg-white border border-purple-100 rounded-xl p-3 flex flex-col gap-2">
-          <p className="text-xs text-gray-500">
+        <div className="bg-white border border-brand rounded-xl p-3 flex flex-col gap-2">
+          <p className="text-xs text-fg-muted">
             Pippy saw <strong>{selectedAnimal.name}</strong> and looked for the most similar
             animal it had trained on. The closest match{neighbors.length > 1 ? 'es were' : ' was'}:
           </p>
@@ -91,7 +91,7 @@ function WhyPanel({
             {neighbors.map(ex => (
               <div key={ex.id} className="flex flex-col items-center gap-1 text-xs">
                 <AnimalImageSmall animal={ex.animal} size={44} />
-                <span className="font-medium text-gray-700">{ex.animal.name}</span>
+                <span className="font-medium text-fg-muted">{ex.animal.name}</span>
                 <span
                   className="font-bold px-2 py-0.5 rounded-full"
                   style={
@@ -102,11 +102,11 @@ function WhyPanel({
                 >
                   {ex.label}
                 </span>
-                <span className="text-gray-400 text-[10px]">→ Pippy guessed {ex.label}</span>
+                <span className="text-fg-subtle text-[10px]">→ Pippy guessed {ex.label}</span>
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 italic">
+          <p className="text-xs text-fg-muted italic">
             Does that label look right to you? If not — you may have found the bad egg.
           </p>
         </div>
@@ -120,7 +120,7 @@ function AnimalImageSmall({ animal, size }: { animal: Animal; size: number }) {
   if (failed) {
     return (
       <div
-        className="rounded bg-gray-100 flex items-center justify-center text-[9px] text-gray-500 text-center"
+        className="rounded bg-fill flex items-center justify-center text-[9px] text-fg-muted text-center"
         style={{ width: size, height: size }}
       >
         {animal.name}
@@ -200,7 +200,7 @@ export function InspectFixStep({ onCheckBatch }: InspectFixStepProps) {
       <TrainingTimeline nest={state.workingNest} />
 
       {/* Main inspector */}
-      <div className="border border-gray-100 rounded-2xl p-4 bg-gray-50">
+      <div className="border border-hairline rounded-2xl p-4 bg-fill">
         <NestInspector
           nest={state.workingNest}
           onRelabel={relabelExample}
@@ -213,7 +213,7 @@ export function InspectFixStep({ onCheckBatch }: InspectFixStepProps) {
 
       {/* Hint */}
       {showHint && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-sm text-yellow-800">
+        <div className="bg-caution-muted border border-caution rounded-xl p-3 text-sm text-caution">
           <span className="font-semibold">Hint: </span>{HINTS[hintIndex]}
         </div>
       )}

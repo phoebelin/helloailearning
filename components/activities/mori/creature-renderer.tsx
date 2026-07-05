@@ -298,7 +298,7 @@ const FEATURE_LABELS: Record<CreatureFeature, string> = {
 
 export function FeatureBadge({ feature }: { feature: CreatureFeature }) {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-caution-muted text-caution border border-caution">
       ✦ {FEATURE_LABELS[feature]}
     </span>
   );

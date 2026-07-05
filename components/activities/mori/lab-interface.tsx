@@ -43,7 +43,7 @@ function OptionButton({
       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all min-w-[60px] ${
         selected
           ? 'border-[#967FD8] text-[#5b21b6] shadow-xs'
-          : 'border-gray-200 text-gray-600 hover:border-[#967FD8] hover:text-[#967FD8]'
+          : 'border-hairline text-fg-muted hover:border-[#967FD8] hover:text-[#967FD8]'
       }`}
       style={selected && color ? { backgroundColor: color + '33' } : undefined}
     >
@@ -65,7 +65,7 @@ function ColorSwatch({
     <button
       onClick={onClick}
       className={`w-8 h-8 rounded-full border-2 transition-all ${
-        selected ? 'border-gray-800 scale-110 shadow-md' : 'border-transparent hover:border-gray-400'
+        selected ? 'border-hairline-strong scale-110 shadow-md' : 'border-transparent hover:border-hairline-strong'
       }`}
       style={{ backgroundColor: COLOR_SWATCHES[color] }}
       aria-label={color}
@@ -87,14 +87,14 @@ function LabResultCard({ creature, verdict, attendedFeatures, isNew }: LabResult
     <div
       className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
         verdict
-          ? 'border-green-300 bg-green-50'
-          : 'border-red-200 bg-red-50'
+          ? 'border-positive bg-positive-muted'
+          : 'border-critical bg-critical-muted'
       } ${isNew ? 'animate-in fade-in slide-in-from-bottom-2 duration-300' : ''}`}
     >
       <CreatureRenderer creature={creature} size={60} />
       <span
         className={`text-xs font-bold ${
-          verdict ? 'text-green-700' : 'text-red-600'
+          verdict ? 'text-positive' : 'text-critical'
         }`}
       >
         {verdict ? 'YES' : 'NO'}
@@ -129,10 +129,10 @@ function MoriReaction({ verdict }: { verdict: boolean | null }) {
       </div>
       <div className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
         verdict === null
-          ? 'bg-gray-100 text-gray-500'
+          ? 'bg-fill text-fg-muted'
           : verdict
-          ? 'bg-green-100 text-green-800'
-          : 'bg-red-100 text-red-700'
+          ? 'bg-positive-muted text-positive'
+          : 'bg-critical-muted text-critical'
       }`}>
         {verdict === null
           ? 'Ready to test!'
@@ -212,13 +212,13 @@ export function LabInterface({ onNext }: MoriStepProps) {
         </span>
       </div>
       <h1 className="text-2xl font-bold mb-1 text-center">Test creatures to crack the rule!</h1>
-      <p className="text-gray-500 text-sm mb-6 text-center">
+      <p className="text-fg-muted text-sm mb-6 text-center">
         Build a creature, test it with Mori, and watch which feature matters.
       </p>
 
       {/* Hint (after failed sorts) */}
       {hintText && (
-        <div className="mb-6 px-5 py-3 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-800 max-w-md text-center">
+        <div className="mb-6 px-5 py-3 rounded-xl bg-caution-muted border border-caution text-sm text-caution max-w-md text-center">
           💡 <strong>Hint:</strong> {hintText}
         </div>
       )}
@@ -227,14 +227,14 @@ export function LabInterface({ onNext }: MoriStepProps) {
 
         {/* ---- Left: Builder ---- */}
         <div className="flex-1 flex flex-col gap-5">
-          <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">
+          <div className="bg-fill rounded-2xl p-5 border border-hairline">
+            <p className="text-xs font-bold text-fg-muted uppercase tracking-wide mb-4">
               Build a creature
             </p>
 
             {/* Shape */}
             <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Shape</p>
+              <p className="text-xs text-fg-muted mb-2 font-medium">Shape</p>
               <div className="flex gap-2 flex-wrap">
                 {SHAPES.map(s => (
                   <OptionButton
@@ -249,7 +249,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
 
             {/* Color */}
             <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Color</p>
+              <p className="text-xs text-fg-muted mb-2 font-medium">Color</p>
               <div className="flex gap-3">
                 {COLORS.map(c => (
                   <ColorSwatch
@@ -264,7 +264,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
 
             {/* Pattern */}
             <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Pattern</p>
+              <p className="text-xs text-fg-muted mb-2 font-medium">Pattern</p>
               <div className="flex gap-2 flex-wrap">
                 {PATTERNS.map(p => (
                   <OptionButton
@@ -279,7 +279,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
 
             {/* Spikes */}
             <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Spikes</p>
+              <p className="text-xs text-fg-muted mb-2 font-medium">Spikes</p>
               <div className="flex gap-2">
                 <OptionButton label="Yes ⚡"  selected={builder.spikes === true}  onClick={() => setBuilder(b => ({ ...b, spikes: true  }))} />
                 <OptionButton label="No"      selected={builder.spikes === false} onClick={() => setBuilder(b => ({ ...b, spikes: false }))} />
@@ -288,7 +288,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
 
             {/* Eyes */}
             <div className="mb-5">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Eyes</p>
+              <p className="text-xs text-fg-muted mb-2 font-medium">Eyes</p>
               <div className="flex gap-2">
                 {([1, 2, 3] as const).map(n => (
                   <OptionButton
@@ -306,7 +306,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
               {previewCreature ? (
                 <CreatureRenderer creature={previewCreature} size={80} />
               ) : (
-                <div className="w-20 h-20 rounded-xl bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                <div className="w-20 h-20 rounded-xl bg-fill flex items-center justify-center text-fg-subtle text-xs">
                   Preview
                 </div>
               )}
@@ -327,7 +327,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
           <MoriReaction verdict={lastVerdict} />
           {lastTested && lastVerdict !== null && (
             <div className="text-center">
-              <p className="text-xs text-gray-500 mb-1">Mori noticed:</p>
+              <p className="text-xs text-fg-muted mb-1">Mori noticed:</p>
               <div className="flex flex-wrap gap-1 justify-center">
                 {(state.testedCreatures[state.testedCreatures.length - 1]?.attendedFeatures ?? [])
                   .map(f => <FeatureBadge key={f} feature={f} />)}
@@ -340,7 +340,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
         <div className="flex-1 flex gap-4">
           {/* YES column */}
           <div className="flex-1 flex flex-col gap-2">
-            <p className="text-xs font-bold text-green-700 uppercase tracking-wide text-center">
+            <p className="text-xs font-bold text-positive uppercase tracking-wide text-center">
               YES ({yesResults.length})
             </p>
             <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-1">
@@ -354,14 +354,14 @@ export function LabInterface({ onNext }: MoriStepProps) {
                 />
               ))}
               {yesResults.length === 0 && (
-                <p className="text-xs text-gray-400 italic text-center py-4">None yet</p>
+                <p className="text-xs text-fg-subtle italic text-center py-4">None yet</p>
               )}
             </div>
           </div>
 
           {/* NO column */}
           <div className="flex-1 flex flex-col gap-2">
-            <p className="text-xs font-bold text-red-600 uppercase tracking-wide text-center">
+            <p className="text-xs font-bold text-critical uppercase tracking-wide text-center">
               NO ({noResults.length})
             </p>
             <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto pr-1">
@@ -375,7 +375,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
                 />
               ))}
               {noResults.length === 0 && (
-                <p className="text-xs text-gray-400 italic text-center py-4">None yet</p>
+                <p className="text-xs text-fg-subtle italic text-center py-4">None yet</p>
               )}
             </div>
           </div>
@@ -393,7 +393,7 @@ export function LabInterface({ onNext }: MoriStepProps) {
             I&apos;m ready to sort! 🕵️
           </Button>
         ) : (
-          <p className="text-sm text-gray-400 italic">
+          <p className="text-sm text-fg-subtle italic">
             Test {2 - state.testedCreatures.length} more creature{2 - state.testedCreatures.length !== 1 ? 's' : ''} before sorting
           </p>
         )}

@@ -43,18 +43,18 @@ function DraggableCard({
       className={`flex flex-col items-center p-2 rounded-xl border transition-all select-none touch-none ${
         isRevealed
           ? isCorrect
-            ? 'border-green-400 bg-green-50 ring-2 ring-green-300'
+            ? 'border-positive bg-positive-muted ring-2 ring-positive'
             : isIncorrect
-            ? 'border-red-400 bg-red-50 ring-2 ring-red-300'
-            : 'border-gray-200 bg-white'
+            ? 'border-critical bg-critical-muted ring-2 ring-critical'
+            : 'border-hairline bg-white'
           : isAssigned
           ? 'border-[#967FD8] bg-[#f3efff] cursor-default'
-          : 'border-gray-200 bg-white hover:border-[#967FD8] cursor-grab active:cursor-grabbing hover:shadow-md'
+          : 'border-hairline bg-white hover:border-[#967FD8] cursor-grab active:cursor-grabbing hover:shadow-md'
       }`}
     >
       <CreatureRenderer creature={creature} size={64} />
       {isRevealed && (
-        <span className={`mt-1 text-xs font-bold ${isCorrect ? 'text-green-700' : 'text-red-600'}`}>
+        <span className={`mt-1 text-xs font-bold ${isCorrect ? 'text-positive' : 'text-critical'}`}>
           {isCorrect ? '✓' : '✗'}
         </span>
       )}
@@ -114,24 +114,24 @@ function SortBin({
               <div
                 className={`flex flex-col items-center p-2 rounded-xl border-2 ${
                   correctIds.has(c.id)
-                    ? 'border-green-400 bg-green-50'
-                    : 'border-red-400 bg-red-50'
+                    ? 'border-positive bg-positive-muted'
+                    : 'border-critical bg-critical-muted'
                 }`}
               >
                 <CreatureRenderer creature={c} size={60} />
-                <span className={`mt-1 text-xs font-bold ${correctIds.has(c.id) ? 'text-green-700' : 'text-red-600'}`}>
+                <span className={`mt-1 text-xs font-bold ${correctIds.has(c.id) ? 'text-positive' : 'text-critical'}`}>
                   {correctIds.has(c.id) ? '✓' : '✗'}
                 </span>
               </div>
             ) : (
-              <div className="flex flex-col items-center p-2 rounded-xl border border-gray-200 bg-gray-50">
+              <div className="flex flex-col items-center p-2 rounded-xl border border-hairline bg-fill">
                 <CreatureRenderer creature={c} size={60} />
               </div>
             )}
           </div>
         ))}
         {assigned.length === 0 && (
-          <p className="text-xs text-gray-400 italic">
+          <p className="text-xs text-fg-subtle italic">
             {isOver ? 'Drop here!' : 'Drag creatures here'}
           </p>
         )}
@@ -219,7 +219,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
         </span>
       </div>
       <h1 className="text-2xl font-bold mb-2 text-center">Sort these the way Mori would</h1>
-      <p className="text-gray-500 text-sm mb-6 text-center max-w-md">
+      <p className="text-fg-muted text-sm mb-6 text-center max-w-md">
         Drag each creature into the YES or NO bin based on your best guess of Mori&apos;s rule.
       </p>
 
@@ -228,8 +228,8 @@ export function SortChallenge({ onNext }: MoriStepProps) {
         <div
           className={`mb-6 px-6 py-3 rounded-xl text-sm font-semibold text-center ${
             passedThisAttempt
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-50 text-red-800'
+              ? 'bg-positive-muted text-positive'
+              : 'bg-critical-muted text-critical'
           }`}
         >
           {passedThisAttempt
@@ -245,7 +245,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
         {/* Creature tray (unassigned) */}
         {!isRevealed && (
           <div className="w-full max-w-2xl mb-6">
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
+            <p className="text-xs font-bold text-fg-muted uppercase tracking-wide mb-3">
               Creatures to sort
             </p>
             <div className="flex flex-wrap gap-3">
@@ -260,7 +260,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
                   />
                 ))}
               {batch.every(c => assignments[c.id]) && (
-                <p className="text-xs text-gray-400 italic py-4">All sorted — check your work!</p>
+                <p className="text-xs text-fg-subtle italic py-4">All sorted — check your work!</p>
               )}
             </div>
           </div>
@@ -271,9 +271,9 @@ export function SortChallenge({ onNext }: MoriStepProps) {
           <SortBin
             id="yes"
             label="YES ✓"
-            color="text-green-700"
-            bgColor="bg-green-50"
-            borderColor="border-green-300"
+            color="text-positive"
+            bgColor="bg-positive-muted"
+            borderColor="border-positive"
             creatures={batch}
             assignments={assignments}
             isRevealed={isRevealed}
@@ -282,9 +282,9 @@ export function SortChallenge({ onNext }: MoriStepProps) {
           <SortBin
             id="no"
             label="NO ✗"
-            color="text-red-600"
-            bgColor="bg-red-50"
-            borderColor="border-red-300"
+            color="text-critical"
+            bgColor="bg-critical-muted"
+            borderColor="border-critical"
             creatures={batch}
             assignments={assignments}
             isRevealed={isRevealed}
@@ -317,7 +317,7 @@ export function SortChallenge({ onNext }: MoriStepProps) {
         </Button>
       ) : (
         <div className="flex flex-col items-center gap-3">
-          <p className="text-sm text-gray-500 italic">
+          <p className="text-sm text-fg-muted italic">
             Try testing creatures like the ones Mori disagreed on.
           </p>
           <Button

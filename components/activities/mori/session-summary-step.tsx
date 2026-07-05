@@ -24,15 +24,15 @@ export function SessionSummaryStep({ onNext }: MoriStepProps) {
         className="max-w-sm rounded-2xl p-6 mb-6 text-left"
         style={{ backgroundColor: '#f3efff' }}
       >
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm text-fg-muted mb-2">
           Levels solved this session:{' '}
           <span className="font-bold text-black">{levelsSolvedThisSession} / {LEVELS.length}</span>
         </p>
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-sm text-fg-muted mb-2">
           Highest level reached:{' '}
           <span className="font-bold text-black">Level {state.highestLevelReached}</span>
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-fg-muted">
           Creatures tested:{' '}
           <span className="font-bold text-black">{state.testedCreatures.length}</span>
         </p>
@@ -44,11 +44,11 @@ export function SessionSummaryStep({ onNext }: MoriStepProps) {
       </p>
 
       {/* Learning recap */}
-      <p className="text-gray-500 text-sm max-w-md mb-4 leading-relaxed">
+      <p className="text-fg-muted text-sm max-w-md mb-4 leading-relaxed">
         AI recognizes things by finding patterns in features across examples.
       </p>
       {reachedLevel4 && (
-        <p className="text-gray-500 text-sm max-w-md mb-8 leading-relaxed font-medium">
+        <p className="text-fg-muted text-sm max-w-md mb-8 leading-relaxed font-medium">
           And remember Level 4 — a pattern is only as good as the examples it learned from.
           Narrow or biased examples lead to the wrong pattern.
         </p>

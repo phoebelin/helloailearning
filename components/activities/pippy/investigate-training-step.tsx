@@ -29,8 +29,8 @@ export function InvestigateTrainingStep({ onNext }: InvestigateTrainingStepProps
     : "Here are all the animals I studied — each one already labeled YES or NO…";
 
   return (
-    <div className="flex flex-col items-center p-8 max-w-5xl mx-auto gap-6">
-      <h1 className="text-3xl font-bold text-center">What Pippy Learned From</h1>
+    <div className="flex flex-col items-center p-4 sm:p-8 max-w-5xl mx-auto gap-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">What Pippy Learned From</h1>
 
       <p className="text-gray-600 text-center max-w-lg leading-relaxed text-sm">
         Pippy doesn&rsquo;t really &ldquo;know&rdquo; what {currentLevel.targetCategoryLabel.toLowerCase()} are.
@@ -65,14 +65,14 @@ export function InvestigateTrainingStep({ onNext }: InvestigateTrainingStepProps
             <Button
               variant="outline"
               onClick={() => { setBeltDone(false); setRunKey(k => k + 1); }}
-              className="text-sm px-5"
+              className="text-sm px-5 min-h-[44px]"
               style={{ borderRadius: '12px' }}
             >
               ↺ Replay
             </Button>
             <Button
               onClick={onNext}
-              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
               style={{ borderRadius: '12px' }}
             >
               Find the bad egg

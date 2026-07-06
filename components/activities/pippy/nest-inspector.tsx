@@ -42,7 +42,7 @@ export function NestInspector({
               key={f}
               onClick={() => setFilter(f)}
               className={[
-                'px-3 py-1 rounded-full text-xs font-semibold border transition-colors',
+                'px-3 py-1 min-h-[44px] rounded-full text-xs font-semibold border transition-colors',
                 filter === f
                   ? 'bg-[#967FD8] text-white border-[#967FD8]'
                   : 'bg-white text-gray-600 border-gray-200 hover:border-[#967FD8]',
@@ -58,7 +58,7 @@ export function NestInspector({
           size="sm"
           onClick={onUndo}
           disabled={!canUndo}
-          className="gap-1 text-xs"
+          className="gap-1 text-xs min-h-[44px]"
         >
           <Undo2 className="w-3.5 h-3.5" />
           Undo

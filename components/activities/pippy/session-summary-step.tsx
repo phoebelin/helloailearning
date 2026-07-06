@@ -15,8 +15,8 @@ export function SessionSummaryStep() {
   const highest      = state.highestLevelReached;
 
   return (
-    <div className="flex flex-col items-center p-8 max-w-xl mx-auto gap-6 text-center">
-      <h1 className="text-3xl font-bold">Great work, data detective! 🔍</h1>
+    <div className="flex flex-col items-center p-4 sm:p-8 max-w-xl mx-auto gap-6 text-center">
+      <h1 className="text-2xl sm:text-3xl font-bold">Great work, data detective! 🔍</h1>
 
       <PippyCharacter
         expression="happy"
@@ -25,7 +25,7 @@ export function SessionSummaryStep() {
       />
 
       {/* Stats */}
-      <div className="flex gap-8 text-center">
+      <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-center">
         <div>
           <p className="text-3xl font-bold text-[#967FD8]">{levelsSolved}</p>
           <p className="text-sm text-gray-500">solved this session</p>
@@ -65,7 +65,7 @@ export function SessionSummaryStep() {
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
           onClick={resetActivity}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Keep playing
@@ -73,7 +73,7 @@ export function SessionSummaryStep() {
         <Button
           variant="outline"
           onClick={() => router.push('/courses')}
-          className="text-base px-8 py-3"
+          className="text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Back to activities

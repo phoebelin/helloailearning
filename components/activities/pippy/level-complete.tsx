@@ -29,8 +29,8 @@ export function LevelComplete() {
     <>
       <Celebration active duration={3000} />
 
-      <div className="flex flex-col items-center p-8 max-w-2xl mx-auto gap-6">
-        <h1 className="text-3xl font-bold text-center text-[#967FD8]">
+      <div className="flex flex-col items-center p-4 sm:p-8 max-w-2xl mx-auto gap-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-[#967FD8]">
           You Fixed Pippy&rsquo;s Understanding! 🎉
         </h1>
 
@@ -91,7 +91,7 @@ export function LevelComplete() {
             <>
               <Button
                 onClick={handleNext}
-                className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+                className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
                 style={{ borderRadius: '12px' }}
               >
                 Next level!
@@ -99,7 +99,7 @@ export function LevelComplete() {
               <Button
                 variant="outline"
                 onClick={exitSession}
-                className="text-base px-8 py-3"
+                className="text-base px-8 py-3 min-h-[44px]"
                 style={{ borderRadius: '12px' }}
               >
                 I&rsquo;m done for now
@@ -108,7 +108,7 @@ export function LevelComplete() {
           ) : (
             <Button
               onClick={handleNext}
-              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
               style={{ borderRadius: '12px' }}
             >
               See your summary

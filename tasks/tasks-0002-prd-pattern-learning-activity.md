@@ -25,13 +25,13 @@ What this means for Activity 2:
 
 ## Tasks
 
-- [ ] 1.0 Reorganize codebase for multi-activity support and add activity-progress system
-- [ ] 2.0 Define creature data model, level content, and engineered-ambiguity validators
-- [ ] 3.0 Build Mori character, creature renderer, and feature-attention visualization
-- [ ] 4.0 Implement intro and Lab (test) flow — Steps 1–4
-- [ ] 5.0 Implement Sort challenge, feedback, progressive hints, and level progression — Steps 5–7
-- [ ] 6.0 Integrate full Mori activity into the app, apply polish/responsive design, and run final QA
+- [x] 1.0 Reorganize codebase for multi-activity support and add activity-progress system
+- [x] 2.0 Define creature data model, level content, and engineered-ambiguity validators
+- [x] 3.0 Build Mori character, creature renderer, and feature-attention visualization
+- [x] 4.0 Implement intro and Lab (test) flow — Steps 1–4
+- [x] 5.0 Implement Sort challenge, feedback, progressive hints, and level progression — Steps 5–7
+- [x] 6.0 Integrate full Mori activity into the app, apply polish/responsive design, and run final QA
 
----
-
-I have generated the high-level tasks based on the PRD. Ready to generate the sub-tasks? Respond with 'Go' to proceed.
+*(Reconciled — Mori shipped at `app/lessons/how-machines-use-patterns/`, `lib/context/mori-activity-context.tsx`,
+`lib/data/mori-levels.ts`, `components/activities/mori/*`; this task list's checkboxes were never updated to
+reflect that. No sub-tasks were ever generated for this file, so items are checked at the parent-task level.)*

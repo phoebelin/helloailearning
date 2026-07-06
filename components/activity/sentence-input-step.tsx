@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StepComponentProps, AnimalType, MindmapNode, Sentence, ConceptData } from '@/types/activity';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AudioRecorder } from './audio-recorder';
 import { MindmapVisualization, MindmapVisualizationMobile } from './mindmap-visualization';
@@ -75,15 +76,15 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
         style={{ transform: isOpen ? 'scale(1)' : 'scale(0.95)' }}
       >
         {/* Close button */}
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4"
           aria-label="Close modal"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+          <X className="w-6 h-6" />
+        </Button>
         
         <h3 className="text-lg font-semibold mb-4 pr-8">Edit Sentence</h3>
         <textarea
@@ -92,21 +93,21 @@ function EditModal({ isOpen, onClose, sentence, onSave, animal }: EditModalProps
             setEditedSentence(e.target.value);
             setEditError(null);
           }}
-          className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full p-3 border border-hairline-strong rounded-lg mb-4 focus:outline-hidden focus:ring-2 focus:ring-brand"
           rows={3}
         />
-        {editError && <p className="text-sm text-red-600 mb-4">{editError}</p>}
+        {editError && <p className="text-sm text-critical mb-4">{editError}</p>}
 
         <div className="flex gap-3 justify-end">
           <Button
             onClick={handleSave}
-            className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+            className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
           >
             Save
           </Button>
-          <Button
+          <Button variant="outline"
             onClick={onClose}
-            className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+            className="border rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
           >
             Cancel
           </Button>
@@ -379,7 +380,7 @@ export function SentenceInputStep({
         {/* Sentences container */}
         <div className="flex flex-col gap-3">
           {sentences.length === 0 && !currentTranscript ? (
-            <div className="text-gray-500 italic text-base font-normal leading-[32px]">
+            <div className="text-fg-muted italic text-base font-normal leading-[32px]">
               No sentences added yet.
             </div>
           ) : (
@@ -395,45 +396,47 @@ export function SentenceInputStep({
                     onClick={() => setEditingIndex(index)}
                     title="Click to edit sentence"
                   >
-                    <p className="text-base font-semibold leading-[32px] text-black underline decoration-dotted decoration-gray-400 underline-offset-4">
+                    <p className="text-base font-semibold leading-[32px] text-black underline decoration-dotted decoration-fg-subtle underline-offset-4">
                       {sentence.sentence}
                     </p>
                   </div>
                   
                   {/* Edit and Delete buttons - show on hover when sentences exist */}
                   <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => setEditingIndex(index)}
-                      className="flex items-center gap-1 text-black hover:text-[#967FD8] transition-colors"
-                      title="Edit sentence"
+                      className="flex items-center gap-1"
+                      tooltip="Edit sentence"
                     >
                       {/* Edit icon */}
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
                       <span className="text-base font-normal leading-[32px]">Edit</span>
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering the row click
                         setShowDeleteConfirm(index);
                       }}
-                      className="flex items-center gap-1 text-black hover:text-red-600 transition-colors"
-                      title="Delete sentence"
+                      className="flex items-center gap-1"
+                      tooltip="Delete sentence"
                     >
                       {/* Delete icon */}
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                       <span className="text-base font-normal leading-[32px]">Delete</span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
               
               {/* Live transcript while recording */}
               {currentTranscript && (
-                <div className="flex justify-between items-center gap-3 p-3 rounded-xl bg-purple-50 border-2 border-purple-200">
+                <div className="flex justify-between items-center gap-3 p-3 rounded-xl bg-brand-muted border-2 border-brand">
                   <p className="text-base font-semibold leading-[32px] flex-1" style={{ color: '#967fd8' }}>
                     {currentTranscript}
                     <span className="animate-pulse">|</span>
@@ -446,8 +449,8 @@ export function SentenceInputStep({
               
               {/* Validation error */}
               {validationError && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200">
-                  <p className="text-sm text-red-600">{validationError}</p>
+                <div className="p-3 rounded-xl bg-critical-muted border border-critical">
+                  <p className="text-sm text-critical">{validationError}</p>
                 </div>
               )}
             </>
@@ -493,12 +496,8 @@ export function SentenceInputStep({
               }
             }}
             disabled={!canProceed}
-            className={cn(
-              "rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12",
-              canProceed 
-                ? "border border-black text-black bg-white hover:bg-gray-50 cursor-pointer" 
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            )}
+            variant="outline"
+            className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
           >
             {canProceed 
               ? (showMindmap ? "Hide Zhorai's brain" : "See Zhorai's brain")
@@ -518,7 +517,7 @@ export function SentenceInputStep({
           {/* Mindmap and Zhorai character container */}
           <div className="relative flex items-start gap-6">
             {/* Mindmap visualization */}
-            <div className="relative w-full h-96 bg-white rounded-lg border border-gray-200 p-4 flex-1">
+            <div className="relative w-full h-96 bg-white rounded-lg border border-hairline p-4 flex-1">
               {isMobile ? (
                 <MindmapVisualizationMobile
                   data={mindmapData}
@@ -540,7 +539,7 @@ export function SentenceInputStep({
             </div>
 
             {/* Zhorai character */}
-            <div className="flex-shrink-0 w-[139px] h-[151px] relative">
+            <div className="shrink-0 w-[139px] h-[151px] relative">
               <Image
                 src="/images/zhorai.png"
                 alt="Zhorai"
@@ -571,13 +570,13 @@ export function SentenceInputStep({
             <div className="flex gap-3 justify-end">
               <Button
                 onClick={() => handleDeleteSentence(showDeleteConfirm)}
-                className="bg-red-600 text-white hover:bg-red-700 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Delete
               </Button>
-              <Button
+              <Button variant="outline"
                 onClick={() => setShowDeleteConfirm(null)}
-                className="border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg px-6 py-2 text-sm font-semibold"
+                className="border rounded-lg px-6 py-2 text-sm font-semibold"
               >
                 Cancel
               </Button>
@@ -592,7 +591,7 @@ export function SentenceInputStep({
           <Button
             onClick={onNext}
             disabled={!canProceed}
-            className="bg-black text-white hover:bg-gray-800 disabled:opacity-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
+            className="disabled:opacity-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] h-12"
           >
             Continue
           </Button>

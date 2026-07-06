@@ -48,8 +48,8 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
           speech="Yes! I'm getting them all right now!"
           size={160}
         />
-        <p className="text-xl font-semibold text-green-600">All correct! ✓</p>
-        <p className="text-gray-500 text-sm">Taking you to the results…</p>
+        <p className="text-xl font-semibold text-positive">All correct! ✓</p>
+        <p className="text-fg-muted text-sm">Taking you to the results…</p>
       </div>
     );
   }
@@ -77,8 +77,8 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
       />
 
       {pass === false && misses.length > 0 && (
-        <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 text-sm text-gray-700 text-center max-w-sm">
-          <p className="font-semibold text-orange-600 mb-1">Not fixed yet</p>
+        <div className="bg-brand-muted border border-brand rounded-xl p-4 text-sm text-fg-muted text-center max-w-sm">
+          <p className="font-semibold text-brand mb-1">Not fixed yet</p>
           <p>
             Try &ldquo;Why did Pippy guess that?&rdquo; on the animals it still gets wrong —
             the bad egg is near them.
@@ -89,7 +89,7 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
       {pass === false && (
         <Button
           onClick={onFail}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
+          className="text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Back to training

@@ -1,0 +1,75 @@
+/* tokens.css — semantic design-token layer for the Astryx migration.
+ *
+ * Purpose: give the app a stable set of *purpose-named* utility classes
+ * (text-fg, bg-fill, border-hairline, text-critical, bg-brand, …) that the
+ * color codemod targets. Each one is sourced from an Astryx token, except the
+ * two families Astryx does not ship (info + brand surfaces), which are defined
+ * here. This indirection means a future design-system swap only touches this
+ * file, not 40+ components.
+ *
+ * Import AFTER Astryx's token stylesheet so the --color-* tokens exist:
+ *   @import "@astryxdesign/core/tokens.css";
+ *   @import "./tokens.css";
+ *
+ * Names are deliberately distinct from BOTH Astryx token names (so the @theme
+ * aliases below never reference themselves) AND shadcn's existing semantic
+ * colors (primary/secondary/muted/accent/card/border), which stay untouched.
+ */
+
+:root {
+  /* light-dark() needs an explicit scheme on the root. Astryx usually sets
+     this already; keep it here so tokens.css works even in isolation. */
+  color-scheme: light dark;
+
+  /* --- Custom: info status (Astryx has success/error/warning but no info) ---
+     Raw values under --raw-* names so the @theme aliases below don't self-ref. */
+  --raw-info:        light-dark(#2563eb, #60a5fa);
+  --raw-info-muted:  light-dark(#e6f0fe, #1b2a44);
+  --color-on-info:   #ffffff;
+
+  /* --- Custom: accent/brand surfaces (Astryx ships only --color-text-accent) ---
+     Decision: ONE accent for all activities = purple (Mori's existing brand +
+     focus-ring hue). Coda/Pippy orange folds into this. */
+  --raw-brand:        light-dark(#9333ea, #c084fc);
+  --raw-brand-muted:  light-dark(#f3e8ff, #2a1e3f);
+  --color-on-brand:   #ffffff;
+
+  /* Keep Astryx's native text-accent token in sync with the chosen accent. */
+  --color-text-accent: var(--raw-brand);
+}
+
+@theme {
+  /* content / text  ← Astryx text tokens */
+  --color-fg:         var(--color-text-primary);
+  --color-fg-muted:   var(--color-text-secondary);
+  --color-fg-subtle:  var(--color-text-disabled);
+
+  /* surfaces  ← Astryx background tokens (elevation, not tint) */
+  --color-fill:           var(--color-background-muted);   /* subtle: gray-50/100/200 */
+  --color-fill-disabled:  var(--color-text-disabled);      /* inactive/disabled fills: gray-300/400/500 */
+  --color-fill-inverted:  var(--color-background-inverted); /* gray-800/900 */
+
+  /* borders  ← Astryx border tokens */
+  --color-hairline:         var(--color-border);
+  --color-hairline-strong:  var(--color-border-emphasized);
+
+  /* status  ← Astryx success/error/warning, renamed to avoid self-reference.
+     (error→critical, success→positive, warning→caution) */
+  --color-critical:        var(--color-error);
+  --color-critical-muted:  var(--color-error-muted);
+  --color-positive:        var(--color-success);
+  --color-positive-muted:  var(--color-success-muted);
+  --color-caution:         var(--color-warning);
+  --color-caution-muted:   var(--color-warning-muted);
+
+  /* info + brand  ← custom (defined in :root above) */
+  --color-info:         var(--raw-info);
+  --color-info-muted:   var(--raw-info-muted);
+  --color-brand:        var(--raw-brand);
+  --color-brand-muted:  var(--raw-brand-muted);
+}
+
+/* NOTE: The @theme aliases reference runtime var()s, so utilities emit e.g.
+ * `color: var(--color-fg)` and resolve live (light/dark just works). If your
+ * Astryx Tailwind-v4 bridge requires static values in @theme instead, replace
+ * each `var(--color-*)` with Astryx's resolved light-dark() pair. */

@@ -26,18 +26,18 @@ export function ConfidenceMeter({ accuracy, label = 'Pippy\'s accuracy' }: Confi
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex items-center justify-between text-sm font-medium">
-        <span className="text-gray-600">{label}</span>
+        <span className="text-fg-muted">{label}</span>
         <span className="flex items-center gap-1" style={{ color }}>
           {getEmoji(accuracy)} {pct}%
         </span>
       </div>
-      <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden">
+      <div className="w-full h-4 bg-fill rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${pct}%`, backgroundColor: color }}
         />
       </div>
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-fg-subtle">
         {accuracy >= 0.85
           ? 'Pippy is sorting well now!'
           : accuracy >= 0.5

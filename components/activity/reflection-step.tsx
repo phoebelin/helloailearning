@@ -96,7 +96,7 @@ export function ReflectionStep({
       {/* Main content */}
       <div className="pt-20 pb-20 px-4 max-w-[682px] mx-auto relative">
         {/* Heading */}
-        <h1 className="font-normal text-gray-900 mb-8" style={{ fontSize: '16px', fontWeight: 400 }}>
+        <h1 className="font-normal text-fg mb-8" style={{ fontSize: '16px', fontWeight: 400 }}>
           Thanks for teaching me so much about animals! Now let&apos;s reflect on what we did today!
         </h1>
 
@@ -108,14 +108,16 @@ export function ReflectionStep({
               <p className="text-base font-normal text-black flex-1" style={{ fontSize: '16px', fontWeight: 400 }}>
                 {question1}
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleSpeakQuestion1}
-                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
-                <Volume2 className="w-5 h-5 text-gray-700" />
-              </button>
+                <Volume2 className="w-5 h-5 text-fg-muted" />
+              </Button>
             </div>
             
             <div>
@@ -150,14 +152,14 @@ export function ReflectionStep({
                   }
                 }}
                 variant="default"
-                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 !h-auto"
+                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 h-auto!"
               />
             </div>
 
             {/* Display response - show existing response + current transcript while speaking */}
             {(currentTranscript1 || response1) && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-700" style={{ fontSize: '16px', fontWeight: 400 }}>
+              <div className="mt-4 p-4 bg-fill rounded-lg border border-hairline">
+                <p className="text-fg-muted" style={{ fontSize: '16px', fontWeight: 400 }}>
                   {response1}{currentTranscript1 ? ` ${currentTranscript1}` : ''}
                 </p>
               </div>
@@ -170,14 +172,16 @@ export function ReflectionStep({
               <p className="text-base font-normal text-black flex-1" style={{ fontSize: '16px', fontWeight: 400 }}>
                 {question2}
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleSpeakQuestion2}
-                className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="shrink-0 p-2 rounded-lg"
                 aria-label="Read question aloud"
                 disabled={isSpeaking}
               >
-                <Volume2 className="w-5 h-5 text-gray-700" />
-              </button>
+                <Volume2 className="w-5 h-5 text-fg-muted" />
+              </Button>
             </div>
             
             <div>
@@ -212,14 +216,14 @@ export function ReflectionStep({
                   }
                 }}
                 variant="default"
-                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 !h-auto"
+                buttonClassName="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-6 h-auto!"
               />
             </div>
 
             {/* Display response - show existing response + current transcript while speaking */}
             {(currentTranscript2 || response2) && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-gray-700" style={{ fontSize: '16px', fontWeight: 400 }}>
+              <div className="mt-4 p-4 bg-fill rounded-lg border border-hairline">
+                <p className="text-fg-muted" style={{ fontSize: '16px', fontWeight: 400 }}>
                   {response2}{currentTranscript2 ? ` ${currentTranscript2}` : ''}
                 </p>
               </div>
@@ -231,7 +235,7 @@ export function ReflectionStep({
             <div className="flex justify-center mt-6">
               <Button
                 onClick={handleComplete}
-                className="bg-black text-white hover:bg-black/90 rounded-xl px-8 py-4 text-base font-semibold"
+                className="rounded-xl px-8 py-4 text-base font-semibold"
               >
                 Complete
               </Button>
@@ -240,8 +244,8 @@ export function ReflectionStep({
         </div>
 
         {/* Zhorai character on left side, close to containers */}
-        <div className="absolute -left-[220px] top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-          <div className="w-[205px] h-[222px] flex-shrink-0">
+        <div className="absolute left-[-220px] top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+          <div className="w-[205px] h-[222px] shrink-0">
             <Image
               src="/images/zhorai-character.png"
               alt="Zhorai"
@@ -293,7 +297,7 @@ export function ReflectionStep({
                 <div className="text-center">
                   <div className="text-6xl mb-4 animate-bounce">🎉</div>
                   <h2 className="text-3xl font-bold text-[#967FD8] mb-2">Congratulations!</h2>
-                  <p className="text-lg text-gray-700">You&apos;ve completed How machines learn with Zhorai!</p>
+                  <p className="text-lg text-fg-muted">You&apos;ve completed How machines learn with Zhorai!</p>
                 </div>
               </div>
             </div>

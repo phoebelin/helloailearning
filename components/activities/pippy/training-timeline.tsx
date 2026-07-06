@@ -18,10 +18,10 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
     <div className="flex flex-col gap-2">
       <button
         onClick={() => setExpanded(e => !e)}
-        className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#967FD8] transition-colors"
+        className="flex items-center gap-2 text-sm font-medium text-fg-muted hover:text-[#967FD8] transition-colors"
       >
         <span>⏱ Training timeline</span>
-        <span className="text-xs text-gray-400">({nest.length} examples)</span>
+        <span className="text-xs text-fg-subtle">({nest.length} examples)</span>
         <span className="text-xs">{expanded ? '▲' : '▼'}</span>
       </button>
 
@@ -30,7 +30,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
           {shown.map((ex, i) => {
             const isYes = ex.label === 'YES';
             return (
-              <div key={ex.id} className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div key={ex.id} className="flex flex-col items-center gap-1 shrink-0">
                 <div
                   className="relative rounded-lg border-2 p-1.5 flex flex-col items-center gap-0.5"
                   style={{
@@ -46,7 +46,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
                     {ex.label}
                   </span>
                 </div>
-                <span className="text-[9px] text-gray-400">#{i + 1}</span>
+                <span className="text-[9px] text-fg-subtle">#{i + 1}</span>
               </div>
             );
           })}
@@ -60,7 +60,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
             return (
               <div
                 key={ex.id}
-                className="w-6 h-6 rounded flex-shrink-0"
+                className="w-6 h-6 rounded shrink-0"
                 title={`${ex.animal.name} — ${ex.label} (step ${ex.addedAtStep})`}
                 style={{ backgroundColor: isYes ? '#86EFAC' : '#FCA5A5' }}
               />
@@ -69,7 +69,7 @@ export function TrainingTimeline({ nest }: TrainingTimelineProps) {
           {nest.length > 5 && (
             <button
               onClick={() => setExpanded(true)}
-              className="text-xs text-[#967FD8] font-semibold flex-shrink-0"
+              className="text-xs text-[#967FD8] font-semibold shrink-0"
             >
               +{nest.length - 5}
             </button>

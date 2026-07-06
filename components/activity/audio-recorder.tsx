@@ -35,7 +35,7 @@ export interface AudioRecorderProps {
   /** Language for speech recognition */
   lang?: string;
   /** Button variant style */
-  variant?: 'default' | 'outline' | 'secondary';
+  variant?: 'default' | 'outline-solid' | 'secondary';
   /** Button size */
   size?: 'default' | 'sm' | 'lg';
   /** Additional className for container */
@@ -189,19 +189,13 @@ export function AudioRecorder({
           onClick={handleToggleRecording}
           className={cn("relative transition-all duration-200", buttonClassName)}
           aria-label={isListening ? 'Stop recording' : 'Start recording'}
+          icon={isListening ? <StopCircle className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
         >
           {/* Pulsing ring animation when listening */}
           {isListening && (
             <span className="absolute -inset-1 rounded-md bg-current opacity-20 animate-ping" />
           )}
-          
-          {/* Icon */}
-          {isListening ? (
-            <StopCircle className="h-5 w-5" />
-          ) : (
-            <Mic className="h-5 w-5" />
-          )}
-          
+
           {/* Button text */}
           <span>{isListening ? recordingText : buttonText}</span>
         </Button>
@@ -238,7 +232,7 @@ export function AudioRecorder({
         <div
           className={cn(
             'min-h-[80px] rounded-lg border bg-background p-4 transition-all duration-200',
-            isListening && 'border-primary shadow-sm',
+            isListening && 'border-primary shadow-xs',
             hasTranscript ? 'text-foreground' : 'text-muted-foreground'
           )}
         >
@@ -321,6 +315,7 @@ export function AudioRecorderCompact({
         disabled
         className={className}
         title="Speech recognition not supported"
+        aria-label="Speech recognition not supported"
       >
         <MicOff className="h-4 w-4" />
       </Button>
@@ -353,7 +348,7 @@ export function AudioRecorderCompact({
       </Button>
 
       {isListening && (
-        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-pulse" />
+        <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-critical animate-pulse" />
       )}
     </div>
   );

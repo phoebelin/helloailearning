@@ -29,7 +29,7 @@ export function LevelComplete({ onNext }: MoriStepProps) {
         className="mb-4 object-contain"
       />
       <h1 className="text-4xl font-bold mb-2">You cracked it!</h1>
-      <p className="text-gray-600 text-lg mb-6">
+      <p className="text-fg-muted text-lg mb-6">
         Mori&apos;s rule was:{' '}
         <span className="font-bold text-black">{currentLevel.trueRuleLabel}</span>
       </p>
@@ -55,13 +55,13 @@ export function LevelComplete({ onNext }: MoriStepProps) {
           ))}
         </div>
 
-        <p className="text-gray-700 text-sm leading-relaxed">{currentLevel.explanation}</p>
+        <p className="text-fg-muted text-sm leading-relaxed">{currentLevel.explanation}</p>
 
         {/* Level 4 proxy reveal */}
         {isLevel4 && currentLevel.proxyExplanation && (
-          <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200">
-            <p className="text-sm font-bold text-amber-800 mb-1">⚠️ The Big Twist</p>
-            <p className="text-sm text-amber-900 leading-relaxed">
+          <div className="mt-4 p-4 rounded-xl bg-caution-muted border border-caution">
+            <p className="text-sm font-bold text-caution mb-1">⚠️ The Big Twist</p>
+            <p className="text-sm text-caution leading-relaxed">
               {currentLevel.proxyExplanation}
             </p>
           </div>
@@ -73,7 +73,7 @@ export function LevelComplete({ onNext }: MoriStepProps) {
       </div>
 
       {/* Stats */}
-      <div className="flex gap-6 mb-8 text-sm text-gray-500">
+      <div className="flex gap-6 mb-8 text-sm text-fg-muted">
         <span>
           Creatures tested: <span className="font-semibold text-black">{state.testedCreatures.length}</span>
         </span>
@@ -87,7 +87,7 @@ export function LevelComplete({ onNext }: MoriStepProps) {
         {!isLastLevel ? (
           <Button
             onClick={() => { advanceLevel(); onNext(); }}
-            className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+            className="text-base px-8 py-3"
             style={{ borderRadius: '12px' }}
           >
             Next level!
@@ -95,7 +95,7 @@ export function LevelComplete({ onNext }: MoriStepProps) {
         ) : (
           <Button
             onClick={exitSession}
-            className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+            className="text-base px-8 py-3"
             style={{ borderRadius: '12px' }}
           >
             See your summary

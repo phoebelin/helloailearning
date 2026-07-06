@@ -24,11 +24,11 @@ export function BeforeAfter({
 
   return (
     <div className="flex flex-col gap-3">
-      <h4 className="text-sm font-semibold text-gray-700">Before vs. after your fix</h4>
+      <h4 className="text-sm font-semibold text-fg-muted">Before vs. after your fix</h4>
       <div className="grid grid-cols-2 gap-3">
         {/* Before */}
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold text-red-500 text-center">Before</p>
+          <p className="text-xs font-semibold text-critical text-center">Before</p>
           {beforeResults.map((r, i) => {
             const expected = expectedVerdicts[r.animalId];
             const wrong = r.verdict !== expected;
@@ -48,7 +48,7 @@ export function BeforeAfter({
                 >
                   {r.verdict}
                 </span>
-                {wrong && <span className="text-xs text-red-400">✗</span>}
+                {wrong && <span className="text-xs text-critical">✗</span>}
               </div>
             );
           })}
@@ -56,7 +56,7 @@ export function BeforeAfter({
 
         {/* After */}
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold text-green-600 text-center">After</p>
+          <p className="text-xs font-semibold text-positive text-center">After</p>
           {afterResults.map((r, i) => {
             const expected = expectedVerdicts[r.animalId];
             const correct = r.verdict === expected;
@@ -76,7 +76,7 @@ export function BeforeAfter({
                 >
                   {r.verdict}
                 </span>
-                {correct && <span className="text-xs text-green-500">✓</span>}
+                {correct && <span className="text-xs text-positive">✓</span>}
               </div>
             );
           })}

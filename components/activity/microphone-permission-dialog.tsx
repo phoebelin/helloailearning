@@ -6,7 +6,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Mic, MicOff, AlertCircle, CheckCircle, HelpCircle } from 'lucide-react';
+import { Mic, MicOff, AlertCircle, CheckCircle, HelpCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -133,39 +133,28 @@ export function MicrophonePermissionDialog({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs">
       <div className="relative w-full max-w-md mx-4 bg-background rounded-lg shadow-lg border">
         {/* Close button */}
-        <button
+        <Button
           onClick={onClose}
-          className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4"
           aria-label="Close"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
+          <X className="h-5 w-5" />
+        </Button>
 
         <div className="p-6">
           {/* Header */}
           <div className="flex items-start gap-4 mb-4">
             <div className={cn(
-              'flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
-              permissionState === 'granted' ? 'bg-green-100 text-green-600' :
-              permissionState === 'denied' ? 'bg-red-100 text-red-600' :
-              permissionState === 'unavailable' ? 'bg-yellow-100 text-yellow-600' :
-              'bg-blue-100 text-blue-600'
+              'shrink-0 w-12 h-12 rounded-full flex items-center justify-center',
+              permissionState === 'granted' ? 'bg-positive-muted text-positive' :
+              permissionState === 'denied' ? 'bg-critical-muted text-critical' :
+              permissionState === 'unavailable' ? 'bg-caution-muted text-caution' :
+              'bg-info-muted text-info'
             )}>
               {permissionState === 'granted' ? (
                 <CheckCircle className="w-6 h-6" />
@@ -229,7 +218,7 @@ export function MicrophonePermissionDialog({
             <div className="space-y-4">
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
                 <div className="flex items-start gap-2 mb-3">
-                  <HelpCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                  <HelpCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
                   <p className="text-sm font-medium text-destructive">
                     How to enable microphone access:
                   </p>
@@ -307,7 +296,7 @@ export function MicrophonePermissionDialog({
             </div>
           ) : permissionState === 'unavailable' ? (
             <div className="space-y-4">
-              <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4">
+              <div className="bg-caution-muted dark:bg-caution/20 border border-caution dark:border-caution rounded-lg p-4">
                 <p className="text-sm text-muted-foreground mb-3">
                   Microphone access is not available. This could be because:
                 </p>
@@ -328,8 +317,8 @@ export function MicrophonePermissionDialog({
             </div>
           ) : permissionState === 'granted' ? (
             <div className="space-y-4">
-              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 rounded-lg p-4 text-center">
-                <p className="text-sm text-green-700 dark:text-green-400">
+              <div className="bg-positive-muted dark:bg-positive/20 border border-positive dark:border-positive rounded-lg p-4 text-center">
+                <p className="text-sm text-positive dark:text-positive">
                   ✓ You&apos;re all set! Speech recognition is now enabled.
                 </p>
               </div>

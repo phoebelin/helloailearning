@@ -16,7 +16,7 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
   const visibleStepIndex = currentStep - 1 // Convert to 0-based index
 
   return (
-    <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
+    <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-xs">
       <div className="max-w-[1200px] mx-auto px-[60px] py-6">
         <div className="flex items-center justify-between">
           {/* Left spacer for balance */}
@@ -30,8 +30,8 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
               onClick={onPrevious}
               disabled={visibleStepIndex === 0}
               className="text-sm"
+              icon={<ChevronLeft className="w-4 h-4" />}
             >
-              <ChevronLeft className="w-4 h-4 mr-1" />
               Previous
             </Button>
             
@@ -59,9 +59,9 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
               onClick={onNext}
               disabled={visibleStepIndex >= totalSteps - 1}
               className="text-sm"
+              endContent={<ChevronRight className="w-4 h-4" />}
             >
               Next
-              <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
           
@@ -70,7 +70,7 @@ export function LessonNav({ currentStep, totalSteps = 5, onNext, onPrevious }: L
             variant="ghost"
             size="icon"
             onClick={() => router.push('/courses')}
-            className="text-gray-500 hover:text-gray-700"
+            aria-label="Close lesson"
           >
             <X className="w-5 h-5" />
           </Button>

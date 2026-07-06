@@ -175,12 +175,12 @@ export function PlayStep({ onNext }: CodaStepProps) {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center w-full max-w-2xl">
 
           {/* Grid — measured container drives responsive tile size */}
-          <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full lg:w-auto lg:flex-shrink-0">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">
+          <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full lg:w-auto lg:shrink-0">
+            <p className="text-xs font-semibold text-fg-subtle uppercase tracking-wide text-center">
               {hasRun ? "Where Coda went" : "Drag coins onto the grid"}
             </p>
             {hasRun && (
-              <div className="flex gap-4 text-xs text-gray-500 mb-1">
+              <div className="flex gap-4 text-xs text-fg-muted mb-1">
                 <span className="flex items-center gap-1">
                   <span
                     style={{
@@ -220,7 +220,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
               tileSize={tileSize}
             />
             {!hasRun && currentLevel.rewardInputMode === 'coins' && coins.length === 0 && (
-              <p className="text-xs text-gray-400 italic text-center">
+              <p className="text-xs text-fg-subtle italic text-center">
                 No coins placed — Coda has nothing to chase.
               </p>
             )}
@@ -245,28 +245,28 @@ export function PlayStep({ onNext }: CodaStepProps) {
                         <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
                           Coda&rsquo;s thought bubble
                         </p>
-                        <ul className="text-sm text-gray-700 space-y-1">
+                        <ul className="text-sm text-fg-muted space-y-1">
                           <li className="flex justify-between">
-                            <span className="text-gray-500">🌿 Scenic bonus</span>
+                            <span className="text-fg-muted">🌿 Scenic bonus</span>
                             <span className="font-semibold text-[#967FD8]">
                               {(thoughtBubble.scenicBonus ?? 0) > 0 ? '+' : ''}
                               {thoughtBubble.scenicBonus ?? 0} pts
                             </span>
                           </li>
                           <li className="flex justify-between">
-                            <span className="text-gray-500">👟 Step cost</span>
+                            <span className="text-fg-muted">👟 Step cost</span>
                             <span className="font-semibold text-[#967FD8]">
                               -{thoughtBubble.stepCost ?? 0} pts
                             </span>
                           </li>
                           <li className="flex justify-between">
-                            <span className="text-gray-500">⚠️ Hazard penalty</span>
+                            <span className="text-fg-muted">⚠️ Hazard penalty</span>
                             <span className="font-semibold text-[#967FD8]">
                               -{thoughtBubble.hazardPenalty ?? 0} pts
                             </span>
                           </li>
                         </ul>
-                        <p className="text-xs text-gray-400 mt-2 italic">
+                        <p className="text-xs text-fg-subtle mt-2 italic">
                           Coda sees these numbers, not your mission.
                         </p>
                       </div>
@@ -289,10 +289,10 @@ export function PlayStep({ onNext }: CodaStepProps) {
                         <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
                           Coda&rsquo;s thought bubble
                         </p>
-                        <ul className="text-sm text-gray-700 space-y-1">
+                        <ul className="text-sm text-fg-muted space-y-1">
                           {thoughtBubble.coins.map(c => (
                             <li key={c.id} className="flex justify-between">
-                              <span className="text-gray-500">
+                              <span className="text-fg-muted">
                                 at ({c.at.x}, {c.at.y})
                               </span>
                               <span className="font-semibold text-[#967FD8]">
@@ -301,7 +301,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                             </li>
                           ))}
                         </ul>
-                        <p className="text-xs text-gray-400 mt-2 italic">
+                        <p className="text-xs text-fg-subtle mt-2 italic">
                           Coda sees points, not your mission.
                         </p>
                       </div>
@@ -311,7 +311,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
                 <Button
                   onClick={handleRun}
-                  className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                  className="text-base px-8 py-3 min-h-[44px] w-full"
                   style={{ borderRadius: '12px' }}
                 >
                   Run Coda →
@@ -322,7 +322,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                 <ReceiptPanel runResult={state.lastRun!} />
 
                 {state.runCountThisLevel > 1 && (
-                  <p className="text-xs text-gray-400 text-center">
+                  <p className="text-xs text-fg-subtle text-center">
                     Run {state.runCountThisLevel} of this level
                   </p>
                 )}
@@ -330,7 +330,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                 {matchesCurrentTarget ? (
                   <Button
                     onClick={onNext}
-                    className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                    className="text-base px-8 py-3 min-h-[44px] w-full"
                     style={{ borderRadius: '12px' }}
                   >
                     Coda made it! Continue →
@@ -339,7 +339,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                   <>
                     <Button
                       onClick={handleRetune}
-                      className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+                      className="text-base px-8 py-3 min-h-[44px] w-full"
                       style={{ borderRadius: '12px' }}
                     >
                       Re-tune the reward

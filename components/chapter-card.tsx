@@ -15,7 +15,7 @@ export function ChapterCard({ chapter, title, imageUrl, href }: ChapterCardProps
         {imageUrl ? (
           <img src={imageUrl || "/placeholder.svg"} alt={title} className="w-32 h-32 object-contain" />
         ) : (
-          <div className="w-32 h-32 bg-gray-100 rounded" />
+          <div className="w-32 h-32 bg-fill rounded" />
         )}
       </div>
       <h4 className="font-medium text-center">{title}</h4>

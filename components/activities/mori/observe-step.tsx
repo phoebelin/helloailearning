@@ -21,7 +21,7 @@ export function ObserveStep({ onNext }: MoriStepProps) {
         </span>
       </div>
       <h1 className="text-3xl font-bold mb-2">Here&apos;s what Mori already knows</h1>
-      <p className="text-gray-500 text-base mb-8 max-w-md">
+      <p className="text-fg-muted text-base mb-8 max-w-md">
         These creatures were shown to Mori. Some match its rule, some don&apos;t.
         What do you think the rule is?
       </p>
@@ -32,13 +32,13 @@ export function ObserveStep({ onNext }: MoriStepProps) {
         <div>
           <div className="flex items-center gap-2 mb-4 justify-center">
             <span className="w-3 h-3 rounded-full bg-[#4CAF50] inline-block" />
-            <p className="text-sm font-bold text-green-700 uppercase tracking-wide">YES</p>
+            <p className="text-sm font-bold text-positive uppercase tracking-wide">YES</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center max-w-[280px]">
             {yesCreatures.map(c => (
               <div
                 key={c.id}
-                className="flex flex-col items-center p-3 rounded-2xl bg-green-50 border border-green-200"
+                className="flex flex-col items-center p-3 rounded-2xl bg-positive-muted border border-positive"
               >
                 <CreatureRenderer creature={c} size={72} />
               </div>
@@ -47,19 +47,19 @@ export function ObserveStep({ onNext }: MoriStepProps) {
         </div>
 
         {/* Divider */}
-        <div className="w-px bg-gray-200 self-stretch hidden sm:block" />
+        <div className="w-px bg-fill self-stretch hidden sm:block" />
 
         {/* NO column */}
         <div>
           <div className="flex items-center gap-2 mb-4 justify-center">
             <span className="w-3 h-3 rounded-full bg-[#FF6B6B] inline-block" />
-            <p className="text-sm font-bold text-red-600 uppercase tracking-wide">NO</p>
+            <p className="text-sm font-bold text-critical uppercase tracking-wide">NO</p>
           </div>
           <div className="flex flex-wrap gap-4 justify-center max-w-[280px]">
             {noCreatures.map(c => (
               <div
                 key={c.id}
-                className="flex flex-col items-center p-3 rounded-2xl bg-red-50 border border-red-200"
+                className="flex flex-col items-center p-3 rounded-2xl bg-critical-muted border border-critical"
               >
                 <CreatureRenderer creature={c} size={72} />
               </div>
@@ -74,7 +74,7 @@ export function ObserveStep({ onNext }: MoriStepProps) {
 
       <Button
         onClick={onNext}
-        className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+        className="text-base px-8 py-3"
         style={{ borderRadius: '12px' }}
       >
         Test your own creatures!

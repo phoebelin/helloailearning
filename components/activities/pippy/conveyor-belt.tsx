@@ -60,7 +60,7 @@ function AnimalThumbnail({ animal, size }: { animal: Animal; size: number }) {
   if (failed) {
     return (
       <div
-        className="rounded bg-gray-100 flex items-center justify-center text-[9px] text-gray-500 text-center p-0.5"
+        className="rounded bg-fill flex items-center justify-center text-[9px] text-fg-muted text-center p-0.5"
         style={{ width: size, height: size }}
       >
         {animal.name}
@@ -73,7 +73,7 @@ function AnimalThumbnail({ animal, size }: { animal: Animal; size: number }) {
       alt={animal.name}
       width={size}
       height={size}
-      className="object-contain flex-shrink-0"
+      className="object-contain shrink-0"
       onError={() => setFailed(true)}
     />
   );
@@ -187,7 +187,7 @@ export function ConveyorBelt({
   return (
     <div className="flex flex-col gap-5 w-full select-none">
       {/* Belt + label tag */}
-      <p className="text-xs text-gray-400 text-center italic">
+      <p className="text-xs text-fg-subtle text-center italic">
         These are the animals Pippy studied — each one already labeled by whoever collected the data.
       </p>
 
@@ -239,7 +239,7 @@ export function ConveyorBelt({
           {startLabel}
         </button>
       ) : !isDone ? (
-        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-fill rounded-full h-2 overflow-hidden">
           <div
             className="h-full bg-[#967FD8] rounded-full transition-all duration-300"
             style={{ width: `${(Math.min(idx, items.length) / items.length) * 100}%` }}

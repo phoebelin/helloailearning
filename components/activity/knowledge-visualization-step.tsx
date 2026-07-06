@@ -12,6 +12,7 @@ import { StepComponentProps, EcosystemType, MindmapNode, NodeColor, NodeType } f
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
 import { useEnhancedTextToSpeech } from '@/hooks/use-enhanced-text-to-speech';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface KnowledgeVisualizationStepProps extends StepComponentProps {
@@ -27,15 +28,15 @@ export interface KnowledgeVisualizationStepProps extends StepComponentProps {
 function getNodeColorClass(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-blue-500 border-blue-600 text-white';
+      return 'bg-info border-info text-white';
     case 'orange':
-      return 'bg-orange-500 border-orange-600 text-white';
+      return 'bg-brand border-brand text-white';
     case 'purple':
       return 'bg-[#967fd8] border-[#967fd8] text-white';
     case 'neutral':
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
     default:
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
   }
 }
 
@@ -147,7 +148,7 @@ function InteractiveMindmap({
           return (
             <div
               key={node.id}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 left-1/2"
               style={{
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
               }}
@@ -155,7 +156,7 @@ function InteractiveMindmap({
               <div
                 className={cn(
                   'rounded-full border-2 flex items-center justify-center',
-                  'font-medium shadow-sm transition-all duration-200',
+                  'font-medium shadow-xs transition-all duration-200',
                   'hover:scale-110 hover:shadow-md cursor-pointer',
                   getNodeSizeClass(node.size),
                   getNodeColorClass(node.color)
@@ -183,13 +184,13 @@ function InteractiveMindmap({
           return (
             <div
               key={`tooltip-${node.id}`}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute top-1/2 left-1/2 pointer-events-none"
               style={{
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                 zIndex: 1000,
               }}
             >
-              <div className="absolute top-full mt-8 left-1/2 -translate-x-1/2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-gray-200 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full mt-8 left-1/2 -translate-x-1/2 w-64 p-4 bg-white rounded-lg shadow-xl border-2 border-hairline animate-in fade-in slide-in-from-top-2 duration-200">
                 <p className="text-sm font-bold text-center text-black">
                   &quot;{node.sourceSentences[0]}&quot;
                 </p>
@@ -409,25 +410,26 @@ export function KnowledgeVisualizationStep({
         {/* Action Buttons - only show after mindmap appears */}
         {showMindmap && (
           <div className="flex flex-row items-center gap-3 animate-in fade-in duration-500">
-            <button
+            <Button
               type="button"
               onClick={onNext}
-              className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+              className="rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
             >
               Continue
-            </button>
-            
-            <button
+            </Button>
+
+            <Button
               type="button"
+              variant="outline"
               onClick={() => {
                 // Use the same scroll behavior as the existing step navigation
                 const ecosystemStep = document.querySelector('[data-step="ecosystem-selection"]');
                 if (ecosystemStep) {
                   // Same timing and behavior as the existing useEffect in test page
                   setTimeout(() => {
-                    ecosystemStep.scrollIntoView({ 
-                      behavior: 'smooth', 
-                      block: 'start' 
+                    ecosystemStep.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
                     });
                   }, 100); // Same 100ms delay as existing navigation
                 } else {
@@ -441,10 +443,10 @@ export function KnowledgeVisualizationStep({
                   onPrevious();
                 }
               }}
-              className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+              className="border rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
             >
               Try another ecosystem
-            </button>
+            </Button>
           </div>
         )}
       </div>

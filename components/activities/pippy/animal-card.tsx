@@ -32,7 +32,7 @@ function AnimalImage({ animal, size }: { animal: Animal; size: number }) {
   if (failed) {
     return (
       <div
-        className="rounded-lg bg-gray-100 flex items-center justify-center text-center text-xs text-gray-500 font-medium p-1"
+        className="rounded-lg bg-fill flex items-center justify-center text-center text-xs text-fg-muted font-medium p-1"
         style={{ width: size, height: size }}
       >
         {animal.name}
@@ -80,19 +80,19 @@ export function AnimalCard({
         onClick={() => setExpanded(true)}
         className={[
           'relative flex flex-col items-center gap-2 rounded-xl border-2 bg-white transition-all cursor-pointer',
-          'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#967FD8]',
-          highlighted ? 'border-orange-400 shadow-orange-200 shadow-md' : 'border-gray-200',
+          'hover:shadow-md focus:outline-hidden focus:ring-2 focus:ring-[#967FD8]',
+          highlighted ? 'border-brand shadow-orange-200 shadow-md' : 'border-hairline',
         ].join(' ')}
         style={{ padding: compact ? '10px' : '14px', minWidth: compact ? 88 : 108 }}
         aria-label={`${label} example: ${animal.name}`}
       >
         <AnimalImage animal={animal} size={cardSize} />
-        <span className="text-xs font-medium text-gray-700 text-center leading-tight">
+        <span className="text-xs font-medium text-fg-muted text-center leading-tight">
           {animal.name}
         </span>
         <LabelStamp label={label} />
         {highlighted && (
-          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-400" />
+          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-brand" />
         )}
       </button>
 
@@ -109,10 +109,10 @@ export function AnimalCard({
               <h3 className="font-semibold text-lg">{animal.name}</h3>
               <button
                 onClick={() => setExpanded(false)}
-                className="p-1 rounded-full hover:bg-gray-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-1 rounded-full hover:bg-fill min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-fg-muted" />
               </button>
             </div>
 
@@ -139,8 +139,8 @@ export function AnimalCard({
                 Change to {isYes ? 'NO' : 'YES'}
               </Button>
               <Button
-                variant="outline"
-                className="flex-1 gap-2 border-red-200 text-red-600 hover:bg-red-50 min-h-[44px]"
+                variant="destructive"
+                className="flex-1 gap-2 min-h-[44px]"
                 onClick={() => { onRemove(example.id); setExpanded(false); }}
               >
                 <X className="w-4 h-4" />
@@ -168,7 +168,7 @@ export function AnimalDisplay({ animal, label, size = 64, showLabel = true, clas
   return (
     <div className={`flex flex-col items-center gap-1 ${className}`}>
       <AnimalImage animal={animal} size={size} />
-      <span className="text-xs font-medium text-gray-700 text-center leading-tight">
+      <span className="text-xs font-medium text-fg-muted text-center leading-tight">
         {animal.name}
       </span>
       {showLabel && label && <LabelStamp label={label} />}

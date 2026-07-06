@@ -38,7 +38,7 @@ export function FeatureAttentionStep({ onNext }: MoriStepProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
       <h1 className="text-4xl font-bold mb-3">How Mori Looks at Creatures</h1>
-      <p className="text-gray-600 max-w-md mb-8 text-base">
+      <p className="text-fg-muted max-w-md mb-8 text-base">
         Mori doesn&apos;t know what a creature <em>is</em>. It only looks at <strong>features</strong> — shape,
         color, pattern, spikes, eyes — and tries to find which ones matter for its rule.
         Tap a feature to see Mori notice it!
@@ -62,7 +62,7 @@ export function FeatureAttentionStep({ onNext }: MoriStepProps) {
               <strong>{activeInfo.label}:</strong> {activeInfo.description}
             </div>
           ) : (
-            <p className="text-sm text-gray-400 italic">Tap a feature below</p>
+            <p className="text-sm text-fg-subtle italic">Tap a feature below</p>
           )}
         </div>
       </div>
@@ -76,7 +76,7 @@ export function FeatureAttentionStep({ onNext }: MoriStepProps) {
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
               active === f.key
                 ? 'bg-[#967FD8] text-white border-[#967FD8] shadow-md'
-                : 'bg-white text-gray-700 border-gray-200 hover:border-[#967FD8] hover:text-[#967FD8]'
+                : 'bg-white text-fg-muted border-hairline hover:border-[#967FD8] hover:text-[#967FD8]'
             }`}
           >
             <span>{f.emoji}</span>
@@ -91,7 +91,7 @@ export function FeatureAttentionStep({ onNext }: MoriStepProps) {
 
       <Button
         onClick={onNext}
-        className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+        className="text-base px-8 py-3"
         style={{ borderRadius: '12px' }}
       >
         Start testing!

@@ -16,7 +16,7 @@ export function IntroductionStep({ onNext }: MoriStepProps) {
         priority
       />
       <h1 className="text-4xl font-bold mb-4">Meet Mori!</h1>
-      <p className="text-gray-600 max-w-md mb-4 text-lg">
+      <p className="text-fg-muted max-w-md mb-4 text-lg">
         Mori is a creature-sorting monster! Mori has a secret rule about which creatures it likes.
         Can you figure out the rule?
       </p>
@@ -26,7 +26,7 @@ export function IntroductionStep({ onNext }: MoriStepProps) {
       </p>
       <Button
         onClick={onNext}
-        className="bg-black text-white hover:bg-black/90 text-base px-8 py-3"
+        className="text-base px-8 py-3"
         style={{ borderRadius: '12px' }}
       >
         How Mori thinks

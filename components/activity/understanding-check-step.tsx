@@ -10,6 +10,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StepComponentProps, EcosystemType, NodeColor } from '@/types/activity';
 import { getEcosystemMindmap } from '@/lib/data/ecosystem-knowledge';
 import { useActivity } from '@/lib/context/activity-context';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export interface UnderstandingCheckStepProps extends StepComponentProps {
@@ -23,15 +24,15 @@ export interface UnderstandingCheckStepProps extends StepComponentProps {
 function getNodeColorClass(color: NodeColor): string {
   switch (color) {
     case 'blue':
-      return 'bg-blue-500 border-blue-600 text-white';
+      return 'bg-info border-info text-white';
     case 'orange':
-      return 'bg-orange-500 border-orange-600 text-white';
+      return 'bg-brand border-brand text-white';
     case 'purple':
       return 'bg-[#967fd8] border-[#967fd8] text-white';
     case 'neutral':
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
     default:
-      return 'bg-gray-400 border-gray-500 text-white';
+      return 'bg-fill-disabled border-hairline-strong text-white';
   }
 }
 
@@ -188,7 +189,7 @@ export function UnderstandingCheckStep({
               <div className="flex flex-col items-center">
                 <div className={cn(
                   'w-20 h-20 rounded-full border-2 flex items-center justify-center',
-                  'font-medium shadow-sm',
+                  'font-medium shadow-xs',
                   getNodeColorClass(positiveNode.color)
                 )}>
                   <span className="text-sm text-white text-center px-1 leading-tight">
@@ -201,7 +202,7 @@ export function UnderstandingCheckStep({
               <div className="flex flex-col items-center">
                 <div className={cn(
                   'w-20 h-20 rounded-full border-2 flex items-center justify-center',
-                  'font-medium shadow-sm',
+                  'font-medium shadow-xs',
                   getNodeColorClass(negativeNode.color)
                 )}>
                   <span className="text-sm text-white text-center px-1 leading-tight">
@@ -232,7 +233,7 @@ export function UnderstandingCheckStep({
         'flex items-center gap-3 px-3 py-2 rounded-lg border cursor-pointer transition-all text-left w-full',
         isSelected
           ? hasSubmitted && !isCorrect
-            ? 'bg-yellow-100 border-yellow-400'
+            ? 'bg-caution-muted border-caution'
             : 'bg-[#F4F0FF] border-[#967FD8]'
           : 'bg-transparent border-transparent'
       )}
@@ -240,7 +241,7 @@ export function UnderstandingCheckStep({
                     aria-checked={isSelected}
                     role="checkbox"
                   >
-                    <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 flex items-center justify-center shrink-0">
                       {isSelected ? (
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect x="3" y="3" width="18" height="18" rx="2" fill="#967FD8"/>
@@ -275,7 +276,7 @@ export function UnderstandingCheckStep({
 
         {/* Bottom Navigation Pattern - Only show when this step is visible in viewport */}
         {isVisible ? (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-6">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-hairline px-4 py-6">
             <div className="max-w-[682px] mx-auto flex justify-center items-center">
               {/* Centered content */}
               <div className="flex items-center gap-8">
@@ -296,47 +297,49 @@ export function UnderstandingCheckStep({
                 <div className="flex gap-3">
                   {hasSubmitted && isCorrect ? (
                     <>
-                      <button
+                      <Button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                        className="rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Continue
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="outline"
                         onClick={handleShowExplanation}
-                        className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                        className="border rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                       >
                         Why?
-                      </button>
+                      </Button>
                     </>
                 ) : hasSubmitted && !isCorrect ? (
                   <>
-                    <button
+                    <Button
                       type="button"
                       onClick={handleTryAgain}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                      className="rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Try again
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
+                      variant="outline"
                       onClick={handleShowAnswer}
-                      className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-4 text-base font-semibold leading-[17px] cursor-pointer"
+                      className="border rounded-xl px-6 py-4 text-base font-semibold leading-[17px]"
                     >
                       Show answer
-                    </button>
+                    </Button>
                   </>
                 ) : (
-                    <button
+                    <Button
                       type="button"
                       onClick={handleSubmit}
                       disabled={selectedOptions.length === 0}
-                      className="bg-black text-white hover:bg-black/90 rounded-xl px-12 py-4 text-base font-semibold leading-[17px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-xl px-12 py-4 text-base font-semibold leading-[17px]"
                     >
                       Check
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

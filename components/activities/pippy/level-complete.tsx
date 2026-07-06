@@ -41,16 +41,16 @@ export function LevelComplete() {
         />
 
         {/* What changed panel */}
-        <div className="w-full bg-gray-50 rounded-2xl p-5 flex flex-col gap-5 border border-gray-100">
-          <h2 className="text-base font-semibold text-gray-700">What changed</h2>
+        <div className="w-full bg-fill rounded-2xl p-5 flex flex-col gap-5 border border-hairline">
+          <h2 className="text-base font-semibold text-fg-muted">What changed</h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <p className="text-xs text-gray-500">Before your fix</p>
+              <p className="text-xs text-fg-muted">Before your fix</p>
               <ConfidenceMeter accuracy={accuracyBefore} label="Accuracy" />
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-xs text-gray-500">After your fix</p>
+              <p className="text-xs text-fg-muted">After your fix</p>
               <ConfidenceMeter accuracy={accuracyAfter} label="Accuracy" />
             </div>
           </div>
@@ -64,17 +64,17 @@ export function LevelComplete() {
         </div>
 
         {/* Visibility-ramp takeaway */}
-        <div className="w-full bg-purple-50 border border-purple-100 rounded-2xl p-5">
+        <div className="w-full bg-brand-muted border border-brand rounded-2xl p-5">
           <p className="text-xs font-semibold text-[#967FD8] uppercase tracking-wider mb-2">
             What this shows
           </p>
-          <p className="text-sm text-gray-700 leading-relaxed italic">
+          <p className="text-sm text-fg-muted leading-relaxed italic">
             &ldquo;{currentLevel.takeaway}&rdquo;
           </p>
         </div>
 
         {/* Stats */}
-        <div className="flex gap-6 text-center text-sm text-gray-500">
+        <div className="flex gap-6 text-center text-sm text-fg-muted">
           <div>
             <p className="text-2xl font-bold text-[#967FD8]">{state.originalNest.length}</p>
             <p>examples inspected</p>
@@ -91,7 +91,7 @@ export function LevelComplete() {
             <>
               <Button
                 onClick={handleNext}
-                className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
+                className="text-base px-8 py-3 min-h-[44px]"
                 style={{ borderRadius: '12px' }}
               >
                 Next level!
@@ -108,7 +108,7 @@ export function LevelComplete() {
           ) : (
             <Button
               onClick={handleNext}
-              className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px]"
+              className="text-base px-8 py-3 min-h-[44px]"
               style={{ borderRadius: '12px' }}
             >
               See your summary

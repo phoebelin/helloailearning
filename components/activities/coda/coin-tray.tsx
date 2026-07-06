@@ -95,7 +95,7 @@ export function CoinTray({
 }: CoinTrayProps) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <p className="text-xs font-semibold text-fg-muted uppercase tracking-wide">
         Drag a coin onto the grid
       </p>
       <div className="flex gap-3 flex-wrap">

@@ -18,7 +18,7 @@ function SliderRow({ label, value, min, max, step = 1, hint, onChange, disabled 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
-        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <label className="text-sm font-medium text-fg-muted">{label}</label>
         <span
           className="text-sm font-bold min-w-[4ch] text-right tabular-nums"
           style={{ color: '#967FD8' }}
@@ -41,7 +41,7 @@ function SliderRow({ label, value, min, max, step = 1, hint, onChange, disabled 
           aria-label={label}
         />
       </div>
-      <div className="flex justify-between text-xs text-gray-400">
+      <div className="flex justify-between text-xs text-fg-subtle">
         <span>{min}</span>
         {hint && <span className="italic text-center flex-1 px-2">{hint}</span>}
         <span>{max}</span>
@@ -59,7 +59,7 @@ export function RewardSliders({ disabled }: RewardSlidersProps) {
   const { workingReward } = state;
 
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-xl border border-gray-200 bg-white">
+    <div className="flex flex-col gap-4 p-4 rounded-xl border border-hairline bg-white">
       <p className="text-xs font-bold uppercase tracking-wide" style={{ color: '#967FD8' }}>
         Coda&apos;s reward settings
       </p>

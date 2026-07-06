@@ -9,7 +9,7 @@ export function Features() {
         />
         <div className="flex flex-col justify-center">
           <h2 className="text-3xl font-serif mb-4">Fun for kids, effective for learning</h2>
-          <p className="text-gray-600">
+          <p className="text-fg-muted">
             Hello AI Learning is the first digitally-native AI literacy tool, and research shows that it works. Children
             will build real AI competencies through interactive lessons, and work up to their own personally-relevant
             project.
@@ -20,7 +20,7 @@ export function Features() {
       <div className="grid md:grid-cols-2 gap-16 mt-20">
         <div className="flex flex-col justify-center order-2 md:order-1">
           <h2 className="text-3xl font-serif mb-4">Backed by research from Harvard and MIT</h2>
-          <p className="text-gray-600">
+          <p className="text-fg-muted">
             We use research-backed methods and learning science to inform our learning experiences, and have tested
             their efficacy against AI learning frameworks.
           </p>
@@ -40,7 +40,7 @@ export function Features() {
         />
         <div className="flex flex-col justify-center">
           <h2 className="text-3xl font-serif mb-4">Standards-aligned, co-designed with educators</h2>
-          <p className="text-gray-600">
+          <p className="text-fg-muted">
             All of our lessons are connected to national standards, so children can experience integrated learning that
             blends AI with other disciplines.
           </p>

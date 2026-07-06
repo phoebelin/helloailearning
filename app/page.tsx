@@ -1,13 +1,39 @@
 "use client"
-import { useState } from "react"
+import { Suspense, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Nav } from "@/components/nav"
 import { Hero } from "@/components/hero"
 import { Features } from "@/components/features"
 import { Testimonials } from "@/components/testimonials"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { TextInput } from "@astryxdesign/core/TextInput"
+import { AppShell } from "@astryxdesign/core/AppShell"
+import { useWaitlist } from "@/lib/context/waitlist-context"
 
 type FormStep = "email" | "name" | "submitted"
+
+/**
+ * Nav's "Join the waitlist" button redirects here with ?openWaitlist=1 when
+ * clicked from a page that has no waitlist form of its own. Once Hero has
+ * mounted (and is listening for the signal), trigger it and clean the URL.
+ * Isolated into its own component because useSearchParams() requires a
+ * Suspense boundary for static prerendering — keeping it out of the main
+ * page body means the rest of the page stays statically prerenderable.
+ */
+function WaitlistRedirectListener() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { openWaitlist } = useWaitlist()
+
+  useEffect(() => {
+    if (searchParams.get("openWaitlist")) {
+      openWaitlist()
+      router.replace("/", { scroll: false })
+    }
+  }, [searchParams, openWaitlist, router])
+
+  return null
+}
 
 export default function Home() {
   const [step, setStep] = useState<FormStep | null>(null)
@@ -62,8 +88,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Nav />
+    <AppShell topNav={<Nav />} contentPadding={0} height="auto">
+      <Suspense fallback={null}>
+        <WaitlistRedirectListener />
+      </Suspense>
       <main>
         <Hero />
         <Features />
@@ -74,14 +102,14 @@ export default function Home() {
             <Button
               variant="default"
               size="lg"
-              className="bg-black text-white hover:bg-black/90 rounded-xl"
+              className="rounded-xl"
               onClick={() => setStep("email")}
             >
               Join the waitlist
             </Button>
           ) : step === "submitted" && success ? (
             <div className="flex flex-col items-center gap-2">
-              <p className="text-lg font-bold text-green-600 font-[var(--font-inter)]">Thank you! You&apos;re on the waitlist.</p>
+              <p className="text-lg font-bold text-positive font-(--font-inter)">Thank you! You&apos;re on the waitlist.</p>
               <p className="text-sm text-[#49454f]">We&apos;ll be in touch soon.</p>
             </div>
           ) : (
@@ -89,44 +117,50 @@ export default function Home() {
               onSubmit={step === "email" ? handleEmailContinue : handleNameSubmit}
               className="flex flex-col items-center gap-2"
             >
-              <div className="relative w-full max-w-md mx-auto">
-                {step === "email" ? (
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value)
-                      setError(null)
-                    }}
-                    required
-                    className="w-full h-14 pr-28 text-base rounded-xl pl-4 border-gray-300 focus-visible:border-purple-300 focus-visible:ring-1 focus-visible:ring-purple-300"
-                    autoFocus
-                  />
-                ) : (
-                  <Input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value)
-                      setError(null)
-                    }}
-                    required
-                    className="w-full h-14 pr-28 text-base rounded-xl pl-4 border-gray-300 focus-visible:border-purple-300 focus-visible:ring-1 focus-visible:ring-purple-300"
-                    autoFocus
-                  />
-                )}
+              <div className="flex items-start gap-2 w-full max-w-md mx-auto">
+                <div className="flex-1">
+                  {step === "email" ? (
+                    <TextInput
+                      label="Email"
+                      isLabelHidden
+                      type="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={(value) => {
+                        setEmail(value)
+                        setError(null)
+                      }}
+                      isRequired
+                      hasAutoFocus
+                      size="lg"
+                    />
+                  ) : (
+                    <TextInput
+                      label="Name"
+                      isLabelHidden
+                      type="text"
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={(value) => {
+                        setName(value)
+                        setError(null)
+                      }}
+                      isRequired
+                      hasAutoFocus
+                      size="lg"
+                    />
+                  )}
+                </div>
                 <Button
                   type="submit"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-black text-white hover:bg-black/90 px-5 h-10 rounded-xl text-sm font-medium"
+                  className="px-5 rounded-xl text-sm font-medium mt-0.5"
                   disabled={isLoading}
                 >
                   {isLoading ? "Submitting..." : step === "email" ? "Continue" : "Submit"}
                 </Button>
               </div>
               {error && (
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-critical">{error}</p>
               )}
               {(step === "email" || step === "name") && (
                 <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>
@@ -135,7 +169,6 @@ export default function Home() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   )
 }
-

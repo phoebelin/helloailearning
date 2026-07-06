@@ -45,7 +45,7 @@ export function NestInspector({
                 'px-3 py-1 min-h-[44px] rounded-full text-xs font-semibold border transition-colors',
                 filter === f
                   ? 'bg-[#967FD8] text-white border-[#967FD8]'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-[#967FD8]',
+                  : 'bg-white text-fg-muted border-hairline hover:border-[#967FD8]',
               ].join(' ')}
             >
               {f === 'all' ? 'All' : `${f} only`}
@@ -67,7 +67,7 @@ export function NestInspector({
 
       {/* Card grid */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-6">No examples match this filter.</p>
+        <p className="text-sm text-fg-subtle text-center py-6">No examples match this filter.</p>
       ) : (
         <div className="flex flex-wrap gap-3">
           {filtered.map(ex => (
@@ -83,7 +83,7 @@ export function NestInspector({
         </div>
       )}
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-fg-subtle">
         {nest.length} example{nest.length !== 1 ? 's' : ''}
         {filtered.length !== nest.length ? ` · ${filtered.length} shown` : ''}
         {' · '}Tap a card to relabel or remove it.

@@ -168,7 +168,13 @@ export function PredictionStep({
     }
   }, [userSentences, selectedAnimal, onPredictionMade]);
 
-  // Handle when user asks a question
+  // Handle when user asks a question. Deliberately keyed on `userQuestion` alone:
+  // predictionResult regenerates whenever userSentences changes (e.g. the user scrolls
+  // back to "Teach Zhorai more" and adds a sentence after already asking). If this effect
+  // also depended on predictionResult, that unrelated regeneration would re-fire the
+  // response and re-trigger speak() with no new question asked — which is the "Zhorai
+  // keeps repeating its answer" bug. Reading predictionResult from the closure still gets
+  // its latest value at the moment a new question comes in.
   useEffect(() => {
     if (userQuestion && predictionResult) {
       // Generate Zhorai's response
@@ -206,10 +212,8 @@ export function PredictionStep({
         });
       }, 500);
     }
-    // FIXED: Removed 'speak' from dependencies to prevent infinite loop
-    // speak is a callback that changes on every render, causing the effect to re-run
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userQuestion, predictionResult, animalDisplayName, selectedAnimal]);
+  }, [userQuestion]);
 
   // Debug: Log correctGuess value
   useEffect(() => {
@@ -241,7 +245,7 @@ export function PredictionStep({
     <div className="max-w-[682px] mx-auto px-0 py-20">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-base font-normal text-gray-900 mb-4">
+        <h1 className="text-base font-normal text-fg mb-4">
           Based on what you&apos;ve taught Zhorai, do you think Zhorai can guess where {animalDisplayName.toLowerCase()} live? Try asking!
         </h1>
       </div>
@@ -250,7 +254,7 @@ export function PredictionStep({
       {/* Action Section - Button and Example */}
       <div className="flex flex-row items-start gap-6 mb-8">
         {/* Press and Speak Button - Fixed width container */}
-        <div className="flex-shrink-0 w-[180px]">
+        <div className="shrink-0 w-[180px]">
           <AudioRecorder
             showTranscript={false}
             buttonText="Press and speak"
@@ -272,7 +276,7 @@ export function PredictionStep({
         </div>
         
         {/* Example Question or Transcript - Fixed width, not affected by button state */}
-        <div className="flex-shrink-0 w-[400px] pt-3 min-h-[60px]">
+        <div className="shrink-0 w-[400px] pt-3 min-h-[60px]">
           {currentTranscript ? (
             <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">
               {currentTranscript}
@@ -287,7 +291,7 @@ export function PredictionStep({
 
       {/* Zhorai's Response and Chart */}
       {hasAskedQuestion && predictionResult && (
-        <div className="bg-white rounded-lg border border-gray-200 mb-8" style={{ padding: '24px' }}>
+        <div className="bg-white rounded-lg border border-hairline mb-8" style={{ padding: '24px' }}>
           {/* Zhorai's response */}
           {zhoraiResponse && (
             <div className="flex justify-start items-center gap-4 mb-6">
@@ -297,7 +301,7 @@ export function PredictionStep({
                 alt="Zhorai"
                 width={48}
                 height={48}
-                className="rounded-full border-2 border-[#967fd8]/50 flex-shrink-0"
+                className="rounded-full border-2 border-[#967fd8]/50 shrink-0"
               />
               {/* Response Box */}
               <div className="bg-[#967fd8]/10 border border-[#967fd8]/30 rounded-lg px-6 py-4">
@@ -312,7 +316,7 @@ export function PredictionStep({
           {showChart && (
             <div ref={chartRef} className="mb-6">
               <div className="text-left mb-4">
-                <p className="text-base text-gray-900">
+                <p className="text-base text-fg">
                   {correctGuess === true && "It looks like Zhorai is right! "}
                   {correctGuess === false && "It looks like Zhorai guessed incorrectly. "}
                   Take a look at the chart below to see why Zhorai picked {predictionResult.ecosystems.find(e => e.ecosystem === predictionResult.topPrediction)?.ecosystem || 'this ecosystem'}. Hint: hover over the bars!
@@ -342,7 +346,7 @@ export function PredictionStep({
                 {/* When correct: Continue is primary, Teach Zhorai more is secondary */}
                 <Button
                   onClick={onNext}
-                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6"
+                  className="rounded-xl px-6 py-6"
                 >
                   Continue
                 </Button>
@@ -354,7 +358,7 @@ export function PredictionStep({
                     }
                   }}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="border rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
@@ -369,14 +373,14 @@ export function PredictionStep({
                       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                   }}
-                  className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Teach Zhorai more
                 </Button>
                 <Button
                   onClick={onNext}
                   variant="outline"
-                  className="bg-white border border-black text-black hover:bg-gray-50 rounded-xl px-6 py-6 gap-6 mb-8 flex-shrink-0 w-[180px]"
+                  className="border rounded-xl px-6 py-6 gap-6 mb-8 shrink-0 w-[180px]"
                 >
                   Continue
                 </Button>

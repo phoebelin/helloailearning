@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ScrollbarFix } from "./scrollbar-fix";
+import { Providers } from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,8 +39,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ScrollbarFix />
-        {children}
+        <Providers>
+          <ScrollbarFix />
+          {children}
+        </Providers>
       </body>
     </html>
   );

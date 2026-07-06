@@ -42,7 +42,7 @@ export function MissionStep({ onNext }: CodaStepProps) {
 
       {/* Grid with ghost path — no coins yet */}
       <div ref={gridContainerRef} className="flex flex-col items-center gap-3 w-full max-w-sm">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide text-center">
+        <p className="text-xs font-semibold text-fg-subtle uppercase tracking-wide text-center">
           The world — dashed line shows your goal
         </p>
         <GridWorld
@@ -50,7 +50,7 @@ export function MissionStep({ onNext }: CodaStepProps) {
           ghostPath={currentLevel.intendedPath}
           tileSize={tileSize}
         />
-        <p className="text-xs text-gray-400 max-w-xs text-center leading-relaxed">
+        <p className="text-xs text-fg-subtle max-w-xs text-center leading-relaxed">
           Coda can&rsquo;t see the dashed path. It only sees coins. On the next screen,
           you&rsquo;ll decide what Coda earns points for.
         </p>
@@ -58,7 +58,7 @@ export function MissionStep({ onNext }: CodaStepProps) {
 
       <Button
         onClick={onNext}
-        className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full max-w-xs"
+        className="text-base px-8 py-3 min-h-[44px] w-full max-w-xs"
         style={{ borderRadius: '12px' }}
       >
         Set Coda&rsquo;s reward

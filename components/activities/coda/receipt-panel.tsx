@@ -39,12 +39,12 @@ export function ReceiptPanel({ runResult }: ReceiptPanelProps) {
       {/* Line items */}
       <div style={{ padding: '16px 20px' }}>
         {receipt.lineItems.length === 0 ? (
-          <p className="text-sm text-gray-400 italic">No points earned.</p>
+          <p className="text-sm text-fg-subtle italic">No points earned.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {receipt.lineItems.map((item, i) => (
               <div key={i} className="flex justify-between items-baseline gap-2">
-                <span className="text-sm text-gray-700 flex-1">{item.label}</span>
+                <span className="text-sm text-fg-muted flex-1">{item.label}</span>
                 <span
                   className="text-sm font-bold tabular-nums"
                   style={{ color: item.points >= 0 ? '#16a34a' : '#dc2626' }}
@@ -77,7 +77,7 @@ export function ReceiptPanel({ runResult }: ReceiptPanelProps) {
         <p className="text-xs font-semibold text-[#967FD8] uppercase tracking-wide mb-1">
           Verdict
         </p>
-        <p className="text-sm text-gray-700 leading-relaxed">{receipt.verdict}</p>
+        <p className="text-sm text-fg-muted leading-relaxed">{receipt.verdict}</p>
       </div>
     </div>
   );

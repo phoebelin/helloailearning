@@ -13,6 +13,7 @@ import {
   useMicrophonePermission
 } from './microphone-permission-dialog';
 import { StepComponentProps } from '@/types/activity';
+import { Button } from '@/components/ui/button';
 
 export interface IntroductionStepProps extends StepComponentProps {
   /** Custom title (optional) */
@@ -62,7 +63,7 @@ export function IntroductionStep({
   return (
     <div className="flex flex-col items-start gap-6 py-20 px-4 max-w-[682px] mx-auto">
       {/* Zhorai Character - Using Figma asset */}
-      <div className="w-[379px] h-[411px] flex-shrink-0">
+      <div className="w-[379px] h-[411px] shrink-0">
         <Image
           src="/images/zhorai.png"
           alt="Zhorai, your AI learning companion"
@@ -85,21 +86,22 @@ export function IntroductionStep({
 
       {/* Action Buttons */}
       <div className="flex flex-row gap-3 z-10 relative">
-        <button
+        <Button
           type="button"
           onClick={handleContinue}
-          className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+          className="rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
         >
           Continue
-        </button>
-        
-        <button
+        </Button>
+
+        <Button
           type="button"
+          variant="outline"
           onClick={handleTestMicrophone}
-          className="border border-black text-black bg-white hover:bg-gray-50 rounded-xl px-6 py-3 text-sm font-semibold leading-[17px] cursor-pointer"
+          className="border rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
         >
           Test your microphone
-        </button>
+        </Button>
       </div>
 
       {/* Microphone Permission Dialog */}

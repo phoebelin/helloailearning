@@ -1,37 +1,102 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 + Astryx coexistence — layer order per `astryx docs migration`.
+   Astryx reset/theme load before Tailwind utilities so migrated components keep
+   design-system defaults while legacy Tailwind utilities still override locally. */
+@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;
 
-/* Prevent content shift when scrollbar appears/disappears */
-html {
-  scrollbar-gutter: stable;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
+@import '@astryxdesign/core/tailwind-theme.css';
+@import './tokens.css';
+@import 'tailwindcss/utilities.css' layer(utilities);
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-/* Prevent content shift when Radix UI modals/dropdowns open */
-/* Radix UI applies overflow: hidden to body, which removes scrollbar */
-/* We need to maintain scrollbar space even when overflow is hidden */
-body {
-  scrollbar-gutter: stable;
-}
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-/* Apply padding when body has overflow hidden (Radix UI dropdowns) */
-/* This CSS rule will apply immediately when Radix UI sets overflow: hidden */
-body[style*="overflow: hidden"],
-body[style*="overflow:hidden"] {
-  padding-right: var(--scrollbar-width, 17px) !important;
-}
-
-/* Also apply to html element */
-html[style*="overflow: hidden"],
-html[style*="overflow:hidden"] {
-  padding-right: var(--scrollbar-width, 17px) !important;
-}
-
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
+}
+
+/*
+  AppShell's "elevated" variant washes BOTH the shell root (astryx-app-shell)
+  and the header (astryx-app-shell-header) the same gray. Making only the
+  header transparent isn't enough — the header then just reveals the shell
+  root's own gray sitting behind it, which is exactly what shows at the very
+  top of the page before there's any scrolled content to blur. Override both:
+  shell root -> white (the real base), header -> transparent + blur only.
+  These are Astryx's own documented override hooks (component class +
+  data-variant, see `astryx docs` theming table) — left unlayered so they win
+  over Astryx's generated background rules regardless of cascade layer order.
+*/
+.astryx-app-shell.elevated {
+  background-color: white;
+}
+.astryx-app-shell-header.elevated {
+  background-color: transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+@utility text-balance {
+  text-wrap: balance;
 }
 
 @layer base {

@@ -259,7 +259,7 @@ function Chapter3Content() {
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed header */}
-      <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-sm">
+      <div className="fixed top-0 left-0 right-0 bg-white border-b z-40 shadow-xs">
         <div className="max-w-[1200px] mx-auto px-3 sm:px-[60px] py-4 sm:py-6">
           <div className="flex items-center justify-between gap-2">
             <div className="hidden sm:block w-20 shrink-0" />
@@ -272,8 +272,8 @@ function Chapter3Content() {
                 disabled={visibleIndex === 0}
                 aria-label="Previous"
                 className="text-sm shrink-0 min-h-[44px] px-2 sm:px-3"
+                icon={<ChevronLeft className="w-4 h-4" />}
               >
-                <ChevronLeft className="w-4 h-4 sm:mr-1" />
                 <span className="hidden sm:inline">Previous</span>
               </Button>
 
@@ -298,9 +298,9 @@ function Chapter3Content() {
                 disabled={visibleIndex >= maxReached}
                 aria-label="Next"
                 className="text-sm shrink-0 min-h-[44px] px-2 sm:px-3"
+                endContent={<ChevronRight className="w-4 h-4" />}
               >
                 <span className="hidden sm:inline">Next</span>
-                <ChevronRight className="w-4 h-4 sm:ml-1" />
               </Button>
             </div>
 
@@ -314,7 +314,7 @@ function Chapter3Content() {
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push('/courses')}
-                className="text-gray-500 hover:text-gray-700 min-h-[44px] min-w-[44px]"
+                className="text-fg-muted hover:text-fg min-h-[44px] min-w-[44px]"
               >
                 <X className="w-5 h-5" />
               </Button>

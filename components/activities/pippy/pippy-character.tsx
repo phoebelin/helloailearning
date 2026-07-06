@@ -32,13 +32,13 @@ export function PippyCharacter({
     <div className={`flex flex-col items-center gap-3 ${className}`}>
       {speech && (
         <div
-          className="relative max-w-[260px] text-sm text-center font-medium px-4 py-3 rounded-2xl shadow-sm"
+          className="relative max-w-[260px] text-sm text-center font-medium px-4 py-3 rounded-2xl shadow-xs"
           style={{ backgroundColor: bubbleColor, lineHeight: '1.6' }}
         >
           <span>&ldquo;{speech}&rdquo;</span>
           {/* Speech bubble tail pointing down toward Pippy */}
           <span
-            className="absolute -bottom-[10px] left-1/2 -translate-x-1/2 w-0 h-0"
+            className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-0 h-0"
             style={{
               borderLeft: '8px solid transparent',
               borderRight: '8px solid transparent',

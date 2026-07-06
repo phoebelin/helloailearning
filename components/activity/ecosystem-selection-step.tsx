@@ -77,7 +77,7 @@ export function EcosystemSelectionStep({
       {/* Action Section - Button and Example */}
       <div className="flex flex-row items-start gap-6">
         {/* Press and Speak Button using AudioRecorder - Fixed width container */}
-        <div className="flex-shrink-0 w-[180px]">
+        <div className="shrink-0 w-[180px]">
           <AudioRecorder
             showTranscript={false}
             buttonText="Press and speak"
@@ -93,14 +93,14 @@ export function EcosystemSelectionStep({
           
           {/* Selection feedback - positioned close to button */}
           {selected && !isRecording && (
-            <p className="text-sm text-green-600 mt-2 whitespace-nowrap">
+            <p className="text-sm text-positive mt-2 whitespace-nowrap">
               ✓ {selected} selected! Moving to next step...
             </p>
           )}
         </div>
         
         {/* Example Question or Transcript - Fixed width, not affected by button state */}
-        <div className="flex-shrink-0 w-[400px] pt-3 min-h-[60px]">
+        <div className="shrink-0 w-[400px] pt-3 min-h-[60px]">
           {currentTranscript ? (
             <p className="text-sm font-semibold leading-[17px] text-[#967FD8]">
               {currentTranscript}

@@ -171,7 +171,7 @@ export default function BERTDemoPage() {
             </Button>
           </div>
 
-          <div className="bg-white rounded-lg p-6 shadow-sm border">
+          <div className="bg-white rounded-lg p-6 shadow-xs border">
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">
               {demo.animal.charAt(0).toUpperCase() + demo.animal.slice(1)} Example
             </h2>
@@ -199,7 +199,7 @@ export default function BERTDemoPage() {
         {(bertResult || keywordResult) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* BERT Results */}
-            <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="bg-white rounded-lg p-6 shadow-xs border">
               <div className="flex items-center mb-4">
                 <span className="text-2xl mr-2">🧠</span>
                 <h3 className="text-xl font-semibold text-gray-800">BERT Semantic Analysis</h3>
@@ -250,7 +250,7 @@ export default function BERTDemoPage() {
             </div>
 
             {/* Keyword Results */}
-            <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="bg-white rounded-lg p-6 shadow-xs border">
               <div className="flex items-center mb-4">
                 <span className="text-2xl mr-2">📝</span>
                 <h3 className="text-xl font-semibold text-gray-800">Keyword Matching</h3>
@@ -294,7 +294,7 @@ export default function BERTDemoPage() {
         )}
 
         {/* Key Differences */}
-        <div className="mt-8 bg-white rounded-lg p-6 shadow-sm border">
+        <div className="mt-8 bg-white rounded-lg p-6 shadow-xs border">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">🔍 Key Differences</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

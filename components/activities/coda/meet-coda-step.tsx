@@ -48,12 +48,12 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
       />
       <h1 className="text-3xl sm:text-4xl font-bold mb-4">Meet Coda!</h1>
 
-      <p className="text-gray-600 max-w-md mb-3 text-lg leading-relaxed">
+      <p className="text-fg-muted max-w-md mb-3 text-lg leading-relaxed">
         Coda is an AI that chases points — it can&apos;t see goals, missions, or maps.
         Whatever earns the most points is <em>exactly</em> what Coda will do.
       </p>
 
-      <p className="text-gray-500 text-sm max-w-sm mb-4 leading-relaxed">
+      <p className="text-fg-muted text-sm max-w-sm mb-4 leading-relaxed">
         You just helped Pippy fix its training data. Coda learns differently —
         instead of learning from labeled examples, Coda is guided entirely by
         a <strong>reward</strong> you design. Your job is to turn your goal
@@ -70,7 +70,7 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
       <div className="flex flex-col items-center gap-3 w-full max-w-xs">
         <Button
           onClick={onNext}
-          className="bg-black text-white hover:bg-black/90 text-base px-8 py-3 min-h-[44px] w-full"
+          className="text-base px-8 py-3 min-h-[44px] w-full"
           style={{ borderRadius: '12px' }}
         >
           Give Coda a goal
@@ -79,7 +79,7 @@ export function MeetCodaStep({ onNext }: CodaStepProps) {
         {isMounted && isSupported && (
           <button
             onClick={handleMuteToggle}
-            className="flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="flex items-center gap-2 text-xs text-fg-subtle hover:text-fg-muted transition-colors"
             aria-label={muted ? 'Muted' : 'Mute Coda'}
           >
             {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}

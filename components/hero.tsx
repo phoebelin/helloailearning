@@ -1,8 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TextInput } from "@astryxdesign/core/TextInput"
+import { useWaitlist } from "@/lib/context/waitlist-context"
 
 type FormStep = "email" | "name" | "submitted"
 
@@ -13,6 +14,20 @@ export function Hero() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+
+  const { openSignal } = useWaitlist()
+  const lastOpenSignal = useRef(openSignal)
+
+  // Nav's "Join the waitlist" button has no form of its own — it bumps
+  // openSignal, and this effect reacts by opening the email step and
+  // scrolling Hero into view. Skipped on mount so the initial signal value
+  // doesn't auto-open the form.
+  useEffect(() => {
+    if (openSignal === lastOpenSignal.current) return
+    lastOpenSignal.current = openSignal
+    setStep("email")
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [openSignal])
 
   const handleEmailContinue = (e: React.FormEvent) => {
     e.preventDefault()
@@ -76,9 +91,9 @@ export function Hero() {
           Join the waitlist
         </Button>
         <div className="mt-12">
-          <img 
-            src="/images/hero-image.png" 
-            alt="AI Learning for Kids" 
+          <img
+            src="/images/hero-image.png"
+            alt="AI Learning for Kids"
             className="w-full max-w-4xl mx-auto rounded-xl"
           />
         </div>
@@ -99,9 +114,9 @@ export function Hero() {
           <p className="text-lg font-bold text-brand font-(--font-inter)">Thank you! We&apos;ll be in touch soon.</p>
         </div>
         <div className="mt-12">
-          <img 
-            src="/images/hero-image.png" 
-            alt="AI Learning for Kids" 
+          <img
+            src="/images/hero-image.png"
+            alt="AI Learning for Kids"
             className="w-full max-w-4xl mx-auto rounded-xl"
           />
         </div>
@@ -171,13 +186,12 @@ export function Hero() {
         )}
       </form>
       <div className="mt-12">
-        <img 
-          src="/images/hero-image.png" 
-          alt="AI Learning for Kids" 
+        <img
+          src="/images/hero-image.png"
+          alt="AI Learning for Kids"
           className="w-full max-w-4xl mx-auto rounded-xl"
         />
       </div>
     </section>
   )
 }
-

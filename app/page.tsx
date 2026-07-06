@@ -1,5 +1,6 @@
 "use client"
-import { useState } from "react"
+import { Suspense, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Nav } from "@/components/nav"
 import { Hero } from "@/components/hero"
 import { Features } from "@/components/features"
@@ -7,8 +8,32 @@ import { Testimonials } from "@/components/testimonials"
 import { Button } from "@/components/ui/button"
 import { TextInput } from "@astryxdesign/core/TextInput"
 import { AppShell } from "@astryxdesign/core/AppShell"
+import { useWaitlist } from "@/lib/context/waitlist-context"
 
 type FormStep = "email" | "name" | "submitted"
+
+/**
+ * Nav's "Join the waitlist" button redirects here with ?openWaitlist=1 when
+ * clicked from a page that has no waitlist form of its own. Once Hero has
+ * mounted (and is listening for the signal), trigger it and clean the URL.
+ * Isolated into its own component because useSearchParams() requires a
+ * Suspense boundary for static prerendering — keeping it out of the main
+ * page body means the rest of the page stays statically prerenderable.
+ */
+function WaitlistRedirectListener() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { openWaitlist } = useWaitlist()
+
+  useEffect(() => {
+    if (searchParams.get("openWaitlist")) {
+      openWaitlist()
+      router.replace("/", { scroll: false })
+    }
+  }, [searchParams, openWaitlist, router])
+
+  return null
+}
 
 export default function Home() {
   const [step, setStep] = useState<FormStep | null>(null)
@@ -64,6 +89,9 @@ export default function Home() {
 
   return (
     <AppShell topNav={<Nav />} contentPadding={0} height="auto">
+      <Suspense fallback={null}>
+        <WaitlistRedirectListener />
+      </Suspense>
       <main>
         <Hero />
         <Features />
@@ -144,4 +172,3 @@ export default function Home() {
     </AppShell>
   )
 }
-

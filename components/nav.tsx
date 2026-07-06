@@ -1,14 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Flame } from "lucide-react"
 import { useEffect, useState } from "react"
 import { TopNav, TopNavHeading, TopNavItem } from "@astryxdesign/core/TopNav"
+import { Button } from "@/components/ui/button"
 import { getCompletedActivitiesCount } from "@/lib/utils/activity-tracking"
+import { useWaitlist } from "@/lib/context/waitlist-context"
 
 export function Nav() {
   const pathname = usePathname()
+  const router = useRouter()
+  const { openWaitlist } = useWaitlist()
   const [completedCount, setCompletedCount] = useState(0)
 
   // Only show streak on projects and courses pages
@@ -38,6 +42,17 @@ export function Nav() {
     }
   }, [showStreak])
 
+  const handleJoinWaitlist = () => {
+    if (pathname === '/') {
+      // Hero is already mounted on this page — just signal it to open.
+      openWaitlist()
+    } else {
+      // Navigate home, then app/page.tsx's mount effect reads this flag and
+      // calls openWaitlist() once Hero is mounted.
+      router.push('/?openWaitlist=1')
+    }
+  }
+
   return (
     <TopNav
       label="Main"
@@ -57,7 +72,9 @@ export function Nav() {
               <Flame className="w-5 h-5" />
             </div>
           )}
-          <TopNavItem label="Login" href="/login" as={Link} isSelected={pathname === '/login'} />
+          <Button size="sm" onClick={handleJoinWaitlist}>
+            Join the waitlist
+          </Button>
         </div>
       }
     />

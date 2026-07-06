@@ -77,14 +77,15 @@
 
 /*
   AppShell's "elevated" variant renders the sticky header with a solid wash
-  background (astryx-app-shell-header.elevated). We want the frosted-glass
-  translucent look instead so content is dimly visible behind the nav while
-  scrolled. This is Astryx's own documented override hook (component class +
-  data-variant, see `astryx docs` theming table) — left unlayered so it wins
-  over Astryx's generated background rule regardless of cascade layer order.
+  background (astryx-app-shell-header.elevated). We want it fully transparent
+  instead — just a frosted-glass blur, no gray tint — so scrolled content is
+  clearly visible (softened, not dimmed) behind the nav. This is Astryx's own
+  documented override hook (component class + data-variant, see `astryx docs`
+  theming table) — left unlayered so it wins over Astryx's generated
+  background rule regardless of cascade layer order.
 */
 .astryx-app-shell-header.elevated {
-  background-color: rgba(241, 241, 241, 0.72);
+  background-color: transparent;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }

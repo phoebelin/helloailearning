@@ -34,7 +34,7 @@ export function Nav() {
         </>
       }
       endContent={
-        <Button size="sm" onClick={handleJoinWaitlist}>
+        <Button size="sm" className="rounded-full" onClick={handleJoinWaitlist}>
           Join the waitlist
         </Button>
       }

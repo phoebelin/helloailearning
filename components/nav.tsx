@@ -42,7 +42,7 @@ export function Nav() {
     <TopNav
       label="Main"
       heading={<TopNavHeading heading="Hello AI" headingHref="/" as={Link} />}
-      startContent={
+      centerContent={
         <>
           <TopNavItem label="Courses" href="/courses" as={Link} isSelected={pathname === '/courses'} />
           <TopNavItem label="Projects" href="/projects" as={Link} isSelected={pathname === '/projects'} />

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Nav } from '@/components/nav';
+import { AppShell } from '@astryxdesign/core/AppShell';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { TextInput } from '@astryxdesign/core/TextInput';
@@ -17,11 +18,9 @@ export default function ProjectsPage() {
   const [filterSubject, setFilterSubject] = useState('All');
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden" id="projects-page">
-      <Nav />
-      
+    <AppShell topNav={<Nav />} contentPadding={0} height="auto">
       {/* Main Content */}
-      <div className="max-w-[1440px] mx-auto px-[120px] pt-10 pb-10" id="projects-content">
+      <div className="max-w-[1440px] mx-auto px-[120px] pt-10 pb-10 bg-white" id="projects-content">
         {/* Header Section */}
         <div className="mb-10">
           <h1 className="text-[36px] font-semibold text-black mb-1" style={{ lineHeight: '1.2222222222222223em' }}>
@@ -184,6 +183,6 @@ export default function ProjectsPage() {
           </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

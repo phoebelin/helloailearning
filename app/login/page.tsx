@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Nav } from "@/components/nav"
+import { AppShell } from "@astryxdesign/core/AppShell"
 import { Button } from "@/components/ui/button"
 import { TextInput } from "@astryxdesign/core/TextInput"
 
@@ -59,8 +60,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Nav />
+    <AppShell topNav={<Nav />} contentPadding={0} height="auto">
       <main>
         <section className="text-center py-20 px-4 max-w-4xl mx-auto">
           <h1 className="text-5xl font-serif mb-6">Login</h1>
@@ -146,7 +146,7 @@ export default function LoginPage() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   )
 }
 

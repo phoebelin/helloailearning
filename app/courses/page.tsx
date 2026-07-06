@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Nav } from '@/components/nav';
+import { AppShell } from '@astryxdesign/core/AppShell';
 import { Button } from '@/components/ui/button';
 import { ArrowUp, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -25,11 +26,9 @@ export default function CoursesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden" id="courses-page">
-      <Nav />
-      
+    <AppShell topNav={<Nav />} contentPadding={0} height="auto">
       {/* Main Content */}
-      <div className="max-w-[1440px] mx-auto px-[120px] pt-10 pb-10" id="courses-content">
+      <div className="max-w-[1440px] mx-auto px-[120px] pt-10 pb-10 bg-white" id="courses-content">
         {/* Header Section */}
         <div className="mb-10">
           <h1 className="text-[36px] font-semibold text-black mb-1" style={{ lineHeight: '1.2222222222222223em' }}>
@@ -263,7 +262,7 @@ export default function CoursesPage() {
           </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
 

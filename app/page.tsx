@@ -6,6 +6,7 @@ import { Features } from "@/components/features"
 import { Testimonials } from "@/components/testimonials"
 import { Button } from "@/components/ui/button"
 import { TextInput } from "@astryxdesign/core/TextInput"
+import { AppShell } from "@astryxdesign/core/AppShell"
 
 type FormStep = "email" | "name" | "submitted"
 
@@ -62,8 +63,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Nav />
+    <AppShell topNav={<Nav />} contentPadding={0} height="auto">
       <main>
         <Hero />
         <Features />
@@ -141,7 +141,7 @@ export default function Home() {
           )}
         </section>
       </main>
-    </div>
+    </AppShell>
   )
 }
 

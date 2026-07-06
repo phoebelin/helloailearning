@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { Layout, LayoutHeader, LayoutContent } from '@astryxdesign/core/Layout';
 import { Text, Heading } from '@astryxdesign/core/Text';
@@ -13,9 +13,8 @@ import { DropdownMenu } from '@astryxdesign/core/DropdownMenu';
 import { OverflowList } from '@astryxdesign/core/OverflowList';
 import { Center } from '@astryxdesign/core/Center';
 import { AppShell } from '@astryxdesign/core/AppShell';
-import { MagnifyingGlassIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Nav } from '@/components/nav';
-import { isActivityCompleted } from '@/lib/utils/activity-tracking';
 
 interface Chapter {
   id: string;
@@ -26,12 +25,10 @@ interface Chapter {
   href: string;
   imageSrc: string;
   imageAlt: string;
-  locked: boolean;
-  unlockHint?: string;
 }
 
 const CATEGORIES = ['All', 'Basics of AI'];
-const GRADE_BANDS = ['All', '3-5th grade', '6-8th grade', '9-12th grade'];
+const GRADE_BANDS = ['All grades', '3-5th grade', '6-8th grade', '9-12th grade'];
 
 const thumbnailWrapper: CSSProperties = {
   position: 'relative',
@@ -41,16 +38,11 @@ const thumbnailWrapper: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: '#E5E0EF',
 };
 const thumbnailImage: CSSProperties = {
   maxWidth: '75%',
   maxHeight: '75%',
   objectFit: 'contain',
-};
-const lockedThumbnailImage: CSSProperties = {
-  ...thumbnailImage,
-  opacity: 0.3,
 };
 
 function ChapterCard({
@@ -60,23 +52,6 @@ function ChapterCard({
   chapter: Chapter;
   onNavigate: (href: string) => void;
 }) {
-  if (chapter.locked) {
-    return (
-      <Card padding={0}>
-        <div style={thumbnailWrapper}>
-          <img src={chapter.imageSrc} alt={chapter.imageAlt} style={lockedThumbnailImage} />
-        </div>
-        <VStack gap={2} align="center" width="100%" style={{ padding: '16px', textAlign: 'center' }}>
-          <LockClosedIcon style={{ width: 24, height: 24 }} />
-          <Heading level={3}>{chapter.name}</Heading>
-          <Text type="body" size="sm" color="secondary" justify="center">
-            {chapter.unlockHint}
-          </Text>
-        </VStack>
-      </Card>
-    );
-  }
-
   return (
     <div
       role="button"
@@ -105,80 +80,59 @@ function ChapterCard({
   );
 }
 
+const CHAPTERS: Chapter[] = [
+  {
+    id: '1',
+    name: 'Chapter 1',
+    description: 'How machines learn with Zhorai',
+    category: 'Basics of AI',
+    gradeBand: '3-5th grade',
+    href: '/lessons/how-machines-learn',
+    imageSrc: '/images/zhorai-course.png',
+    imageAlt: 'Zhorai',
+  },
+  {
+    id: '2',
+    name: 'Chapter 2',
+    description: 'How machines use patterns with Mori',
+    category: 'Basics of AI',
+    gradeBand: '3-5th grade',
+    href: '/lessons/how-machines-use-patterns',
+    imageSrc: '/images/mori-course.png',
+    imageAlt: 'Mori',
+  },
+  {
+    id: '3',
+    name: 'Chapter 3',
+    description: 'How machines update understanding with Pippy',
+    category: 'Basics of AI',
+    gradeBand: '3-5th grade',
+    href: '/lessons/how-machines-update-understanding',
+    imageSrc: '/images/pippy.png',
+    imageAlt: 'Pippy',
+  },
+  {
+    id: '4',
+    name: 'Chapter 4',
+    description: 'How machines generate things with Coda',
+    category: 'Basics of AI',
+    gradeBand: '3-5th grade',
+    href: '/lessons/how-machines-chase-goals',
+    imageSrc: '/images/coda.png',
+    imageAlt: 'Coda',
+  },
+];
+
 export default function CoursesPage() {
   const router = useRouter();
-  const [moriComplete, setMoriComplete] = useState(false);
-  const [pippyComplete, setPippyComplete] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [gradeBand, setGradeBand] = useState('All');
+  const [gradeBand, setGradeBand] = useState('All grades');
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    const sync = () => {
-      setMoriComplete(isActivityCompleted('find-the-secret-rule'));
-      setPippyComplete(isActivityCompleted('update-understanding-pippy'));
-    };
-    sync();
-    window.addEventListener('activity-completed', sync);
-    return () => window.removeEventListener('activity-completed', sync);
-  }, []);
-
-  const CHAPTERS: Chapter[] = useMemo(
-    () => [
-      {
-        id: '1',
-        name: 'Chapter 1',
-        description: 'How machines learn with Zhorai',
-        category: 'Basics of AI',
-        gradeBand: '3-5th grade',
-        href: '/lessons/how-machines-learn',
-        imageSrc: '/images/zhorai-course.png',
-        imageAlt: 'Zhorai',
-        locked: false,
-      },
-      {
-        id: '2',
-        name: 'Chapter 2',
-        description: 'How machines use patterns with Mori',
-        category: 'Basics of AI',
-        gradeBand: '3-5th grade',
-        href: '/lessons/how-machines-use-patterns',
-        imageSrc: '/images/mori-course.png',
-        imageAlt: 'Mori',
-        locked: false,
-      },
-      {
-        id: '3',
-        name: 'Chapter 3',
-        description: 'How machines update understanding with Pippy',
-        category: 'Basics of AI',
-        gradeBand: '3-5th grade',
-        href: '/lessons/how-machines-update-understanding',
-        imageSrc: '/images/pippy.png',
-        imageAlt: 'Pippy',
-        locked: !moriComplete,
-        unlockHint: 'Complete How machines use patterns with Mori to unlock',
-      },
-      {
-        id: '4',
-        name: 'Chapter 4',
-        description: 'How machines generate things with Coda',
-        category: 'Basics of AI',
-        gradeBand: '3-5th grade',
-        href: '/lessons/how-machines-chase-goals',
-        imageSrc: '/images/coda.png',
-        imageAlt: 'Coda',
-        locked: !pippyComplete,
-        unlockHint: 'Complete How machines update understanding with Pippy to unlock',
-      },
-    ],
-    [moriComplete, pippyComplete]
-  );
 
   const filtered = useMemo(() => {
     let items =
       activeCategory === 'All' ? CHAPTERS : CHAPTERS.filter((c) => c.category === activeCategory);
-    if (gradeBand !== 'All') {
+    if (gradeBand !== 'All grades') {
       items = items.filter((c) => c.gradeBand === gradeBand);
     }
     if (search.trim()) {
@@ -188,15 +142,16 @@ export default function CoursesPage() {
       );
     }
     return items;
-  }, [CHAPTERS, activeCategory, gradeBand, search]);
+  }, [activeCategory, gradeBand, search]);
 
   return (
     <AppShell topNav={<Nav />} contentPadding={0} height="auto">
       <Layout
         height="auto"
         header={
-          <LayoutHeader hasDivider padding={6}>
-            <Heading level={1}>Basics of AI</Heading>
+          <LayoutHeader padding={6} className="relative">
+            <Heading level={1}>Courses</Heading>
+            <div className="absolute inset-x-6 bottom-0 border-b border-hairline" />
           </LayoutHeader>
         }
         content={

@@ -25,6 +25,7 @@ export function Nav() {
   return (
     <TopNav
       label="Main"
+      className="px-6"
       heading={<TopNavHeading heading="Hello AI" headingHref="/" as={Link} />}
       centerContent={
         <>

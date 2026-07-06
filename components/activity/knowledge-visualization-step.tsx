@@ -148,7 +148,7 @@ function InteractiveMindmap({
           return (
             <div
               key={node.id}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              className="absolute top-1/2 left-1/2"
               style={{
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
               }}
@@ -184,7 +184,7 @@ function InteractiveMindmap({
           return (
             <div
               key={`tooltip-${node.id}`}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute top-1/2 left-1/2 pointer-events-none"
               style={{
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                 zIndex: 1000,
@@ -413,7 +413,7 @@ export function KnowledgeVisualizationStep({
             <Button
               type="button"
               onClick={onNext}
-              className="rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+              className="rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
             >
               Continue
             </Button>
@@ -443,7 +443,7 @@ export function KnowledgeVisualizationStep({
                   onPrevious();
                 }
               }}
-              className="border rounded-xl px-6 py-3 text-sm font-semibold leading-[17px]"
+              className="border rounded-xl px-6 py-3 h-12 text-sm font-semibold leading-[17px]"
             >
               Try another ecosystem
             </Button>

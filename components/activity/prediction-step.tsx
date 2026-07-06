@@ -168,7 +168,13 @@ export function PredictionStep({
     }
   }, [userSentences, selectedAnimal, onPredictionMade]);
 
-  // Handle when user asks a question
+  // Handle when user asks a question. Deliberately keyed on `userQuestion` alone:
+  // predictionResult regenerates whenever userSentences changes (e.g. the user scrolls
+  // back to "Teach Zhorai more" and adds a sentence after already asking). If this effect
+  // also depended on predictionResult, that unrelated regeneration would re-fire the
+  // response and re-trigger speak() with no new question asked — which is the "Zhorai
+  // keeps repeating its answer" bug. Reading predictionResult from the closure still gets
+  // its latest value at the moment a new question comes in.
   useEffect(() => {
     if (userQuestion && predictionResult) {
       // Generate Zhorai's response
@@ -206,10 +212,8 @@ export function PredictionStep({
         });
       }, 500);
     }
-    // FIXED: Removed 'speak' from dependencies to prevent infinite loop
-    // speak is a callback that changes on every render, causing the effect to re-run
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userQuestion, predictionResult, animalDisplayName, selectedAnimal]);
+  }, [userQuestion]);
 
   // Debug: Log correctGuess value
   useEffect(() => {

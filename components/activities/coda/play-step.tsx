@@ -17,7 +17,7 @@ import { useCodaActivity } from '@/lib/context/coda-activity-context';
 import { thoughtBubbleView } from '@/lib/data/coda-planner';
 import { GridWorld } from './grid-world';
 import { CodaExpression } from './coda-character';
-import { CoinTray } from './coin-tray';
+import { CoinTray, COIN_TRAY_DROPPABLE_ID } from './coin-tray';
 import { RewardSliders } from './reward-sliders';
 import { MissionCard } from './mission-card';
 import { ReceiptPanel } from './receipt-panel';
@@ -113,10 +113,34 @@ export function PlayStep({ onNext }: CodaStepProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveDragValue(null);
-    if (!over || hasRun) return;
-    const value = active.data.current?.value as number | undefined;
+    if (hasRun) return;
+    const data = active.data.current as
+      | { value?: number; coinId?: string; fromGrid?: boolean }
+      | undefined;
+    const value = data?.value;
+    if (value == null) return;
+
+    if (data?.fromGrid && data.coinId) {
+      // Repositioning or removing an already-placed coin.
+      const coinId = data.coinId;
+      if (!over || over.id === COIN_TRAY_DROPPABLE_ID) {
+        removeCoin(coinId);
+        return;
+      }
+      const coord = over.data.current?.coord as Coord | undefined;
+      if (!coord) return;
+      const occupant = coins.find(
+        c => c.at.x === coord.x && c.at.y === coord.y && c.id !== coinId
+      );
+      if (occupant) removeCoin(occupant.id);
+      placeCoin({ id: coinId, at: coord, value, oneTime: true } satisfies CoinPlacement);
+      return;
+    }
+
+    // Dragging a fresh coin from the tray onto the grid.
+    if (!over) return;
     const coord = over.data.current?.coord as Coord | undefined;
-    if (value == null || !coord) return;
+    if (!coord) return;
     const existing = coins.find(c => c.at.x === coord.x && c.at.y === coord.y);
     if (existing) {
       removeCoin(existing.id);

@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useDroppable } from '@dnd-kit/core';
+import { useDroppable, useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { TileType, Coord, CoinPlacement } from '@/types/coda-activity';
 import { CodaCharacter, CodaExpression } from './coda-character';
 
@@ -40,6 +41,55 @@ function DroppableTile({
       {...rest}
     >
       {children}
+    </div>
+  );
+}
+
+// Only mount inside a DndContext — GridWorld only renders this when `droppable`
+// is true (the pre-run play surface), so a placed coin can be dragged to another
+// tile to reposition it, or dragged off the grid to remove it.
+function DraggableCoinToken({ coin, tileSize }: { coin: CoinPlacement; tileSize: number }) {
+  const { setNodeRef, listeners, transform, isDragging } = useDraggable({
+    id: `placed-coin-${coin.id}`,
+    data: { value: coin.value, coinId: coin.id, fromGrid: true },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      aria-hidden="true"
+      style={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2,
+        touchAction: 'none',
+        cursor: isDragging ? 'grabbing' : 'grab',
+        opacity: isDragging ? 0.35 : 1,
+        transform: transform ? CSS.Translate.toString(transform) : undefined,
+      }}
+      {...listeners}
+    >
+      <div
+        style={{
+          width: Math.round(tileSize * 0.58),
+          height: Math.round(tileSize * 0.58),
+          borderRadius: '50%',
+          backgroundColor: '#FCD34D',
+          border: '2.5px solid #F59E0B',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: tileSize < 56 ? '9px' : '11px',
+          fontWeight: 800,
+          color: '#78350F',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+        }}
+      >
+        {coin.value}
+      </div>
     </div>
   );
 }
@@ -175,8 +225,10 @@ export function GridWorld({
                 </span>
               )}
 
-              {/* Coin token */}
-              {coin && (
+              {/* Coin token — draggable to reposition/remove on the live play surface */}
+              {coin && droppable ? (
+                <DraggableCoinToken coin={coin} tileSize={tileSize} />
+              ) : coin ? (
                 <div
                   style={{
                     position: 'absolute',
@@ -207,7 +259,7 @@ export function GridWorld({
                     {coin.value}
                   </div>
                 </div>
-              )}
+              ) : null}
 
               {/* Coda character */}
               {isCoda && (

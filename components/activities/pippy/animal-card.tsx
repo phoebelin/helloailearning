@@ -109,7 +109,7 @@ export function AnimalCard({
               <h3 className="font-semibold text-lg">{animal.name}</h3>
               <button
                 onClick={() => setExpanded(false)}
-                className="p-1 rounded-full hover:bg-fill"
+                className="p-1 rounded-full hover:bg-fill min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close"
               >
                 <X className="w-5 h-5 text-fg-muted" />
@@ -132,15 +132,15 @@ export function AnimalCard({
             <div className="flex gap-3 w-full">
               <Button
                 variant="outline"
-                className="flex-1 gap-2"
+                className="flex-1 gap-2 min-h-[44px]"
                 onClick={() => { onRelabel(example.id); setExpanded(false); }}
               >
                 <RefreshCw className="w-4 h-4" />
                 Change to {isYes ? 'NO' : 'YES'}
               </Button>
               <Button
-                variant="outline"
-                className="flex-1 gap-2"
+                variant="destructive"
+                className="flex-1 gap-2 min-h-[44px]"
                 onClick={() => { onRemove(example.id); setExpanded(false); }}
               >
                 <X className="w-4 h-4" />

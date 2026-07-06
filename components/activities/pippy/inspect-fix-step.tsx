@@ -176,7 +176,7 @@ export function InspectFixStep({ onCheckBatch }: InspectFixStepProps) {
       : "Something in my training is confusing me. Can you find it?";
 
   return (
-    <div className="flex flex-col p-6 max-w-3xl mx-auto gap-6">
+    <div className="flex flex-col p-4 sm:p-6 max-w-3xl mx-auto gap-6">
       <h1 className="text-2xl font-bold text-center">Find the Bad Egg</h1>
 
       {/* Pippy + live confidence */}
@@ -223,14 +223,14 @@ export function InspectFixStep({ onCheckBatch }: InspectFixStepProps) {
         <Button
           variant="outline"
           onClick={onCheckBatch}
-          className="text-sm px-6"
+          className="text-sm px-6 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Test Pippy again
         </Button>
         <Button
           onClick={onCheckBatch}
-          className="text-sm px-6"
+          className="text-sm px-6 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           I think it&rsquo;s fixed!

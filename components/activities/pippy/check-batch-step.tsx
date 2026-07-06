@@ -42,7 +42,7 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
 
   if (pass) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 gap-4 min-h-[60vh]">
+      <div className="flex flex-col items-center justify-center p-4 sm:p-8 gap-4 min-h-[60vh]">
         <PippyCharacter
           expression="excited"
           speech="Yes! I'm getting them all right now!"
@@ -55,8 +55,8 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
   }
 
   return (
-    <div className="flex flex-col items-center p-8 max-w-2xl mx-auto gap-6">
-      <h1 className="text-3xl font-bold text-center">Let&rsquo;s See if Pippy Gets It Now</h1>
+    <div className="flex flex-col items-center p-4 sm:p-8 max-w-2xl mx-auto gap-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">Let&rsquo;s See if Pippy Gets It Now</h1>
 
       <PippyCharacter
         expression="confused"
@@ -89,7 +89,7 @@ export function CheckBatchStep({ onPass, onFail }: CheckBatchStepProps) {
       {pass === false && (
         <Button
           onClick={onFail}
-          className="text-base px-8 py-3"
+          className="text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           Back to training

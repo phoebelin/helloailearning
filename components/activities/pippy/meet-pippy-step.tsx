@@ -14,8 +14,8 @@ export function MeetPippyStep({ onNext }: MeetPippyStepProps) {
   const categoryLabel = currentLevel?.targetCategoryLabel ?? 'ANIMALS';
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center max-w-xl mx-auto gap-6">
-      <h1 className="text-4xl font-bold">Meet Pippy!</h1>
+    <div className="flex flex-col items-center justify-center p-4 sm:p-8 text-center max-w-xl mx-auto gap-6">
+      <h1 className="text-3xl sm:text-4xl font-bold">Meet Pippy!</h1>
 
       <PippyCharacter
         expression="happy"
@@ -41,7 +41,7 @@ export function MeetPippyStep({ onNext }: MeetPippyStepProps) {
 
       <Button
         onClick={onNext}
-        className="text-base px-8 py-3"
+        className="text-base px-8 py-3 min-h-[44px]"
         style={{ borderRadius: '12px' }}
       >
         Watch Pippy try

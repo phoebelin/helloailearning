@@ -191,9 +191,9 @@ export function ConveyorBelt({
         These are the animals Pippy studied — each one already labeled by whoever collected the data.
       </p>
 
-      <div className="flex gap-4 items-stretch">
+      <div className="flex flex-col sm:flex-row gap-4 items-stretch">
         {/* Belt column */}
-        <div className="flex-1 flex flex-col justify-center gap-2">
+        <div className="flex-1 flex flex-col justify-center gap-2 min-w-0">
           <div
             ref={cardAreaRef}
             className="relative w-full flex items-center justify-center"
@@ -225,7 +225,7 @@ export function ConveyorBelt({
         </div>
 
         {/* Piles column */}
-        <div className="flex flex-col gap-4" style={{ width: 280 }}>
+        <div className="flex flex-col gap-4 w-full sm:w-[280px] shrink-0">
           <Pile ref={yesPileRef} items={yesPile} label="YES" color="#15803D" bg="#DCFCE7" border="#86EFAC" />
           <Pile ref={noPileRef}  items={noPile}  label="NO"  color="#B91C1C" bg="#FEE2E2" border="#FCA5A5" />
         </div>
@@ -234,7 +234,7 @@ export function ConveyorBelt({
       {!started ? (
         <button
           onClick={() => setStarted(true)}
-          className="self-center px-8 py-2.5 rounded-xl bg-[#967FD8] text-white font-semibold hover:bg-[#7c68b8] transition-colors"
+          className="self-center px-8 py-2.5 rounded-xl bg-[#967FD8] text-white font-semibold hover:bg-[#7c68b8] transition-colors min-h-[44px]"
         >
           {startLabel}
         </button>

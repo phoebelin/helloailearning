@@ -44,8 +44,8 @@ export function ObserveMistakeStep({ onNext }: ObserveMistakeStepProps) {
       : 'a night animal';
 
   return (
-    <div className="flex flex-col items-center p-8 max-w-2xl mx-auto gap-6">
-      <h1 className="text-3xl font-bold text-center">Watch Pippy Take a Quiz</h1>
+    <div className="flex flex-col items-center p-4 sm:p-8 max-w-2xl mx-auto gap-6">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center">Watch Pippy Take a Quiz</h1>
 
       <p className="text-fg-muted text-sm text-center max-w-md">
         These are brand-new animals Pippy was <strong>never trained on</strong>.
@@ -79,7 +79,7 @@ export function ObserveMistakeStep({ onNext }: ObserveMistakeStepProps) {
       {revealed && (
         <Button
           onClick={onNext}
-          className="text-base px-8 py-3"
+          className="text-base px-8 py-3 min-h-[44px]"
           style={{ borderRadius: '12px' }}
         >
           See what Pippy learned from

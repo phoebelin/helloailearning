@@ -2,45 +2,14 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Flame } from "lucide-react"
-import { useEffect, useState } from "react"
 import { TopNav, TopNavHeading, TopNavItem } from "@astryxdesign/core/TopNav"
 import { Button } from "@/components/ui/button"
-import { getCompletedActivitiesCount } from "@/lib/utils/activity-tracking"
 import { useWaitlist } from "@/lib/context/waitlist-context"
 
 export function Nav() {
   const pathname = usePathname()
   const router = useRouter()
   const { openWaitlist } = useWaitlist()
-  const [completedCount, setCompletedCount] = useState(0)
-
-  // Only show streak on projects and courses pages
-  const showStreak = pathname === '/projects' || pathname === '/courses'
-
-  useEffect(() => {
-    if (showStreak) {
-      setCompletedCount(getCompletedActivitiesCount())
-
-      // Listen for custom event when activities are completed
-      const handleActivityCompleted = () => {
-        setCompletedCount(getCompletedActivitiesCount())
-      }
-
-      // Also listen for storage changes (for cross-tab updates)
-      const handleStorageChange = () => {
-        setCompletedCount(getCompletedActivitiesCount())
-      }
-
-      window.addEventListener('activity-completed', handleActivityCompleted)
-      window.addEventListener('storage', handleStorageChange)
-
-      return () => {
-        window.removeEventListener('activity-completed', handleActivityCompleted)
-        window.removeEventListener('storage', handleStorageChange)
-      }
-    }
-  }, [showStreak])
 
   const handleJoinWaitlist = () => {
     if (pathname === '/') {
@@ -65,17 +34,9 @@ export function Nav() {
         </>
       }
       endContent={
-        <div className="flex items-center gap-4">
-          {showStreak && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">{completedCount}</span>
-              <Flame className="w-5 h-5" />
-            </div>
-          )}
-          <Button size="sm" onClick={handleJoinWaitlist}>
-            Join the waitlist
-          </Button>
-        </div>
+        <Button size="sm" onClick={handleJoinWaitlist}>
+          Join the waitlist
+        </Button>
       }
     />
   )

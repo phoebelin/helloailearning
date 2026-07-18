@@ -1,9 +1,12 @@
 'use client';
 
-import { useDraggable } from '@dnd-kit/core';
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 
 const DEFAULT_VALUES = [5, 10, 20];
+
+// Dropping a placed coin back onto the tray removes it from the grid.
+export const COIN_TRAY_DROPPABLE_ID = 'coin-tray-dropzone';
 
 function DraggableCoin({
   value,
@@ -93,8 +96,18 @@ export function CoinTray({
   onSelectValue,
   disabled = false,
 }: CoinTrayProps) {
+  const { isOver, setNodeRef } = useDroppable({ id: COIN_TRAY_DROPPABLE_ID });
+
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      ref={setNodeRef}
+      className="flex flex-col gap-2 rounded-xl p-2 -m-2"
+      style={{
+        outline: isOver ? '2px dashed rgba(245,158,11,0.8)' : undefined,
+        outlineOffset: '2px',
+        transition: 'outline 0.15s',
+      }}
+    >
       <p className="text-xs font-semibold text-fg-muted uppercase tracking-wide">
         Drag a coin onto the grid
       </p>

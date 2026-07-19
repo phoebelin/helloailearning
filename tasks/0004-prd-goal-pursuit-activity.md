@@ -433,7 +433,15 @@ public/images/coda.png           // EXISTS — Coda sprite (a coda-course.png ti
 4. **L2 looping mechanic:** is "loops forever" best modeled as **re-collectable coins** (Coda keeps re-earning the same coins) or as a **dense cluster that out-scores the finish under a step budget**? Pick the one that reads most clearly to the age group.
 5. **L3 reward terms:** confirm the exact slider terms and ranges (scenic bonus / step cost / hazard penalty) that produce a clean **rush → freeze → stroll** progression.
 6. **Receipt verdict copy:** age-appropriate wording for each `settledState` (wandered / looped / frozen / hit hazard / reached target).
-7. **Coda cameo:** should Coda appear briefly at the end of Activity 3 for continuity, as Pippy did for Activity 2?
+7. ~~**Coda cameo:** should Coda appear briefly at the end of Activity 3 for continuity, as Pippy did for Activity 2?~~
+   **Resolved:** yes. Implemented as a "Next up: Coda" teaser card in
+   `components/activities/pippy/session-summary-step.tsx`, shown only once the child
+   has finished all 3 Pippy levels (`highestLevelReached >= PIPPY_LEVELS.length`, never
+   on an early exit), linking to `/lessons/how-machines-chase-goals`. This is the
+   reciprocal half of the callback already in `meet-coda-step.tsx` ("You just helped
+   Pippy fix its training data..."), closing the loop between Activities 3 and 4.
+   (No prior "Pippy did for Activity 2" cameo actually existed in Mori's code — that
+   line in the PRD was aspirational, not an existing pattern to mirror.)
 8. **TTS voice:** select a distinct Google Cloud TTS voice for Coda (vs Zhorai/Mori/Pippy).
 
 ---

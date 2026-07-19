@@ -114,7 +114,7 @@ const CHAPTERS: Chapter[] = [
   {
     id: '4',
     name: 'Chapter 4',
-    description: 'How machines generate things with Coda',
+    description: 'How machines chase goals with Coda',
     category: 'Basics of AI',
     gradeBand: '3-5th grade',
     href: '/lessons/how-machines-chase-goals',

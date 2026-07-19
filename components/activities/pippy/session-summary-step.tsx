@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PippyCharacter } from './pippy-character';
 import { usePippyActivity } from '@/lib/context/pippy-activity-context';
 import { useRouter } from 'next/navigation';
+import { PIPPY_LEVELS } from '@/lib/data/pippy-levels';
 
 export function SessionSummaryStep() {
   const { state, resetActivity } = usePippyActivity();
@@ -13,6 +15,10 @@ export function SessionSummaryStep() {
   const levelsSolved = state.levelsCompletedThisSession.length;
   const totalSolved  = state.totalLevelsCompleted;
   const highest      = state.highestLevelReached;
+  // Only tease Coda once the full 3-level arc has actually been finished
+  // (highestLevelReached only advances past the last level on real completion,
+  // not on an early exit via exitSession) — never on a mid-arc peek.
+  const hasFinishedActivity = highest >= PIPPY_LEVELS.length;
 
   return (
     <div className="flex flex-col items-center p-4 sm:p-8 max-w-xl mx-auto gap-6 text-center">
@@ -60,6 +66,34 @@ export function SessionSummaryStep() {
           </li>
         </ul>
       </div>
+
+      {/* Next-activity teaser — only after the full 3-level arc is finished */}
+      {hasFinishedActivity && (
+        <div className="w-full bg-brand-muted border border-brand rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-4 text-left">
+          <Image
+            src="/images/coda.png"
+            alt="Coda"
+            width={64}
+            height={64}
+            className="shrink-0"
+          />
+          <div className="flex-1">
+            <p className="font-semibold text-[#967FD8]">Up next: Coda</p>
+            <p className="text-sm text-fg-muted leading-relaxed">
+              You just changed what Pippy understood — now meet Coda, who learns differently:
+              from rewards, not labels.
+            </p>
+          </div>
+          <Button
+            onClick={() => router.push('/lessons/how-machines-chase-goals')}
+            variant="outline"
+            className="text-base px-6 py-3 min-h-[44px] w-full sm:w-auto shrink-0"
+            style={{ borderRadius: '12px' }}
+          >
+            Meet Coda
+          </Button>
+        </div>
+      )}
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">

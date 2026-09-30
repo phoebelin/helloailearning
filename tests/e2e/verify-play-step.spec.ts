@@ -112,7 +112,8 @@ test('coda — play step: run/receipt/re-tune all in-place', async ({ }) => {
 
     // Run with no coins (wander)
     await page.getByRole('button', { name: /Run Coda/i }).click();
-    await page.waitForTimeout(800);
+    // Receipt is revealed after the run animation finishes.
+    await page.waitForSelector('text=Point Receipt', { timeout: 15000 });
     await page.screenshot({ path: `${DIR}/05-receipt-no-coins.png`, fullPage: false });
 
     // Receipt appears in-place

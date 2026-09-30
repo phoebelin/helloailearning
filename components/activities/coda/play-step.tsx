@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -42,6 +42,8 @@ export function PlayStep({ onNext }: CodaStepProps) {
   const [activeDragValue, setActiveDragValue] = useState<number | null>(null);
   const [codaAnimPos, setCodaAnimPos] = useState<Coord | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  // How many path tiles the trail has drawn so far during the run animation.
+  const [animStepCount, setAnimStepCount] = useState(0);
   const [tileSize, setTileSize] = useState(64);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
@@ -82,17 +84,24 @@ export function PlayStep({ onNext }: CodaStepProps) {
     return null;
   }, [currentLevel]);
 
-  useEffect(() => {
+  // Layout effect so a new run's animation state resets before first paint
+  // (otherwise the previous run's receipt could flash for a frame).
+  useLayoutEffect(() => {
     if (!state.lastRun) {
       setCodaAnimPos(null);
       setIsAnimating(false);
+      setAnimStepCount(0);
       return;
     }
     const path = state.lastRun.path;
     if (!path || path.length === 0) return;
     setIsAnimating(true);
+    setAnimStepCount(0);
     const posTimers = path.map((pos, i) =>
-      setTimeout(() => setCodaAnimPos(pos), i * 350)
+      setTimeout(() => {
+        setCodaAnimPos(pos);
+        setAnimStepCount(i + 1);
+      }, i * 350)
     );
     const doneTimer = setTimeout(() => setIsAnimating(false), path.length * 350 + 150);
     return () => {
@@ -105,6 +114,17 @@ export function PlayStep({ onNext }: CodaStepProps) {
 
   const { coins } = state.workingReward;
   const hasRun = state.lastRun !== null;
+  // The trail draws in step with Coda; the receipt waits until the run finishes
+  // so the outcome isn't spoiled before the child watches it happen.
+  const visibleRunPath = hasRun ? (state.lastRun?.path ?? []).slice(0, animStepCount) : [];
+
+  const skipAnimation = () => {
+    if (!state.lastRun) return;
+    const path = state.lastRun.path;
+    setCodaAnimPos(path[path.length - 1] ?? null);
+    setAnimStepCount(path.length);
+    setIsAnimating(false);
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveDragValue((event.active.data.current?.value as number) ?? null);
@@ -236,7 +256,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
               grid={currentLevel.grid}
               coins={coins}
               ghostPath={currentLevel.intendedPath}
-              runPath={hasRun ? (state.lastRun?.path ?? []) : []}
+              runPath={visibleRunPath}
               onTileClick={!hasRun ? handleTileClick : undefined}
               droppable={!hasRun}
               codaPos={hasRun ? (codaAnimPos ?? undefined) : (startCoord ?? undefined)}
@@ -341,6 +361,28 @@ export function PlayStep({ onNext }: CodaStepProps) {
                   Run Coda →
                 </Button>
               </>
+            ) : isAnimating ? (
+              <div
+                className="rounded-xl p-4 text-left flex flex-col gap-3"
+                style={{ backgroundColor: '#f3efff' }}
+                role="status"
+                aria-live="polite"
+              >
+                <p className="text-xs font-bold text-[#967FD8] uppercase tracking-wide">
+                  Coda is chasing points…
+                </p>
+                <p className="text-sm text-fg-muted">
+                  Watch where Coda goes. It only cares about the points you set.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={skipAnimation}
+                  className="min-h-[44px] w-full"
+                  style={{ borderRadius: '12px' }}
+                >
+                  Skip to the result
+                </Button>
+              </div>
             ) : (
               <>
                 <ReceiptPanel runResult={state.lastRun!} />

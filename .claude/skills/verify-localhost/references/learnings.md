@@ -44,3 +44,9 @@ Format:
   screenshots and console/network capture.
 - **Prevention for next run:** in headless contexts, skip straight to the Playwright
   fallback instead of waiting on Chrome MCP to time out.
+
+## 2026-09-30 — Headless Chromium logs a Web Speech console error on Coda pages
+- **Symptom:** `console.error` "Enhanced TTS: Web Speech API error: SpeechSynthesisErrorEvent" fails a strict "no console errors" assertion; Next dev overlay shows "1 Issue".
+- **Root cause:** Headless Chromium has no speech synthesis; meet-coda auto-speaks on mount.
+- **Workaround/fix applied:** Filter `/Web Speech API/` from console-error assertions.
+- **Prevention for next run:** Filter that message up front; treat any other console error as a failure.

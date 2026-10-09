@@ -106,7 +106,7 @@ test('Coda lesson — play step: GridWorld + CoinTray + coin placement (in-place
   await page.screenshot({ path: `${DIR}/coda-03-coin-placed.png`, fullPage: false });
 
   // Thought bubble appears after coin placement
-  expect(await page.locator("text=Coda's thought bubble").count()).toBeGreaterThan(0);
+  expect(await page.getByTestId('thought-bubble').count()).toBeGreaterThan(0);
 
   expect(errors.length).toBe(0);
 });

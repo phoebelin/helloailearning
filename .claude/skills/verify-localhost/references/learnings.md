@@ -44,3 +44,9 @@ Format:
   screenshots and console/network capture.
 - **Prevention for next run:** in headless contexts, skip straight to the Playwright
   fallback instead of waiting on Chrome MCP to time out.
+
+## 2026-10-09 — Fresh cloud checkout has no node_modules
+- **Symptom:** `next: not found` on `npm run lint`.
+- **Root cause:** dependencies aren't installed in a new container.
+- **Workaround/fix applied:** `npm ci` first.
+- **Prevention for next run:** run `npm ci` before lint/build. `gh pr list` is blocked (GraphQL); use the GitHub MCP `list_pull_requests`.

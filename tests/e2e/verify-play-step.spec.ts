@@ -151,7 +151,7 @@ test('coda — play step: coin on exit → success CTA', async ({ }) => {
     await exitTile.click();
     await page.waitForTimeout(400);
     await page.screenshot({ path: `${DIR}/06-coin-placed.png`, fullPage: false });
-    expect(await page.locator("text=thought bubble").count()).toBeGreaterThan(0);
+    expect(await page.getByTestId("thought-bubble").count()).toBeGreaterThan(0);
 
     // Run
     await page.getByRole('button', { name: /Run Coda/i }).click();

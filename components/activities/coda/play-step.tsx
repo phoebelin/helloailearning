@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { CodaStepProps, Coord, CoinPlacement } from '@/types/coda-activity';
 import { useCodaActivity } from '@/lib/context/coda-activity-context';
-import { thoughtBubbleView } from '@/lib/data/coda-planner';
+import { ThoughtBubble } from './thought-bubble';
 import { GridWorld } from './grid-world';
 import { CodaExpression } from './coda-character';
 import { CoinTray, COIN_TRAY_DROPPABLE_ID } from './coin-tray';
@@ -175,8 +175,6 @@ export function PlayStep({ onNext }: CodaStepProps) {
     setSelectedValue(null);
   };
 
-  const thoughtBubble = thoughtBubbleView(state.workingReward);
-
   function getCodaExpression(): CodaExpression {
     if (!hasRun) return 'idle';
     if (isAnimating) return 'moving';
@@ -258,43 +256,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                   <>
                     <RewardSliders disabled={false} />
 
-                    {/* Slider thought bubble */}
-                    {(thoughtBubble.scenicBonus !== undefined ||
-                      thoughtBubble.stepCost !== undefined ||
-                      thoughtBubble.hazardPenalty !== undefined) && (
-                      <div
-                        className="rounded-xl p-4 text-left"
-                        style={{ backgroundColor: '#f3efff' }}
-                      >
-                        <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
-                          Coda&rsquo;s thought bubble
-                        </p>
-                        <ul className="text-sm text-fg-muted space-y-1">
-                          <li className="flex justify-between">
-                            <span className="text-fg-muted">🌿 Scenic bonus</span>
-                            <span className="font-semibold text-[#967FD8]">
-                              {(thoughtBubble.scenicBonus ?? 0) > 0 ? '+' : ''}
-                              {thoughtBubble.scenicBonus ?? 0} pts
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span className="text-fg-muted">👟 Step cost</span>
-                            <span className="font-semibold text-[#967FD8]">
-                              -{thoughtBubble.stepCost ?? 0} pts
-                            </span>
-                          </li>
-                          <li className="flex justify-between">
-                            <span className="text-fg-muted">⚠️ Hazard penalty</span>
-                            <span className="font-semibold text-[#967FD8]">
-                              -{thoughtBubble.hazardPenalty ?? 0} pts
-                            </span>
-                          </li>
-                        </ul>
-                        <p className="text-xs text-fg-subtle mt-2 italic">
-                          Coda sees these numbers, not your mission.
-                        </p>
-                      </div>
-                    )}
+                    <ThoughtBubble reward={state.workingReward} mode="sliders" />
                   </>
                 ) : (
                   <>
@@ -304,32 +266,7 @@ export function PlayStep({ onNext }: CodaStepProps) {
                       disabled={false}
                     />
 
-                    {/* Coin thought bubble */}
-                    {coins.length > 0 && (
-                      <div
-                        className="rounded-xl p-4 text-left"
-                        style={{ backgroundColor: '#f3efff' }}
-                      >
-                        <p className="text-xs font-bold text-[#967FD8] mb-2 uppercase tracking-wide">
-                          Coda&rsquo;s thought bubble
-                        </p>
-                        <ul className="text-sm text-fg-muted space-y-1">
-                          {thoughtBubble.coins.map(c => (
-                            <li key={c.id} className="flex justify-between">
-                              <span className="text-fg-muted">
-                                at ({c.at.x}, {c.at.y})
-                              </span>
-                              <span className="font-semibold text-[#967FD8]">
-                                {c.value > 0 ? '+' : ''}{c.value} pts
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="text-xs text-fg-subtle mt-2 italic">
-                          Coda sees points, not your mission.
-                        </p>
-                      </div>
-                    )}
+                    <ThoughtBubble reward={state.workingReward} mode="coins" />
                   </>
                 )}
 

@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       message: 'Successfully added to waitlist',
     });
   } catch (error: unknown) {
-    console.error('Waitlist API error:', error);
+    console.error('Waitlist API error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

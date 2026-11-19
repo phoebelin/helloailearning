@@ -163,7 +163,13 @@ export default function Home() {
                 <p className="text-sm text-critical">{error}</p>
               )}
               {(step === "email" || step === "name") && (
-                <p className="text-sm text-[#49454f]">I agree to receive emails from Hello AI Learning</p>
+                <>
+                  <p className="text-sm text-[#49454f]">For parents and guardians</p>
+                  <p className="text-sm text-[#49454f]">
+                    I agree to receive emails from Hello AI Learning. See our{" "}
+                    <a href="/privacy" className="underline">privacy policy</a>.
+                  </p>
+                </>
               )}
             </form>
           )}

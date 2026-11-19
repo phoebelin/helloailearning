@@ -1,16 +1,46 @@
 /**
  * API Route for Google Cloud Text-to-Speech
- * Handles TTS requests from the frontend
+ * Handles TTS requests from the frontend with security controls
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { synthesizeSpeech, GoogleCloudTTSOptions } from '@/lib/services/google-cloud-tts';
+import { ttsRateLimiter, getClientIp } from '@/lib/utils/rate-limiter';
+import { validateOrigin, validateTTSOptions } from '@/lib/utils/request-validator';
 
 export async function POST(request: NextRequest) {
   try {
+    // Security check 1: Validate origin
+    const originValidation = validateOrigin(request);
+    if (!originValidation.valid) {
+      console.warn('TTS API: Origin validation failed:', originValidation.error);
+      return NextResponse.json(
+        { error: 'Forbidden: Invalid origin' },
+        { status: 403 }
+      );
+    }
+
+    // Security check 2: Rate limiting
+    const clientIp = getClientIp(request);
+    const rateLimitResult = ttsRateLimiter.check(clientIp);
+    
+    if (!rateLimitResult.allowed) {
+      console.warn('TTS API: Rate limit exceeded for IP:', clientIp);
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': rateLimitResult.retryAfter?.toString() || '60',
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const { text, options = {} } = body;
 
+    // Validate text input
     if (!text || typeof text !== 'string') {
       return NextResponse.json(
         { error: 'Text is required and must be a string' },
@@ -21,6 +51,16 @@ export async function POST(request: NextRequest) {
     if (text.length > 5000) {
       return NextResponse.json(
         { error: 'Text too long. Maximum 5000 characters.' },
+        { status: 400 }
+      );
+    }
+
+    // Security check 3: Validate TTS options against allowlists
+    const optionsValidation = validateTTSOptions(options);
+    if (!optionsValidation.valid) {
+      console.warn('TTS API: Options validation failed:', optionsValidation.error);
+      return NextResponse.json(
+        { error: `Invalid options: ${optionsValidation.error}` },
         { status: 400 }
       );
     }

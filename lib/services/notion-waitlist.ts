@@ -180,14 +180,7 @@ export async function addWaitlistEntry({ email, name }: WaitlistEntry) {
       },
     };
     
-    console.log('Setting date property:', {
-      propertyName: datePropertyName,
-      date: currentDate,
-      propertiesBeingSent: Object.keys(properties)
-    });
-
-    // Log the final properties object before sending
-    console.log('Final properties object:', JSON.stringify(properties, null, 2));
+    console.log('Setting date property:', datePropertyName, 'with current timestamp');
     
     const response = await notion.pages.create({
       parent: {
@@ -203,10 +196,8 @@ export async function addWaitlistEntry({ email, name }: WaitlistEntry) {
       pageId: response.id,
     };
   } catch (error: unknown) {
-    console.error('Error adding waitlist entry to Notion:', error);
-    console.error('Error code:', error.code);
-    console.error('Error message:', error.message);
-    console.error('Error body:', error.body);
+    console.error('Error adding waitlist entry to Notion:', error.code || 'unknown_code');
+    console.error('Error message:', error.message || 'unknown_message');
     
     // Handle specific Notion API errors
     if (error.code === 'object_not_found') {
@@ -232,8 +223,6 @@ export async function addWaitlistEntry({ email, name }: WaitlistEntry) {
       };
     }
 
-    // Log full error for debugging
-    console.error('Full Notion API error:', JSON.stringify(error, null, 2));
 
     return {
       success: false,

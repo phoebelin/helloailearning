@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('TTS API: Processing request for text:', text.substring(0, 50) + '...');
+    console.log('TTS API: Processing TTS request, text length:', text.length);
 
     const result = await synthesizeSpeech(text, options as GoogleCloudTTSOptions);
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       mimeType: 'audio/mpeg', // MP3 format
     });
   } catch (error) {
-    console.error('TTS API: Unexpected error:', error);
+    console.error('TTS API: Unexpected error:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

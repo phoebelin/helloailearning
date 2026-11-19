@@ -85,7 +85,7 @@ export async function synthesizeSpeech(
       },
     };
 
-    console.log('Google Cloud TTS: Synthesizing speech for text:', text.substring(0, 50) + '...');
+    console.log('Google Cloud TTS: Synthesizing speech, text length:', text.length);
     
     const [response] = await ttsClient.synthesizeSpeech(request);
     
@@ -106,7 +106,7 @@ export async function synthesizeSpeech(
       audioData,
     };
   } catch (error) {
-    console.error('Google Cloud TTS: Error synthesizing speech:', error);
+    console.error('Google Cloud TTS: Error synthesizing speech:', error instanceof Error ? error.message : 'Unknown error');
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

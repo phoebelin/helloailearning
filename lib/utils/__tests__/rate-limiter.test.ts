@@ -34,27 +34,27 @@ describe('rate-limiter', () => {
     it('should block requests exceeding per-IP limit', () => {
       const ip = '192.168.1.1';
 
-      // Make 100 requests (the limit)
-      for (let i = 0; i < 100; i++) {
+      // Make 600 requests (the limit)
+      for (let i = 0; i < 600; i++) {
         const result = ttsRateLimiter.check(ip);
         expect(result.allowed).toBe(true);
       }
 
-      // 101st request should be blocked
+      // 601st request should be blocked
       const blockedResult = ttsRateLimiter.check(ip);
       expect(blockedResult.allowed).toBe(false);
       expect(blockedResult.retryAfter).toBeGreaterThan(0);
     });
 
     it('should block requests exceeding global limit', () => {
-      // Use different IPs to avoid per-IP limit
-      for (let i = 0; i < 1000; i++) {
-        const result = ttsRateLimiter.check(`192.168.1.${i % 255}`);
+      // Use different IPs to avoid per-IP limit (spread across 600 IPs, 5 requests each = 3000 total)
+      for (let i = 0; i < 3000; i++) {
+        const result = ttsRateLimiter.check(`192.168.${Math.floor(i / 5)}.${i % 5}`);
         expect(result.allowed).toBe(true);
       }
 
-      // 1001st request should be blocked by global limit
-      const blockedResult = ttsRateLimiter.check('192.168.1.250');
+      // 3001st request should be blocked by global limit
+      const blockedResult = ttsRateLimiter.check('192.168.255.254');
       expect(blockedResult.allowed).toBe(false);
       expect(blockedResult.retryAfter).toBeGreaterThan(0);
     });
@@ -63,7 +63,7 @@ describe('rate-limiter', () => {
       const ip = '192.168.1.1';
 
       // Exhaust the limit
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 600; i++) {
         ttsRateLimiter.check(ip);
       }
 

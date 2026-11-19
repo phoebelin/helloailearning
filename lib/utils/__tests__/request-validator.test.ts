@@ -242,6 +242,7 @@ describe('request-validator', () => {
     it('should accept request with valid origin header in development', () => {
       const request = createMockRequest({
         origin: 'http://localhost:3000',
+        host: 'localhost:3000',
       });
 
       const result = validateOrigin(request);
@@ -251,6 +252,7 @@ describe('request-validator', () => {
     it('should accept request with valid referer header in development', () => {
       const request = createMockRequest({
         referer: 'http://localhost:3000/lessons/how-machines-learn',
+        host: 'localhost:3000',
       });
 
       const result = validateOrigin(request);
@@ -263,6 +265,7 @@ describe('request-validator', () => {
       ports.forEach((port) => {
         const request = createMockRequest({
           origin: `http://localhost:${port}`,
+          host: `localhost:${port}`,
         });
 
         const result = validateOrigin(request);
@@ -315,6 +318,54 @@ describe('request-validator', () => {
 
       const request = createMockRequest({
         origin: 'http://localhost:3000',
+        // No host header or mismatched host
+      });
+
+      const result = validateOrigin(request);
+      expect(result.valid).toBe(false);
+    });
+
+    it('should accept same-origin requests based on Host header', () => {
+      const request = createMockRequest({
+        origin: 'https://helloailearning.com',
+        host: 'helloailearning.com',
+      });
+
+      const result = validateOrigin(request);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should accept same-origin requests with different schemes', () => {
+      // Same host, different schemes (happens with localhost http vs app https)
+      const request = createMockRequest({
+        origin: 'http://localhost:3000',
+        host: 'localhost:3000',
+      });
+
+      const result = validateOrigin(request);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should work in production without env vars if request is same-origin', () => {
+      process.env.NODE_ENV = 'production';
+      delete process.env.NEXT_PUBLIC_APP_URL;
+      delete process.env.VERCEL_URL;
+
+      const request = createMockRequest({
+        origin: 'https://my-app.vercel.app',
+        host: 'my-app.vercel.app',
+      });
+
+      const result = validateOrigin(request);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should reject cross-origin requests even in production with Host header', () => {
+      process.env.NODE_ENV = 'production';
+
+      const request = createMockRequest({
+        origin: 'https://malicious-site.com',
+        host: 'helloailearning.com', // Different host
       });
 
       const result = validateOrigin(request);

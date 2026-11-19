@@ -155,13 +155,18 @@ export function getAllowedOrigins(): string[] {
 /**
  * Validate request origin
  * 
- * Checks Origin header (for CORS requests) and Referer header (fallback).
- * In browsers, legitimate same-origin requests will have one or both set.
+ * Accepts requests from:
+ * 1. Same-origin (Origin/Referer host matches request's Host header)
+ * 2. Explicitly allowed origins from environment configuration
+ * 
+ * This two-tier approach ensures TTS works even if env vars are missing:
+ * - Same-origin check: Works automatically in production/preview without configuration
+ * - Env allowlist: Optional additional origins (e.g., for CDN or alternate domains)
  */
 export function validateOrigin(request: Request): ValidationResult {
   const origin = request.headers.get('origin');
   const referer = request.headers.get('referer');
-  const allowedOrigins = getAllowedOrigins();
+  const host = request.headers.get('host');
 
   // If no origin/referer headers, reject (possible server-to-server request)
   if (!origin && !referer) {
@@ -180,7 +185,17 @@ export function validateOrigin(request: Request): ValidationResult {
     };
   }
 
-  // Check if origin matches any allowed origin
+  // Check 1: Same-origin (Origin/Referer host matches request's Host header)
+  // This works automatically without environment configuration
+  if (host) {
+    const requestOriginHost = new URL(requestOrigin).host;
+    if (requestOriginHost === host) {
+      return { valid: true };
+    }
+  }
+
+  // Check 2: Explicitly allowed origins from environment
+  const allowedOrigins = getAllowedOrigins();
   const isAllowed = allowedOrigins.some((allowed) => {
     // Exact match
     if (requestOrigin === allowed) {

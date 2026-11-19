@@ -121,23 +121,31 @@ class RateLimiter {
 /**
  * TTS-specific rate limiter
  * 
- * Limits chosen to be generous for legitimate use:
- * - Per-IP: 100 requests per 15 minutes (6.67 req/min average)
- *   A typical lesson has 5-10 TTS calls. Moving through 10 lessons in 15 minutes
- *   would use ~100 requests. This allows rapid exploration without blocking learners.
+ * Limits chosen to be generous for legitimate use while protecting against abuse:
  * 
- * - Global per-instance: 1000 requests per 15 minutes
- *   Protects against bill runaway if a single instance is hammered.
- *   ~67 req/min sustained, ~15 concurrent users at typical lesson pace.
+ * - Per-IP: 600 requests per 15 minutes (40 req/min average)
+ *   Accounts for shared IPs (classrooms, households, offices):
+ *   - Classroom of 30 students: Each can do ~20 TTS requests in 15 min (2-4 lessons)
+ *   - Household with 5 people: Each can do ~120 TTS requests (12-24 lessons)
+ *   - Single user: Can do 60 lessons in 15 min without hitting the limit
+ *   
+ *   This is very generous for legitimate use while still preventing abuse.
+ * 
+ * - Global per-instance: 3000 requests per 15 minutes (200 req/min)
+ *   Bill-protection backstop for a single serverless instance.
+ *   Supports ~75 concurrent classroom users or ~300 individual users at typical pace.
+ *   
+ *   Note: In serverless environments, multiple instances may run simultaneously,
+ *   each with its own 3000 req/15min limit. Total capacity scales with traffic.
  */
 export const ttsRateLimiter = new RateLimiter(
   {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 100,
+    maxRequests: 600,
   },
   {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 1000,
+    maxRequests: 3000,
   }
 );
 

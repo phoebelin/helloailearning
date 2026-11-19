@@ -98,12 +98,13 @@ describe('/api/tts', () => {
         audioData: 'base64-audio-data',
       });
 
-      // Make 100 successful requests (the limit)
-      for (let i = 0; i < 100; i++) {
+      // Make 600 successful requests (the limit)
+      for (let i = 0; i < 600; i++) {
         const request = createTestRequest('http://localhost:3000/api/tts', {
           headers: {
             'Content-Type': 'application/json',
             origin: 'http://localhost:3000',
+            host: 'localhost:3000',
             'x-forwarded-for': '192.168.1.1',
           },
           body: { text: `Test ${i}` },
@@ -113,11 +114,12 @@ describe('/api/tts', () => {
         expect(response.status).toBe(200);
       }
 
-      // 101st request should be rate limited
+      // 601st request should be rate limited
       const blockedRequest = createTestRequest('http://localhost:3000/api/tts', {
         headers: {
           'Content-Type': 'application/json',
           origin: 'http://localhost:3000',
+          host: 'localhost:3000',
           'x-forwarded-for': '192.168.1.1',
         },
         body: { text: 'Should be blocked' },
